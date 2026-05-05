@@ -19,10 +19,18 @@ if(UNIX)
     endif()
 endif()
 
-# Find all test source files (.c for legacy + .cpp for type-driven HAL).
-file(GLOB TEST_SOURCES_C   "${CMAKE_CURRENT_SOURCE_DIR}/test_*.c")
-file(GLOB TEST_SOURCES_CPP "${CMAKE_CURRENT_SOURCE_DIR}/test_*.cpp")
-set(TEST_SOURCES ${TEST_SOURCES_C} ${TEST_SOURCES_CPP})
+# Find all test source files. The C-loop below handles .c + a curated set
+# of header-only C++ tests (no Qt deps). The Qt-loop further down handles
+# all remaining .cpp tests (which need Qt6::Test / SerialPort / providers).
+file(GLOB TEST_SOURCES_C    "${CMAKE_CURRENT_SOURCE_DIR}/test_*.c")
+file(GLOB TEST_SOURCES_CPP  "${CMAKE_CURRENT_SOURCE_DIR}/test_*.cpp")
+
+# Header-only C++ tests that join the main C-loop (no Qt linking).
+# Add new entries here when introducing a header-only foundation test.
+set(_HEADER_ONLY_CPP_TESTS
+    "${CMAKE_CURRENT_SOURCE_DIR}/test_hal_foundation.cpp")  # MF-150
+
+set(TEST_SOURCES ${TEST_SOURCES_C} ${_HEADER_ONLY_CPP_TESTS})
 
 # Exclude tests with missing dependencies (TODO: implement these modules)
 set(EXCLUDED_TESTS
@@ -264,11 +272,22 @@ foreach(test_source ${TEST_SOURCES})
     # Register as CTest
     add_test(NAME ${test_name} COMMAND ${test_name})
     
-    set_target_properties(${test_name} PROPERTIES
-        C_STANDARD 11
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
-    )
-    
+    # Header-only C++ foundation tests (MF-150) need C++20.
+    list(FIND _HEADER_ONLY_CPP_TESTS ${test_source} _ho_idx)
+    if(${_ho_idx} GREATER -1)
+        set_target_properties(${test_name} PROPERTIES
+            CXX_STANDARD 20
+            CXX_STANDARD_REQUIRED ON
+            CXX_EXTENSIONS OFF
+            RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
+        )
+    else()
+        set_target_properties(${test_name} PROPERTIES
+            C_STANDARD 11
+            RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
+        )
+    endif()
+
     message(STATUS "UFT Test ENABLED: ${test_name}")
 endforeach()
 
@@ -279,8 +298,12 @@ find_package(Qt6 COMPONENTS Core Test QUIET)
 if(TARGET Qt6::Test)
     set(CMAKE_AUTOMOC ON)
 
-    # Discover Qt C++ test sources
-    file(GLOB QT_TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/test_*.cpp")
+    # Discover Qt C++ test sources, excluding the header-only set already
+    # handled by the main C-loop (MF-150).
+    set(QT_TEST_SOURCES ${TEST_SOURCES_CPP})
+    foreach(_skip ${_HEADER_ONLY_CPP_TESTS})
+        list(REMOVE_ITEM QT_TEST_SOURCES ${_skip})
+    endforeach()
 
     foreach(qt_test_source ${QT_TEST_SOURCES})
         get_filename_component(qt_test_name ${qt_test_source} NAME_WE)
