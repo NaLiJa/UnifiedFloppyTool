@@ -95,6 +95,7 @@
 #include "hardware_providers/fc5025_provider_v2.h"       /* MF-164 P1.11 */
 #include "hardware_providers/xum1541_provider_v2.h"      /* MF-165 P1.12 */
 #include "hardware_providers/applesauce_provider_v2.h"  /* MF-166 P1.13 */
+#include "hardware_providers/adfcopy_provider_v2.h"   /* MF-167 P1.14 */
 #include "mock_provider_v2.h"           /* MF-160 P1.7 */
 
 /* KryoFlux + FluxEngine conformance factories need SubprocessMock. */
@@ -331,6 +332,53 @@ struct factory<::uft::hal::ApplesauceProviderV2> {
             std::move(unavail_seek),
             std::move(unavail_recal),
             std::move(unavail_rpm),
+            std::move(unavail_detect));
+    }
+};
+
+template<>
+struct factory<::uft::hal::ADFCopyProviderV2> {
+    /* P1.14: all runners return transport_unavailable=true, reflecting
+     * the state where no ADFCopy/ADF-Drive device is connected (the
+     * normal CI environment). Every do_* method returns a ProviderError.
+     * We verify the F-4 3-part contract on the error-path side.
+     *
+     * When a real ADFCopy device is available (HIL environment), this
+     * factory will switch to real runners and the SECTION will exercise
+     * the happy-path variants. */
+    static ::uft::hal::ADFCopyProviderV2 make() {
+        auto unavail_read = [](const ::uft::hal::ADFCopyProviderV2::ReadRequest&)
+            -> ::uft::hal::ADFCopyReadResult {
+            ::uft::hal::ADFCopyReadResult r;
+            r.transport_unavailable = true;
+            return r;
+        };
+        auto unavail_motor = [](bool) -> ::uft::hal::ADFCopyMotorResult {
+            ::uft::hal::ADFCopyMotorResult r;
+            r.transport_unavailable = true;
+            return r;
+        };
+        auto unavail_seek = [](const ::uft::hal::ADFCopyProviderV2::SeekRequest&)
+            -> ::uft::hal::ADFCopySeekResult {
+            ::uft::hal::ADFCopySeekResult r;
+            r.transport_unavailable = true;
+            return r;
+        };
+        auto unavail_recal = []() -> ::uft::hal::ADFCopySeekResult {
+            ::uft::hal::ADFCopySeekResult r;
+            r.transport_unavailable = true;
+            return r;
+        };
+        auto unavail_detect = []() -> ::uft::hal::ADFCopyDetectResult {
+            ::uft::hal::ADFCopyDetectResult r;
+            r.transport_unavailable = true;
+            return r;
+        };
+        return ::uft::hal::ADFCopyProviderV2(
+            std::move(unavail_read),
+            std::move(unavail_motor),
+            std::move(unavail_seek),
+            std::move(unavail_recal),
             std::move(unavail_detect));
     }
 };
@@ -750,7 +798,8 @@ int main()
     run_conformance<::uft::hal::FC5025ProviderV2>("FC5025ProviderV2");       /* MF-164 P1.11 */
     run_conformance<::uft::hal::XUM1541ProviderV2>("XUM1541ProviderV2");       /* MF-165 P1.12 */
     run_conformance<::uft::hal::ApplesauceProviderV2>("ApplesauceProviderV2"); /* MF-166 P1.13 */
-    /* P1.14+ will add: ADFCopyProviderV2, USBFloppyProviderV2, ...          */
+    run_conformance<::uft::hal::ADFCopyProviderV2>("ADFCopyProviderV2");     /* MF-167 P1.14 */
+    /* P1.15+ will add: USBFloppyProviderV2, ...                              */
 
     const auto &s = stats();
     std::printf("hal_conformance: %d sections run, %d failed\n",
