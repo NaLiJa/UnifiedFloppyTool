@@ -30,18 +30,86 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cstdio>
 #include <cstring>
 #include <string>
 
 namespace uft::hal {
 
 /* ────────────────────────────────────────────────────────────────────────
- *  Constructor
+ *  Construction / lifecycle  (MF-171 P1.18: provider owns the handle)
  * ──────────────────────────────────────────────────────────────────────── */
 
 GreaseweazleProviderV2::GreaseweazleProviderV2(uft_gw_device_t* handle) noexcept
     : m_handle(handle)
-{}
+{
+    /* Try to populate cached info if the caller already opened the
+     * device. Failure is non-fatal — getters just stay at default. */
+    if (m_handle) {
+        uft_gw_info_t info{};
+        if (uft_gw_get_info(m_handle, &info) == 0) {
+            char buf[32];
+            std::snprintf(buf, sizeof(buf), "v%u.%u",
+                          static_cast<unsigned>(info.fw_major),
+                          static_cast<unsigned>(info.fw_minor));
+            m_firmware_version = buf;
+            m_hw_model = info.hw_model;
+        }
+    }
+}
+
+GreaseweazleProviderV2::~GreaseweazleProviderV2()
+{
+    close();
+}
+
+bool GreaseweazleProviderV2::open(const char *port_path, std::string *err_out)
+{
+    if (!port_path || *port_path == '\0') {
+        if (err_out) *err_out = "empty port path";
+        return false;
+    }
+    if (m_handle) {
+        if (err_out) *err_out = "device already open — call close() first";
+        return false;
+    }
+
+    uft_gw_device_t *gw = nullptr;
+    const int rc = uft_gw_open(port_path, &gw);
+    if (rc != 0 || gw == nullptr) {
+        if (err_out) {
+            const char *msg = uft_gw_strerror(rc);
+            *err_out = msg ? msg : "uft_gw_open failed";
+        }
+        return false;
+    }
+    m_handle = gw;
+
+    /* Populate cached info — non-fatal if it fails. */
+    uft_gw_info_t info{};
+    if (uft_gw_get_info(m_handle, &info) == 0) {
+        char buf[32];
+        std::snprintf(buf, sizeof(buf), "v%u.%u",
+                      static_cast<unsigned>(info.fw_major),
+                      static_cast<unsigned>(info.fw_minor));
+        m_firmware_version = buf;
+        m_hw_model = info.hw_model;
+    } else {
+        m_firmware_version = "(unknown)";
+        m_hw_model = 0;
+    }
+    return true;
+}
+
+void GreaseweazleProviderV2::close() noexcept
+{
+    if (m_handle) {
+        uft_gw_close(m_handle);
+        m_handle = nullptr;
+    }
+    m_firmware_version.clear();
+    m_hw_model = 0;
+}
 
 /* ────────────────────────────────────────────────────────────────────────
  *  Private helper — translate gw error code to ProviderError

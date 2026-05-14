@@ -38,6 +38,8 @@
 #include "uft/hal/concepts.h"
 #include "uft/hal/uft_greaseweazle_full.h"
 
+#include <string>
+
 namespace uft::hal {
 
 /**
@@ -68,14 +70,72 @@ class GreaseweazleProviderV2 final
 {
 public:
     /**
-     * @brief Construct from an open uft_gw_device_t handle.
+     * @brief Default-construct an unopened provider.
      *
-     * The handle must remain valid for the lifetime of this provider.
-     * Ownership is NOT transferred — call uft_gw_close() externally.
-     * Passing nullptr is accepted for mock/test construction; every
-     * do_* method returns HardwareDisconnected in that case.
+     * Use `open()` to attach to a Greaseweazle device on a serial port,
+     * or construct via the legacy handle-taking ctor below.
+     */
+    GreaseweazleProviderV2() noexcept = default;
+
+    /**
+     * @brief Construct from an already-open uft_gw_device_t handle.
+     *
+     * SEMANTICS CHANGED IN MF-171 (P1.18): the provider now TAKES
+     * OWNERSHIP of the handle. The destructor (or close()) calls
+     * uft_gw_close() — the caller MUST NOT close the handle
+     * externally. Passing nullptr is accepted for mock/test
+     * construction; every do_* method returns HardwareDisconnected
+     * in that case.
+     *
+     * The conformance harness + per-provider tests pass nullptr; their
+     * usage is unchanged by the new ownership rule (close() with a
+     * null handle is a no-op).
      */
     explicit GreaseweazleProviderV2(uft_gw_device_t* handle) noexcept;
+
+    /**
+     * @brief Open a Greaseweazle device on the given serial port.
+     *
+     * On success the device is owned by this provider; close() or the
+     * destructor releases it. Sets `firmware_version()` and
+     * `hardware_model()` from `uft_gw_get_info()` upon successful open.
+     *
+     * @param port_path  serial-port path (Linux: /dev/ttyACMx,
+     *                   Windows: COMx, macOS: /dev/tty.usbmodemXXX).
+     * @param err_out    optional out-param populated with a
+     *                   human-readable error string on failure.
+     * @return true if device opened, false otherwise. On false, the
+     *         provider remains in the unopened state — `is_open()`
+     *         returns false and every do_* method returns
+     *         HardwareDisconnected.
+     */
+    bool open(const char *port_path, std::string *err_out = nullptr);
+
+    /** Close the device if open. No-op if not. Idempotent. */
+    void close() noexcept;
+
+    /** True iff `open()` succeeded and `close()` has not been called. */
+    bool is_open() const noexcept { return m_handle != nullptr; }
+
+    /**
+     * @brief Raw handle accessor — backwards-compatibility escape
+     * hatch for FluxCaptureJob / FluxWriteJob (legacy V1-shape
+     * consumers that still call uft_gw_* directly).
+     *
+     * SCHEDULED FOR REMOVAL once P1.20/P1.21 migrate those jobs to the
+     * V2 outcome surface. Until then this accessor lets the C-API
+     * fast-path stay reachable from one place while everything else
+     * routes through V2 methods.
+     */
+    void *raw_handle() const noexcept { return m_handle; }
+
+    /** Firmware version string, e.g. "v1.4". Empty before open(). */
+    const std::string &firmware_version() const noexcept {
+        return m_firmware_version;
+    }
+
+    /** Hardware model byte (F1=1, F7=7, V4=4, …). Zero before open(). */
+    int hardware_model() const noexcept { return m_hw_model; }
 
     /* Non-copyable, non-movable (holds a raw C handle). */
     GreaseweazleProviderV2(const GreaseweazleProviderV2&)            = delete;
@@ -83,7 +143,8 @@ public:
     GreaseweazleProviderV2(GreaseweazleProviderV2&&)                 = delete;
     GreaseweazleProviderV2& operator=(GreaseweazleProviderV2&&)      = delete;
 
-    ~GreaseweazleProviderV2() = default;
+    /** Closes the handle if still open. */
+    ~GreaseweazleProviderV2();
 
     /* ── Backend bindings called by the mixin CRTP machinery ─────────── */
 
@@ -96,7 +157,9 @@ public:
     DetectOutcome do_detect_drive  ();
 
 private:
-    uft_gw_device_t* m_handle;  /**< Opaque GW device handle (not owned). */
+    uft_gw_device_t *m_handle = nullptr;     /**< Opaque GW device handle, OWNED. */
+    std::string      m_firmware_version;     /**< Populated by open(). */
+    int              m_hw_model = 0;         /**< Populated by open(). */
 
     /** Translate a uft_gw_* error code to a ProviderError. */
     static ProviderError gw_err_to_provider_error(

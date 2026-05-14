@@ -73,10 +73,15 @@ public:
     QString currentController() const { return m_controllerType; }
     ControllerRole currentRole() const { return m_controllerRole; }
 
-    // MF-110 — exposed so WorkflowTab/FluxCaptureJob can drive the same
-    // open Greaseweazle handle. Returns nullptr when not connected.
-    // The pointer is owned by HardwareTab; do not free it from the caller.
-    void *gwDevice() const { return m_gwDevice; }
+    /* MF-171 (P1.18): the Greaseweazle C-handle is now owned by the V2
+     * provider (`m_gwProviderV2`). HardwareTab no longer holds a
+     * `void *m_gwDevice` member. `gwDevice()` remains as a delegating
+     * accessor that returns `m_gwProviderV2->raw_handle()` — a legacy
+     * escape hatch for FluxCaptureJob / FluxWriteJob until their P1.20
+     * / P1.21 migration to the V2 outcome surface. Returns nullptr
+     * when not connected. The handle is owned by the provider; do not
+     * close it from the caller. */
+    void *gwDevice() const;
     int detectedTracks() const { return m_detectedTracks; }
     int detectedHeads() const { return m_detectedHeads; }
     
@@ -166,36 +171,31 @@ private slots:
     
     // Detection mode
     void onDetectionModeChanged();
-    void onDetectDrive();
-    
+
     // Motor control
-    void onMotorOn();
-    void onMotorOff();
     void onAutoSpinDownChanged(bool enabled);
-    
+
     // Drive settings (Manual mode)
     void onDriveTypeChanged(int index);
     void onTracksChanged(int index);
     void onHeadsChanged(int index);
     void onDensityChanged(int index);
     void onRPMChanged(int index);
-    
+
     // Advanced settings
     void onDoubleStepChanged(bool enabled);
     void onIgnoreIndexChanged(bool enabled);
     void onStepDelayChanged(int value);
     void onSettleTimeChanged(int value);
-    
-    // Tests
-    void onSeekTest();
-    void onReadTest();
-    void onRPMTest();
-    void onCalibrate();
 
     /* MF-169 (P1.17): `onUnifiedCapture()` removed with the V1 hierarchy.
-     * It consumed the V1 `unified_hal_bridge`, both of which are gone.
-     * The V2 wire_action codegen path (P1.4) replaces it for the
-     * capability-bound test buttons. */
+     * MF-171 (P1.18): the legacy direct-C-API test slots (onDetectDrive,
+     * onMotorOn / onMotorOff, onSeekTest, onReadTest, onRPMTest,
+     * onCalibrate) removed — they were unwired since P1.4 (the
+     * codegen-emitted wire_action<cap::X> path replaced their button
+     * connections) and existed only as dead V1-shape implementations
+     * that still touched uft_gw_* directly. Their behavior is preserved
+     * through the V2 outcome handler overload set declared above. */
 
 private:
     void setupConnections();
@@ -224,11 +224,15 @@ private:
     void setDetectedInfo(const QString& model, const QString& firmware, 
                          const QString& rpm, const QString& index);
     
-    // Auto-detection
-    void autoDetectDrive();
-    void applyDetectedSettings(const QString& driveType, int tracks, 
-                               int heads, const QString& density, int rpm);
-    
+    /* MF-171 (P1.18): the old `autoDetectDrive()` helper (~100 LOC of
+     * direct uft_gw_select_drive/set_motor/seek/is_write_protected
+     * calls) is gone. Auto-detect after a successful Connect now
+     * invokes the V2 surface — `m_gwProviderV2->detect_drive()` →
+     * `std::visit` → existing `onDetectOutcome(DriveDetected)` handler.
+     * The old `applyDetectedSettings()` is no longer needed; the V2
+     * handler updates `m_detectedTracks`/`m_detectedHeads` directly
+     * (see MF-157 P1.4 implementation). */
+
     Ui::TabHardware *ui;
     QButtonGroup *m_detectionModeGroup;
     QButtonGroup *m_roleGroup;
@@ -248,17 +252,20 @@ private:
     QString m_portName;
     QString m_firmwareVersion;
     int m_hwModel;              // Hardware model (e.g., F1=1, F7=7)
-    void *m_gwDevice;           // HAL device handle (uft_gw_device_t*)
 
     /* MF-169 (P1.17): The V1 `HardwareManager` dispatcher was deleted
      * with the V1 provider hierarchy. Routing for non-Greaseweazle
      * controllers via V2 providers is task P1.18 — until then those
      * controllers display a "no V2 routing wired" message on Connect. */
 
-    /* MF-157 (P1.4): V2 mixin-composition wrapper around the C-HAL
-     * Greaseweazle handle (m_gwDevice). Created on connect, reset on
-     * disconnect. The forward-declared dtor in greaseweazle_provider_v2.h
-     * is sufficient for unique_ptr's destructor instantiation here
+    /* MF-157 (P1.4): V2 mixin-composition wrapper around the
+     * Greaseweazle device.
+     * MF-171 (P1.18): the provider now OWNS the uft_gw_device_t*
+     * handle. `m_gwDevice void*` is gone — `gwDevice()` delegates to
+     * `m_gwProviderV2->raw_handle()` until P1.20/P1.21 migrate the
+     * remaining FluxCaptureJob / FluxWriteJob direct-C-API consumers.
+     * The forward-declared dtor in greaseweazle_provider_v2.h is
+     * sufficient for unique_ptr's destructor instantiation here
      * because HardwareTab's destructor is defined in hardwaretab.cpp
      * where the V2 type is complete. */
     std::unique_ptr<::uft::hal::GreaseweazleProviderV2> m_gwProviderV2;
