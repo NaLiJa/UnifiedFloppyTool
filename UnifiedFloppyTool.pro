@@ -256,6 +256,11 @@ SOURCES += \
 # joins continuations before stripping comments).
 SOURCES += src/flux/uft_mfm_sector_parser.c
 
+# P1.24 (REFACTOR_TASKS.md): KryoFlux stream-format decoder — implements
+# uft_kf_decode() from include/uft/flux/uft_kryoflux.h. Consumed by
+# KryoFluxProviderV2::do_read_raw_flux.
+SOURCES += src/flux/uft_kryoflux_stream.c
+
 # Main GUI Headers (CRITICAL for MOC!)
 HEADERS += \
     include/uft/analysis/uft_sector_compare.h \

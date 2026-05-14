@@ -283,12 +283,22 @@ foreach(test_source ${TEST_SOURCES})
     elseif(${test_name} STREQUAL "test_kryoflux_provider_v2")
         # MF-162 P1.9: KryoFluxProviderV2 mixin composition test.
         # Needs: V2 provider .cpp; no C-HAL backend (KF uses DTC subprocess).
+        # MF-208 P1.24: + the KryoFlux stream decoder — do_read_raw_flux
+        # now calls uft_kf_decode().
         # SubprocessMock is header-only; tests/ must be on the include path.
         target_sources(${test_name} PRIVATE
-            ${CMAKE_SOURCE_DIR}/src/hardware_providers/kryoflux_provider_v2.cpp)
+            ${CMAKE_SOURCE_DIR}/src/hardware_providers/kryoflux_provider_v2.cpp
+            ${CMAKE_SOURCE_DIR}/src/flux/uft_kryoflux_stream.c)
         target_include_directories(${test_name} PRIVATE
             ${CMAKE_SOURCE_DIR}/src
             ${CMAKE_SOURCE_DIR}/tests)
+        set(TEST_LIBS "")
+    elseif(${test_name} STREQUAL "test_kryoflux_stream")
+        # MF-208 P1.24: KryoFlux stream-format decoder unit test.
+        # Synthetic vectors pinning uft_kf_decode() to the documented
+        # stream protocol. Needs only the decoder .c — no provider, no Qt.
+        target_sources(${test_name} PRIVATE
+            ${CMAKE_SOURCE_DIR}/src/flux/uft_kryoflux_stream.c)
         set(TEST_LIBS "")
     elseif(${test_name} STREQUAL "test_fluxengine_provider_v2")
         # MF-163 P1.10: FluxEngineProviderV2 mixin composition test.

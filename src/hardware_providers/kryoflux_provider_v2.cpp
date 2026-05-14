@@ -22,21 +22,25 @@
  *
  * Rule F-3 (multi-revolution preservation):
  *   KryoFlux stream files (track{NN}.{S}.raw) contain one or more full
- *   revolutions of flux data in the KryoFlux stream format. The raw
- *   stream bytes from DTC output are stored VERBATIM in
- *   FluxCaptured::transitions_ns as 32-bit little-endian words of the
- *   raw stream data. No resampling, no averaging, no pruning. The
- *   KryoFlux stream sample resolution is 41.67 ns (24 MHz clock).
- *   All transition information from the stream file is preserved.
+ *   revolutions of flux data in the KryoFlux stream format — a binary
+ *   container where transition times are variable-length opcodes
+ *   (Flux1/2/3, Nop1/2/3, Ovl16) interleaved with out-of-band Index /
+ *   StreamInfo / KFInfo blocks.
  *
- *   Note: the KryoFlux stream format is a binary format where
- *   transition times are encoded as variable-length opcodes. The V2
- *   provider does not decode the stream — it stores it raw in
- *   FluxCaptured::transitions_ns (re-interpreting the byte stream as
- *   uint32_t words, little-endian, with padding if needed). Downstream
- *   analysis (DeepRead pipeline) handles the KryoFlux-specific decoding.
- *   This is consistent with the forensic mission: preserve what arrived,
- *   do not transform in the HAL layer.
+ *   P1.24 (MF-208): do_read_raw_flux now DECODES the stream container
+ *   via uft_kf_decode() (src/flux/uft_kryoflux_stream.c) into true flux
+ *   intervals, then converts ticks -> nanoseconds using the stream's
+ *   own sample clock (sck= from the KFInfo block, default 24.027 MHz).
+ *   The Index OOB blocks become FluxCaptured::index_times_ns — measured
+ *   revolution boundaries, not a fabricated count. Every flux interval
+ *   the container carried is preserved; nothing is resampled, averaged
+ *   or invented. A truncated container yields FluxMarginal carrying
+ *   whatever was validly decoded before the fault.
+ *
+ *   (Before MF-208 the provider stored the undecoded opcode bytes
+ *   verbatim in transitions_ns — audit ARCH-2: that mislabelled stream
+ *   opcodes as flux timing. MF-203 replaced it with an honest
+ *   ProviderError; MF-208 replaces that with the real decoder.)
  *
  * Rule F-4 (3-part errors):
  *   Every ProviderError has non-empty what / why / fix. The constructor
@@ -52,7 +56,11 @@
 
 #include "kryoflux_provider_v2.h"
 
+#include "uft/flux/uft_kryoflux.h"
+
 #include <algorithm>
+#include <cmath>
+#include <cstdint>
 #include <cstring>
 #include <iomanip>
 #include <regex>
@@ -306,36 +314,125 @@ FluxOutcome KryoFluxProviderV2::do_read_raw_flux(const ReadFluxParams& p)
         };
     }
 
-    /* MF-203 (P1.24 / audit ARCH-2): the KryoFlux stream container is
-     * NOT yet decoded. The previous code re-interpreted these raw stream
-     * bytes as little-endian uint32_t words and stored them in
-     * FluxCaptured::transitions_ns — a field whose contract is
-     * *nanosecond transition intervals*. That is fabricated timing data
-     * ("stille Veränderung"): a downstream consumer would read KryoFlux
-     * stream opcodes as flux-ns and silently corrupt every interval.
-     *
-     * Until a real KryoFlux stream decoder lands — FLUX1/2/3 + Nop/Ovl +
-     * OOB index blocks → ns intervals at the 24 MHz sample clock, which
-     * needs the vendored stream-format spec + HIL test vectors and
-     * cannot be written speculatively — the forensically honest answer
-     * is a typed ProviderError, not a FluxCaptured carrying garbage.
-     * This matches the honest-scaffold pattern the audit confirmed for
-     * the SCP / XUM1541 / Applesauce providers. */
-    (void)revolutions;
-    return ProviderError{
-        UFT_E_GENERIC,
-        "KryoFlux raw-stream decoding not implemented",
-        "do_read_raw_flux received " + std::to_string(raw_bytes.size()) +
-            " bytes of KryoFlux stream-format data from DTC, but the "
-            "stream-container decoder (FLUX1/2/3 + Nop/Ovl + OOB index "
-            "blocks -> nanosecond transition intervals) is not yet "
-            "written. Emitting a FluxCaptured here would mislabel "
-            "undecoded opcode bytes as flux timing — a forensic-integrity "
-            "violation (audit finding ARCH-2).",
-        "Implement the KryoFlux stream decoder (REFACTOR_TASKS.md P1.24). "
-        "It needs the KryoFlux stream-format spec + HIL test vectors from "
-        "real hardware; it must not be guessed."
-    };
+    /* MF-208 (P1.24): decode the KryoFlux stream container into true
+     * flux intervals. uft_kf_decode() walks the Flux1/2/3 + Nop + Ovl16
+     * opcodes and the out-of-band Index / KFInfo blocks; it never
+     * fabricates a flux value — a truncated container is reported via
+     * the status code and we keep only what was validly decoded. */
+    uft_kf_stream_t kf;
+    if (uft_kf_init(&kf) != UFT_UFT_KF_STATUS_OK) {
+        return ProviderError{
+            UFT_E_GENERIC,
+            "KryoFlux stream decode failed: out of memory",
+            "uft_kf_init() could not allocate the flux/index buffers for "
+            "decoding the " + std::to_string(raw_bytes.size()) +
+                "-byte stream from DTC.",
+            "Retry the read; if it persists the host is out of memory."
+        };
+    }
+
+    const uft_kf_status_t st = uft_kf_decode(
+        &kf,
+        reinterpret_cast<const std::uint8_t*>(raw_bytes.data()),
+        raw_bytes.size());
+
+    /* sck= from the KFInfo block if present, else the 24.027 MHz default. */
+    const double sample_clock = (kf.sample_clock > 0.0)
+                                    ? kf.sample_clock
+                                    : UFT_UFT_KF_SAMPLE_CLOCK;
+    const double sample_ns = 1.0e9 / sample_clock;
+
+    /* Flux ticks -> nanosecond intervals. The running cumulative ns sum
+     * is also used to place the measured index pulses on the same
+     * time-base FluxCaptured::index_times_ns requires. */
+    std::vector<std::uint32_t> transitions_ns;
+    transitions_ns.reserve(kf.flux_count);
+    std::vector<std::uint64_t> cum_ns;
+    cum_ns.reserve(kf.flux_count);
+    std::uint64_t running = 0;
+    for (std::uint32_t k = 0; k < kf.flux_count; ++k) {
+        double ns_d = static_cast<double>(kf.flux_values[k]) * 1.0e9
+                      / sample_clock;
+        std::uint32_t ns = static_cast<std::uint32_t>(std::llround(ns_d));
+        transitions_ns.push_back(ns);
+        running += ns;
+        cum_ns.push_back(running);
+    }
+
+    /* Index OOB blocks -> measured revolution boundaries. Each KryoFlux
+     * index was resolved to the flux cell it falls in; the cumulative ns
+     * up to that cell is its position on the transitions_ns time-base. */
+    std::vector<std::uint32_t> index_times_ns;
+    index_times_ns.reserve(kf.index_count);
+    for (std::uint32_t n = 0; n < kf.index_count; ++n) {
+        std::uint32_t fp = kf.indexes[n].flux_position;
+        std::uint64_t t  = 0;
+        if (fp > 0 && !cum_ns.empty())
+            t = cum_ns[(fp <= cum_ns.size() ? fp : cum_ns.size()) - 1];
+        index_times_ns.push_back(static_cast<std::uint32_t>(t));
+    }
+
+    const std::uint32_t flux_count  = kf.flux_count;
+    const std::uint32_t index_count = kf.index_count;
+    uft_kf_free(&kf);
+
+    if (flux_count == 0) {
+        /* DTC produced bytes but the container held no decodable flux —
+         * a malformed or empty stream. Honest marginal, not an invented
+         * FluxCaptured. */
+        return FluxMarginal{
+            CHS{cylinder, head},
+            {},
+            "KryoFlux stream from DTC contained no decodable flux "
+            "transitions (" + std::to_string(raw_bytes.size()) +
+                " bytes, decode status " + std::to_string(st) + "). The "
+            "container may be malformed or carry only OOB blocks."
+        };
+    }
+
+    /* index_times_ns must satisfy FluxCaptured's strictly-increasing
+     * invariant. A truncated stream can leave a trailing index resolved
+     * past the decoded flux (mapped to t == last cumulative); drop any
+     * non-increasing tail rather than emit an invariant violation. */
+    while (index_times_ns.size() >= 2 &&
+           index_times_ns.back() <= index_times_ns[index_times_ns.size() - 2]) {
+        index_times_ns.pop_back();
+    }
+
+    /* revolutions: one per measured index pulse when we have them;
+     * otherwise fall back to the caller's request (boundaries unknown —
+     * FluxCaptured documents (revolutions>=1, index_times_ns empty) as
+     * the explicit "N revolutions, boundaries unknown" case). */
+    const int rev = !index_times_ns.empty()
+                        ? static_cast<int>(index_times_ns.size())
+                        : revolutions;
+
+    /* A container that decoded flux but never reached a StreamEnd/EOF
+     * block (UFT_UFT_KF_STATUS_MISSING_END) or hit a mid-stream fault is
+     * truncated: the flux we have is real, but incomplete. Surface it as
+     * FluxMarginal so a consumer treats it as a partial read. A clean
+     * decode (OK) becomes FluxCaptured. */
+    if (st != UFT_UFT_KF_STATUS_OK) {
+        return FluxMarginal{
+            CHS{cylinder, head},
+            std::move(transitions_ns),
+            "KryoFlux stream decoded " + std::to_string(flux_count) +
+                " flux transitions but ended abnormally (status " +
+                std::to_string(st) + ", e.g. truncated container or no "
+                "StreamEnd block). The decoded flux is real but the "
+                "capture is incomplete."
+        };
+    }
+
+    FluxCaptured captured;
+    captured.position       = CHS{cylinder, head};
+    captured.transitions_ns = std::move(transitions_ns);
+    captured.revolutions    = rev;
+    captured.sample_ns      = sample_ns;
+    captured.quality        = QualityFlag::None;
+    captured.index_times_ns = std::move(index_times_ns);
+    (void)index_count;
+    return captured;
 }
 
 /* ────────────────────────────────────────────────────────────────────────

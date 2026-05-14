@@ -213,17 +213,34 @@ static void smoke_detect_drive_happy_path() {
     mock.assert_consumed();
 }
 
-static void smoke_read_raw_flux_decoder_not_implemented() {
+static void smoke_read_raw_flux_decodes_stream() {
     SubprocessMock mock;
 
-    /* Queue a DTC read success reply carrying raw KryoFlux stream bytes.
-     * MF-203 (P1.24 / audit ARCH-2): the provider must NOT fabricate a
-     * FluxCaptured by re-interpreting these opcode bytes as little-endian
-     * uint32_t "ns intervals" — that was a forensic-integrity violation.
-     * Until a real KryoFlux stream decoder lands, do_read_raw_flux runs
-     * DTC, sees the bytes, and returns an honest, F-4-compliant
-     * ProviderError instead. */
-    const std::string raw_stream = "\x01\x02\x03\x04\x05\x06\x07\x08";
+    /* Queue a DTC read success carrying a synthetic but protocol-valid
+     * KryoFlux stream container:
+     *   Flux1 0x40,0x50,0x60          -> flux ticks 64, 80, 96
+     *   OOB Index (size 12)           -> stream_pos 2, sample_counter 144
+     *   Flux1 0x70                    -> flux tick 112
+     *   OOB StreamEnd (size 8, OK)    -> clean decode
+     * MF-208 (P1.24): do_read_raw_flux now DECODES this via
+     * uft_kf_decode() into true ns intervals + a measured index pulse,
+     * instead of the MF-203 honest ProviderError. The decoder's exact
+     * tick-level correctness is covered by tests/test_kryoflux_stream.c;
+     * here we assert the provider produces a structurally sound
+     * FluxCaptured. */
+    static const unsigned char stream_bytes[] = {
+        0x40, 0x50, 0x60,                               /* 3x Flux1     */
+        0x0D, 0x02, 0x0C, 0x00,                         /* OOB Index/12 */
+            0x02, 0x00, 0x00, 0x00,                     /*  stream_pos  */
+            0x90, 0x00, 0x00, 0x00,                     /*  sample_cnt  */
+            0x00, 0x00, 0x00, 0x00,                     /*  index_cnt   */
+        0x70,                                           /* Flux1        */
+        0x0D, 0x03, 0x08, 0x00,                         /* OOB End/8    */
+            0x00, 0x00, 0x00, 0x00,                     /*  stream_pos  */
+            0x00, 0x00, 0x00, 0x00                      /*  result OK   */
+    };
+    const std::string raw_stream(
+        reinterpret_cast<const char*>(stream_bytes), sizeof(stream_bytes));
 
     mock.queue_run(SubprocessMock::ScriptedRun{
         { "dtc", "-c2", "-i0" },     /* require_argv_subseq: look for -c2 and -i0 */
@@ -235,27 +252,44 @@ static void smoke_read_raw_flux_decoder_not_implemented() {
     KryoFluxProviderV2 p(make_runner(mock), "dtc");
     auto outcome = p.read_raw_flux(ReadFluxParams{0, 0, 2, 0});
 
-    bool got_error = false;
+    bool got_captured = false;
     std::visit(overloaded{
-        [&](const FluxCaptured&) {
-            assert(false && "MF-203: an undecoded KryoFlux stream must NOT "
-                            "be mislabelled as a FluxCaptured (audit ARCH-2)");
+        [&](const FluxCaptured& fc) {
+            got_captured = true;
+            /* 4 Flux1 opcodes -> 4 decoded transition intervals. */
+            assert(fc.transitions_ns.size() == 4 &&
+                   "decoded stream must yield 4 flux transitions");
+            for (auto ns : fc.transitions_ns)
+                assert(ns > 0 && "no decoded interval may be zero ns");
+            /* Larger flux tick -> larger ns interval (64<80<96<112). */
+            assert(fc.transitions_ns[0] < fc.transitions_ns[1] &&
+                   fc.transitions_ns[1] < fc.transitions_ns[2] &&
+                   fc.transitions_ns[2] < fc.transitions_ns[3] &&
+                   "ns intervals must track the flux-tick ordering");
+            /* One OOB Index block -> one measured revolution boundary. */
+            assert(fc.index_times_ns.size() == 1 &&
+                   "one Index OOB must yield one index_times_ns entry");
+            assert(fc.revolutions == 1 &&
+                   "revolutions must equal the measured index count");
+            /* KryoFlux default sample clock ~24.027 MHz -> ~41.6 ns. */
+            assert(fc.sample_ns > 41.0 && fc.sample_ns < 42.5 &&
+                   "sample_ns must be the KryoFlux ~41.6 ns resolution");
         },
-        [&](const FluxMarginal&)             {},
+        [&](const FluxMarginal&) {
+            assert(false && "a clean stream with a StreamEnd block must "
+                            "decode to FluxCaptured, not FluxMarginal");
+        },
         [&](const FluxUnreadable&)           {},
         [&](const CapabilityRequiresPolicy&) {},
         [&](const HardwareDisconnected&)     {},
-        [&](const ProviderError& e) {
-            got_error = true;
-            /* F-4: every ProviderError carries non-empty what/why/fix. */
-            assert(!e.what.empty() && !e.why.empty() && !e.fix.empty()
-                   && "ProviderError must be F-4 compliant (what/why/fix)");
+        [&](const ProviderError&) {
+            assert(false && "MF-208: a protocol-valid KryoFlux stream must "
+                            "decode, not return a ProviderError");
         },
     }, outcome);
 
-    assert(got_error && "read_raw_flux on an undecoded KryoFlux stream must "
-                        "return an honest ProviderError, not a fabricated "
-                        "FluxCaptured");
+    assert(got_captured && "read_raw_flux on a valid KryoFlux stream must "
+                           "return a decoded FluxCaptured");
     mock.assert_consumed();
 }
 
@@ -484,7 +518,7 @@ int main() {
     smoke_identity();
     smoke_null_runner_returns_provider_error();
     smoke_detect_drive_happy_path();
-    smoke_read_raw_flux_decoder_not_implemented();
+    smoke_read_raw_flux_decodes_stream();
     smoke_detect_drive_dtc_failure();
     smoke_read_raw_flux_dtc_failure();
     smoke_dtc_empty_stream();
