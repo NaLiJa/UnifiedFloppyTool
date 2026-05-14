@@ -468,6 +468,16 @@ foreach(test_source ${TEST_SOURCES})
         else()
             set(TEST_LIBS "")
         endif()
+    elseif(${test_name} STREQUAL "test_destructive_op_consent")
+        # MF-216 / P3.3 #110: lossy/destructive-op consent gate
+        # improvement test. uft_preflight.c drives uft_roundtrip.c (the
+        # round-trip matrix) and uft_loss_report.c (the sidecar writer);
+        # all three are self-contained C TUs.
+        target_sources(${test_name} PRIVATE
+            ${CMAKE_SOURCE_DIR}/src/core/uft_preflight.c
+            ${CMAKE_SOURCE_DIR}/src/core/uft_roundtrip.c
+            ${CMAKE_SOURCE_DIR}/src/core/uft_loss_report.c)
+        set(TEST_LIBS "")
     endif()
     
     if(TEST_LIBS)
