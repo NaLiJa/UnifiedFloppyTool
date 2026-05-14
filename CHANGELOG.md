@@ -109,6 +109,65 @@ but invisible to the working Greaseweazle workflow.
   validation against `KNOWN_CAPABILITIES`.
 - Rule D-2 (SpecStatus per provider) — type-mandated.
 
+### External-Compat Audit + Tester Strategy (MF-181 … MF-231)
+
+The RC was re-cut to include the full post-P1 work: the external-
+compatibility audit, the Tester-Strategy test infrastructure (P3), and
+the **real decoder bugs that infrastructure uncovered**.
+
+**Greaseweazle-compatibility audit (P2.x):**
+- Per-provider audit of all nine controllers against the real
+  Greaseweazle 1.23 host tools — protocol constants, USB IDs, command
+  bytes, timing — synthesised into `audit/MASTER_REPORT.md`.
+- Class-A safe fixes applied; ARCH-7 VID/PID inconsistencies verified
+  against real device descriptors and corrected (SCP `0x16D0:0x0F8C`,
+  the GUI port-hint was right; the header was wrong).
+- Native audit-vector tests (`audit/*/test_*_vectors.c`) make the
+  protocol-constant contract a compile-time build gate.
+
+**Differential conformance — P3.2 (MF-217 … MF-225):**
+- `tests/differential/` decodes a shared synthetic flux corpus with
+  BOTH the UFT flux engine and `gw convert` and asserts the decoded
+  sector images are byte-identical. **6/6 disk classes pass** —
+  IBM-DD/HD, Atari ST, Commodore 1541 GCR, Apple II GCR, AmigaDOS MFM.
+- The corpus pattern is a per-index avalanche hash, so every block is
+  distinct — the differential tests sector *placement*, not just count.
+
+**Decoder bugs the differential harness uncovered (correctness fixes):**
+- **MF-218** — the IBM-MFM decoder skipped only one of the three `0xA1`
+  sync words System-34 writes before each address mark, landing inside
+  the sync run instead of on the IDAM. It decoded **zero sectors** from
+  any standard IBM flux. Fixed with `mfm_skip_sync_run()`.
+- **MF-224** — the Apple II 6-and-2 GCR decoder did not undo Apple's
+  bit-reversed 2-bit auxiliary groups; every data byte's low two bits
+  came out swapped.
+- **MF-225** — UFT had **no** Amiga MFM flux decoder: `FLUX_ENC_AMIGA`
+  silently routed to the IBM-MFM decoder, which cannot parse Amiga's
+  whole-track layout. A real `flux_decode_amiga()` was written.
+- **MF-227** — `uft_longtrack_type_name()` / `uft_longtrack_get_def()`
+  were declared but never defined, and the internal helpers indexed the
+  scheme table by enum value where the table is 0-packed — every
+  longtrack scheme was named as its neighbour.
+
+**Improvement test suite — P3.3 (MF-214 … MF-228):**
+- `tests/improvement/` proves behaviours `gw` expectedly cannot match:
+  forensic provenance + marginal-data preservation + destructive-op
+  consent, GUI capability-gating, multi-device provider-switch,
+  concurrent multi-device sessions, copy-protection scheme detection
+  (longtrack + Dungeon Master fuzzy bits), and format-extension decode
+  (Amiga HDF/RDB).
+
+**HIL infrastructure — P3.4 (MF-185, MF-230):**
+- `tests/hil/` Hardware-in-the-Loop runner with a **two-tier**
+  Golden-Reference catalog: a CI-runnable software tier (the P3.2
+  differential corpus) and a hardware tier (one template per
+  controller, for Axel's rig). `releases/v4.1.4-rc1/hil_report.md`
+  carries both tiers.
+
+**CI fixes:** MF-222 (SCP audit-vector pins aligned to the verified
+VID/PID), MF-231 (removed a duplicate `uft_longtrack_type_name` stub
+that broke the qmake link once MF-227 added the real definition).
+
 ### Hot-Fixes Included (predate the refactor — MF-129, MF-141, MF-145, MF-146)
 
 These fixes were tracked as the "planned 4.1.4 hot-fix" before the
