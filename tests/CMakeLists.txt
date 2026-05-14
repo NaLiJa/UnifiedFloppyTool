@@ -41,7 +41,8 @@ set(_HEADER_ONLY_CPP_TESTS
     "${CMAKE_CURRENT_SOURCE_DIR}/test_applesauce_provider_v2.cpp"   # MF-166 P1.13
     "${CMAKE_CURRENT_SOURCE_DIR}/test_adfcopy_provider_v2.cpp"     # MF-167 P1.14
     "${CMAKE_CURRENT_SOURCE_DIR}/test_usbfloppy_provider_v2.cpp"   # MF-168 P1.15
-    "${CMAKE_CURRENT_SOURCE_DIR}/test_teensy_probe.cpp")          # MF-213 ARCH-7-C
+    "${CMAKE_CURRENT_SOURCE_DIR}/test_teensy_probe.cpp"           # MF-213 ARCH-7-C
+    "${CMAKE_CURRENT_SOURCE_DIR}/test_concurrency.cpp")           # MF-226 P3.3 #110a
 
 set(TEST_SOURCES ${TEST_SOURCES_C} ${_HEADER_ONLY_CPP_TESTS})
 
@@ -422,6 +423,17 @@ foreach(test_source ${TEST_SOURCES})
         # MF-160 P1.7: per-variant exhaustive coverage for MockProviderV2.
         # Self-contained — only needs the mock TU + tests/ on the
         # include path so #include "mock_provider_v2.h" resolves.
+        target_sources(${test_name} PRIVATE
+            ${CMAKE_SOURCE_DIR}/tests/mock_provider_v2.cpp)
+        target_include_directories(${test_name} PRIVATE
+            ${CMAKE_SOURCE_DIR}/tests)
+        set(TEST_LIBS "")
+    elseif(${test_name} STREQUAL "test_concurrency")
+        # MF-226 / P3.3 #110a: improvement test — concurrent multi-device
+        # sessions. Drives several MockProviderV2 instances at once + one
+        # through a long session, proving the type-driven HAL's
+        # no-shared-state guarantee. Same self-contained shape as
+        # test_mock_provider_v2: just the mock TU + tests/ include path.
         target_sources(${test_name} PRIVATE
             ${CMAKE_SOURCE_DIR}/tests/mock_provider_v2.cpp)
         target_include_directories(${test_name} PRIVATE
