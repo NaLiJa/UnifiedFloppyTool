@@ -478,6 +478,18 @@ foreach(test_source ${TEST_SOURCES})
             ${CMAKE_SOURCE_DIR}/src/core/uft_roundtrip.c
             ${CMAKE_SOURCE_DIR}/src/core/uft_loss_report.c)
         set(TEST_LIBS "")
+    elseif(${test_name} STREQUAL "test_flux_mfm_sync")
+        # MF-218 / #109 sub-task: regression test for the IBM-MFM
+        # A1-sync-run decode bug. Synthesises its own MFM track, so the
+        # flux decoder TU is the only production source needed (libm
+        # for the PLL math).
+        target_sources(${test_name} PRIVATE
+            ${CMAKE_SOURCE_DIR}/src/flux/uft_flux_decoder.c)
+        if(UNIX)
+            set(TEST_LIBS ${M_LIBRARY})
+        else()
+            set(TEST_LIBS "")
+        endif()
     endif()
     
     if(TEST_LIBS)

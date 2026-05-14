@@ -268,13 +268,40 @@ int flux_find_sync(const uint8_t *bits, size_t bit_count,
  * MFM Track Decoder
  * ============================================================================ */
 
+/* MF-218: skip a run of consecutive MFM sync words (0x4489).
+ *
+ * flux_find_sync() returns the bit position of the FIRST 0x4489 of a
+ * sync group. IBM System-34 MFM precedes every address mark with
+ * THREE 0xA1 sync bytes (each the 0x4489 missing-clock word), so a
+ * decoder that skips only one (the old `pos += 16`) lands on the
+ * second 0xA1 instead of the address mark and bails with NO_SYNC.
+ * This advances past every consecutive 0x4489 word and returns the
+ * position of the first non-sync word — the address mark. It also
+ * handles a 1- or 2-A1 prefix gracefully (Amiga / non-IBM), so it is
+ * the right primitive regardless of sync count. */
+static size_t mfm_skip_sync_run(const uint8_t *bits, size_t bit_count,
+                                size_t first_sync_pos) {
+    size_t pos = first_sync_pos;
+    while (pos + 16 <= bit_count) {
+        uint16_t w = 0;
+        for (int b = 0; b < 16; b++) {
+            w = (uint16_t)((w << 1) |
+                ((bits[(pos + b) / 8] >> (7 - ((pos + b) % 8))) & 1));
+        }
+        if (w != MFM_SYNC_PATTERN) break;
+        pos += 16;
+    }
+    return pos;
+}
+
 static flux_status_t decode_mfm_sector(const uint8_t *bits, size_t bit_count,
-                                       size_t start_pos, flux_decoded_sector_t *sector) {
-    size_t pos = start_pos;
-    
-    /* Skip past sync bytes to address mark */
-    pos += 16;  /* Skip the sync pattern we found */
-    
+                                       size_t start_pos,
+                                       flux_decoded_sector_t *sector,
+                                       size_t *end_pos) {
+    /* MF-218: skip the WHOLE sync run (A1 A1 A1), not just one word, so
+     * `pos` lands on the address mark. */
+    size_t pos = mfm_skip_sync_run(bits, bit_count, start_pos);
+
     if (pos + 8 * 16 >= bit_count) return FLUX_ERR_UNDERFLOW;
     
     /* Read address mark and ID field: IDAM + C + H + S + N + CRC1 + CRC2 */
@@ -316,8 +343,10 @@ static flux_status_t decode_mfm_sector(const uint8_t *bits, size_t bit_count,
     if (data_sync < 0 || (size_t)data_sync > pos + 43 * 16) {
         return FLUX_ERR_NO_DATA;
     }
-    
-    pos = data_sync + 16;
+
+    /* MF-218: skip the data field's full A1 A1 A1 sync run, same as the
+     * ID field — `pos = data_sync + 16` skipped only one. */
+    pos = mfm_skip_sync_run(bits, bit_count, (size_t)data_sync);
     sector->data_position = (uint32_t)data_sync;
     
     /* Read data address mark */
@@ -367,7 +396,12 @@ static flux_status_t decode_mfm_sector(const uint8_t *bits, size_t bit_count,
         sector->data_crc_ok = (calc_crc == sector->data_crc);
         free(crc_data);
     }
-    
+
+    /* MF-218: report where this sector's data field ended so the
+     * caller can resume the scan PAST it. Without this the caller
+     * resumes at sync_pos+16 — inside this sector's own A1 run — and
+     * re-decodes the same sector several times (duplicates). */
+    if (end_pos) *end_pos = pos;
     return FLUX_OK;
 }
 
@@ -422,17 +456,25 @@ flux_status_t flux_decode_mfm(const flux_raw_data_t *flux,
         flux_decoded_sector_t *sector = &track->sectors[track->sector_count];
         memset(sector, 0, sizeof(*sector));
         
-        status = decode_mfm_sector(bits, bit_count, sync_pos, sector);
+        size_t sector_end = 0;
+        status = decode_mfm_sector(bits, bit_count, sync_pos, sector,
+                                   &sector_end);
         if (status == FLUX_OK) {
             track->sector_count++;
             track->good_sectors++;
             if (!sector->id_crc_ok) track->bad_id_crc++;
             if (!sector->data_crc_ok) track->bad_data_crc++;
-        } else if (status == FLUX_ERR_NO_DATA) {
-            track->missing_data++;
+            /* MF-218: resume PAST the decoded sector's data field, not
+             * at sync_pos+16 (which is still inside this sector's A1
+             * run — that re-decoded the same sector 3+ times). */
+            pos = (sector_end > (size_t)sync_pos + 16)
+                      ? sector_end : (size_t)sync_pos + 16;
+        } else {
+            if (status == FLUX_ERR_NO_DATA) track->missing_data++;
+            /* Decode failed at this sync — step past this one A1 word
+             * and let flux_find_sync pick up the next candidate. */
+            pos = (size_t)sync_pos + 16;
         }
-        
-        pos = sync_pos + 16;
     }
     
     /* Keep raw bits if requested */
