@@ -35,7 +35,9 @@ const c64_known_title_t g_known_titles[] = {
     {"Karateka", C64_PUB_BRODERBUND, C64_PROT_CUSTOM_ERRORS, "Broderbund"},
     
     /* Datasoft */
-    {"Bruce Lee", C64_PUB_DATASOFT, C64_PROT_CUSTOM_ERRORS | C64_PROT_EXTRA_TRACKS, "Datasoft"},
+    /* Bruce Lee moved to the v4.1.6 Datasoft Long-Track section (line 1177)
+     * with PROT_DATASOFT|GCR_LONG_TRACK. Stale early entry shadowed it via
+     * the substring-match lookup and broke test_datasoft_detection. */
     {"Conan", C64_PUB_DATASOFT, C64_PROT_CUSTOM_ERRORS, "Datasoft"},
     {"Goonies", C64_PUB_DATASOFT, C64_PROT_CUSTOM_ERRORS, "Datasoft"},
     
@@ -110,7 +112,8 @@ const c64_known_title_t g_known_titles[] = {
     {"Questron", C64_PUB_SSI, C64_PROT_CUSTOM_ERRORS, "SSI"},
     {"Phantasie", C64_PUB_SSI, C64_PROT_CUSTOM_ERRORS, "SSI"},
     {"Wizard's Crown", C64_PUB_SSI, C64_PROT_CUSTOM_ERRORS, "SSI"},
-    {"Pool of Radiance", C64_PUB_SSI, C64_PROT_CUSTOM_ERRORS | C64_PROT_EXTRA_TRACKS, "SSI"},
+    /* Pool of Radiance moved to the v4.1.6 SSI RapidDOS section (line 1142)
+     * with PROT_SSI_RDOS|EXTRA_TRACKS. Stale early entry shadowed it. */
     
     /* SubLOGIC */
     {"Flight Simulator II", C64_PUB_SUBLOGIC, C64_PROT_CUSTOM_ERRORS | C64_PROT_GCR_TIMING, "SubLOGIC"},
@@ -212,7 +215,9 @@ const c64_known_title_t g_known_titles[] = {
     {"Master of the Lamps", C64_PUB_ACTIVISION, C64_PROT_CUSTOM_ERRORS, "Activision"},
     {"Mind Prober", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Human Edge"},
     {"Moonsweeper", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Imagic"},
-    {"Mr. Do", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Data East"},
+    /* Mr. Do (and Mr. Do!) moved to the v4.1.6 Datasoft Long-Track section
+     * (line 1181). Stale "Mr. Do" entry (without "!") shadowed the canonical
+     * one via substring match. */
     {"Murder on Zinderneuf", C64_PUB_ELECTRONIC_ARTS, C64_PROT_CUSTOM_ERRORS, "EA Interlock"},
     {"Music Shop", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS | C64_PROT_EXTRA_TRACKS, "Broderbund"},
     {"Music Studio", C64_PUB_ACTIVISION, C64_PROT_CUSTOM_ERRORS, "Activision"},
@@ -296,8 +301,8 @@ const c64_known_title_t g_known_titles[] = {
     {"Bank Street Speller", C64_PUB_BRODERBUND, C64_PROT_CUSTOM_ERRORS, "Broderbund"},
     {"Bank Street Storybook", C64_PUB_BRODERBUND, C64_PROT_CUSTOM_ERRORS, "Broderbund"},
     {"Bannercatch", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Penguin"},
-    {"Bard's Tale II", C64_PUB_ELECTRONIC_ARTS, C64_PROT_CUSTOM_ERRORS, "EA Interlock"},
-    {"Bard's Tale III", C64_PUB_ELECTRONIC_ARTS, C64_PROT_CUSTOM_ERRORS, "EA Interlock"},
+    /* Bard's Tale II/III moved to the v4.1.6 EA Interlock section
+     * (lines 1207-1208) with PROT_EA_INTERLOCK. Stale early entries shadowed them. */
     {"Barroom Brawl", C64_PUB_EPYX, C64_PROT_VORPAL, "Vorpal"},
     {"Bases Loaded", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Jaleco"},
     {"Battle Chess", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Interplay"},
@@ -356,7 +361,8 @@ const c64_known_title_t g_known_titles[] = {
     {"Defender 64", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Atarisoft"},
     {"Demon Attack", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Imagic"},
     {"Destination: Pluto", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Custom"},
-    {"Dig Dug", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Atarisoft"},
+    /* Dig Dug moved to the v4.1.6 Datasoft Long-Track section (line 1180+)
+     * with PROT_DATASOFT|GCR_LONG_TRACK. Stale early entry shadowed it. */
     {"Dino Eggs", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Micro Fun"},
     {"Doctor Who", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "BBC"},
     {"Donkey Kong", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Atarisoft"},
@@ -414,8 +420,11 @@ const c64_known_title_t g_known_titles[] = {
     {"Galaga", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Atarisoft"},
     {"Galaxy Force", C64_PUB_SEGA, C64_PROT_V_MAX, "V-Max!"},
     {"Game of War", C64_PUB_SSI, C64_PROT_CUSTOM_ERRORS, "SSI"},
-    {"Gauntlet", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "US Gold"},
-    {"Gauntlet II", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "US Gold"},
+    /* Gauntlet + Gauntlet II moved to the C64_PUB_US_GOLD Speedlock
+     * section further down — these were duplicate stale entries
+     * (PUB_OTHER but label "US Gold" contradicting each other; the
+     * test_c64_protection harness expects the US_GOLD/Speedlock
+     * canonical entry to be returned). */
     {"Gemini Wing", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Virgin"},
     {"Generals at War", C64_PUB_SSI, C64_PROT_CUSTOM_ERRORS, "SSI"},
     {"Gettysburg", C64_PUB_SSI, C64_PROT_CUSTOM_ERRORS, "SSI"},
@@ -428,7 +437,9 @@ const c64_known_title_t g_known_titles[] = {
     {"Golden Axe", C64_PUB_SEGA, C64_PROT_V_MAX, "V-Max!"},
     {"Grand Prix Circuit", C64_PUB_ACCOLADE, C64_PROT_CUSTOM_ERRORS, "Accolade V2"},
     {"Great Escape", C64_PUB_OCEAN, C64_PROT_SPEEDLOCK, "Speedlock"},
-    {"Green Beret", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Konami"},
+    /* Green Beret moved to the C64_PUB_OCEAN Novaload section (line 1110);
+     * the stale Konami entry was a duplicate that masked the Ocean entry
+     * via the substring-match lookup, breaking test_c64_protection. */
     {"Gridiron", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Bethesda"},
     {"Guerilla War", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Data East"},
     {"Guild of Thieves", C64_PUB_OTHER, C64_PROT_CUSTOM_ERRORS, "Magnetic Scrolls"},

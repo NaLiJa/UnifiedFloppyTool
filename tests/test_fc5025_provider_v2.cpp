@@ -222,9 +222,15 @@ static void smoke_detect_drive_happy_path() {
         [&](const DriveDetected& d) {
             got_detected = true;
             assert(!d.drive_kind.empty() && "drive_kind must be non-empty");
-            assert(d.tracks > 0          && "tracks must be > 0");
-            assert(d.heads >= 1          && "heads must be >= 1");
-            assert(d.rpm_nominal > 0.0   && "rpm_nominal must be > 0");
+            /* FC5025 honest behavior (per fc5025_provider_v2.cpp:357-363):
+             * the Fc5025DetectResult struct has NO tracks/heads/rpm
+             * fields, so detect_drive() emits 0 / 0 / 0.0 for these
+             * — geometry comes later via per-format detection, not
+             * from the info command. Forensic integrity: don't
+             * fabricate values the device didn't provide. */
+            assert(d.tracks >= 0         && "tracks may be 0 (FC5025 info doesn't carry geometry)");
+            assert(d.heads >= 0          && "heads may be 0 (FC5025 info doesn't carry geometry)");
+            assert(d.rpm_nominal >= 0.0  && "rpm_nominal may be 0 (FC5025 info doesn't carry rpm)");
         },
         [](const DriveAbsent&)             {},
         [](const CapabilityRequiresPolicy&) {},
@@ -543,9 +549,15 @@ static void smoke_subprocess_mock_adapter_detect() {
         [&](const DriveDetected& d) {
             got_detected = true;
             assert(!d.drive_kind.empty() && "drive_kind must be non-empty");
-            assert(d.tracks > 0          && "tracks must be > 0");
-            assert(d.heads >= 1          && "heads must be >= 1");
-            assert(d.rpm_nominal > 0.0   && "rpm_nominal must be > 0");
+            /* FC5025 honest behavior (per fc5025_provider_v2.cpp:357-363):
+             * the Fc5025DetectResult struct has NO tracks/heads/rpm
+             * fields, so detect_drive() emits 0 / 0 / 0.0 for these
+             * — geometry comes later via per-format detection, not
+             * from the info command. Forensic integrity: don't
+             * fabricate values the device didn't provide. */
+            assert(d.tracks >= 0         && "tracks may be 0 (FC5025 info doesn't carry geometry)");
+            assert(d.heads >= 0          && "heads may be 0 (FC5025 info doesn't carry geometry)");
+            assert(d.rpm_nominal >= 0.0  && "rpm_nominal may be 0 (FC5025 info doesn't carry rpm)");
         },
         [](const DriveAbsent&)             {},
         [](const CapabilityRequiresPolicy&) {},
