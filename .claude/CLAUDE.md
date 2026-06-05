@@ -166,14 +166,15 @@ ehrliche TODOs auf der Issue-Liste.
 
 ---
 
-## Agenten-Übersicht (21 Agenten)
+## Agenten-Übersicht (22 Agenten)
 
 29 Agenten wurden auf eine schlanke Kern-Suite (13) reduziert; mit dem
 Type-Driven-HAL-Refactor sind 8 spezialisierte Refactor-Agenten dazu-
 gekommen (Test-Autoren, DTO/Provider-Migratoren, Type-Architekt,
-Wiring-Codegen, PoC-Builder). Insgesamt aktuell 21. Die früher entfernten
-Agenten waren in 3 Monaten nicht aufgerufen oder von den neueren
-Must-Fix-Prävention-Agenten abgedeckt — bei Bedarf aus git zurückholen.
+Wiring-Codegen, PoC-Builder); plus 1 Hardware-Emulator-Autor (v4.1.5+,
+post-refactor scope). Insgesamt aktuell 22. Die früher entfernten Agenten
+waren in 3 Monaten nicht aufgerufen oder von den neueren Must-Fix-
+Prävention-Agenten abgedeckt — bei Bedarf aus git zurückholen.
 
 Stand der Modelle: `claude-opus-4-7` / `claude-sonnet-4-6` / `claude-haiku-4-5`
 (aktuelle Flaggschiffe + Haiku für mechanische Substitutionen).
@@ -209,6 +210,12 @@ Stand der Modelle: `claude-opus-4-7` / `claude-sonnet-4-6` / `claude-haiku-4-5`
 | `improvement-test-author` | Sonnet 4.6 | UFT-only-Capability-Tests vs. gw (P3.3) — `tests/improvement/<category>/` |
 | `dto-migrator` | Haiku 4.5 | `OperationResult`/`TrackData` → `std::variant *Outcome` (mechanische Substitution) |
 
+### Hardware-Testing-Suite (1, post-v4.1.5)
+
+| Agent | Modell | Zweck |
+|---|---|---|
+| `hardware-emulation-author` | Opus 4.7 | Firmware-realistische Emulatoren pro Controller (Wire + State-Machine + Flux-Generator + Edge-Cases) — reduziert Bench-Session-Bedarf, ersetzt sie NICHT. Output unter `tests/emulators/<controller>/` + `tests/flux_gen/<controller>/`. Forensisch ehrlich via `DIVERGENCES.md` + `coverage_matrix.md`. Ein Controller pro Invocation. |
+
 ---
 
 ## Kosten-Regel (wichtig)
@@ -233,7 +240,7 @@ Siehe `.claude/CONSULT_PROTOCOL.md` für Details. Kurzfassung:
    REASON / SEVERITY`. Haupt-Session oder `orchestrator` parst und routet.
    Funktioniert ohne Änderung an den Agent-Tools, vollständig beobachtbar.
 
-2. **Direkter Agent-Spawn (sparsam):** Nur 4 von 21 Agenten haben
+2. **Direkter Agent-Spawn (sparsam):** Nur 4 von 22 Agenten haben
    `Agent`-Tool in der Frontmatter:
    - `orchestrator` — Master-Router, darf beliebig spawnen
    - `deep-diagnostician` — gezielte Teilfragen

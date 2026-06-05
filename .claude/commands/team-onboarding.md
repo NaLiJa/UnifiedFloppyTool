@@ -131,13 +131,14 @@ Vor der ersten Code-Änderung beantwortest du dir selbst:
 Liste auf was dir zur Verfügung steht. Format:
 
 ```
-AGENTS (21 in .claude/agents/):
+AGENTS (22 in .claude/agents/):
   Must-Fix-Prävention:    consistency-auditor, must-fix-hunter, single-source-enforcer, stub-eliminator
   Coordination:           orchestrator, deep-diagnostician, preflight-check, quick-fix
   Architecture:           type-system-architect, abi-bomb-detector, structured-reviewer
   Forensics:              forensic-integrity
   Refactor-spezifisch:    dto-migrator, provider-migrator, wiring-codegen-author
   Test:                   conformance-test-writer, differential-test-author, improvement-test-author
+  Hardware-Testing:       hardware-emulation-author
   Build/Perf:             proof-of-concept-builder, algorithm-hotpath-optimizer, github-expert
 
 SKILLS (21 = 20 UFT + 1 HTB in .claude/skills/):
