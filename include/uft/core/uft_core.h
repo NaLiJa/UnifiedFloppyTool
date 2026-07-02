@@ -22,7 +22,6 @@
 /* Core unified types */
 #include "uft/uft_error.h" /* P2-ARCH-006: Unified error codes */
 #include "uft_encoding.h"       /* P2-ARCH-003: Unified encoding */
-#include "uft_crc_unified.h"    /* P2-ARCH-002: Unified CRC */
 #include "uft_sector.h"         /* P2-ARCH-004: Unified sector */
 #include "uft_track_base.h"     /* P2-ARCH-001: Unified track */
 /* Note: uft_track_compat.h is optional - include separately if needed */

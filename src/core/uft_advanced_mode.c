@@ -8,7 +8,6 @@
 #include "uft/uft_advanced_mode.h"
 #include "uft/uft_v3_bridge.h"
 #include "uft/uft_god_mode.h"
-#include "uft/uft_format_probes.h"
 #include "uft/uft_protection.h"
 #include "uft/uft_log.h"
 #include <stdlib.h>

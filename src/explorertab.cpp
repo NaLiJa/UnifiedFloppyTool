@@ -13,7 +13,6 @@
 #include <uft/uft_adf.h>
 #include <uft/formats/uft_fat12.h>
 #include <uft/uft_format_validate.h>
-#include <uft/uft_vfs.h>
 
 #include <QFileDialog>
 #include <QMessageBox>

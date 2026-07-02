@@ -4,8 +4,8 @@
 # docs/STUB_ELIMINATION_PLAN.md.
 generated: 2026-07-02
 census:
-  unimplemented_decls: 1930
-  zero_caller_decls: 1718
+  unimplemented_decls: 1850
+  zero_caller_decls: 1638
   with_caller_decls: 212
   note: >-
     A caller-count > 0 for an UNIMPLEMENTED function means the
@@ -87,11 +87,6 @@ c2_headers:
     zero_caller: 25
     with_caller: 1
     proposal: SPLIT (delete unreferenced decls, keep referenced)
-  - header: include/uft/uft_vfs.h
-    missing: 26
-    zero_caller: 26
-    with_caller: 0
-    proposal: DELETE-candidate (all decls unreferenced)
   - header: include/uft/uft_formats_extended.h
     missing: 25
     zero_caller: 25
@@ -100,11 +95,6 @@ c2_headers:
   - header: include/uft/fs/uft_amigados.h
     missing: 25
     zero_caller: 25
-    with_caller: 0
-    proposal: DELETE-candidate (all decls unreferenced)
-  - header: include/uft/formats/uft_pce.h
-    missing: 24
-    zero_caller: 24
     with_caller: 0
     proposal: DELETE-candidate (all decls unreferenced)
   - header: include/uft/params/uft_canonical_params.h
@@ -277,11 +267,6 @@ c2_headers:
     zero_caller: 6
     with_caller: 9
     proposal: SPLIT (delete unreferenced decls, keep referenced)
-  - header: include/uft/core/uft_crc_unified.h
-    missing: 15
-    zero_caller: 15
-    with_caller: 0
-    proposal: DELETE-candidate (all decls unreferenced)
   - header: include/uft/core/uft_disk.h
     missing: 15
     zero_caller: 15
@@ -397,11 +382,6 @@ c2_headers:
     zero_caller: 7
     with_caller: 5
     proposal: SPLIT (delete unreferenced decls, keep referenced)
-  - header: include/uft/hardware/uft_write_precomp.h
-    missing: 12
-    zero_caller: 12
-    with_caller: 0
-    proposal: DELETE-candidate (all decls unreferenced)
   - header: include/uft/protection/uft_protection.h
     missing: 12
     zero_caller: 12
@@ -457,6 +437,11 @@ c2_headers:
     zero_caller: 9
     with_caller: 0
     proposal: DELETE-candidate (all decls unreferenced)
+  - header: include/uft/uft_crc.h
+    missing: 8
+    zero_caller: 8
+    with_caller: 0
+    proposal: DELETE-candidate (all decls unreferenced)
   - header: include/uft/uft_operations.h
     missing: 8
     zero_caller: 8
@@ -465,6 +450,11 @@ c2_headers:
   - header: include/uft/formats/uft_scp.h
     missing: 8
     zero_caller: 8
+    with_caller: 0
+    proposal: DELETE-candidate (all decls unreferenced)
+  - header: include/uft/uft_format_validate.h
+    missing: 7
+    zero_caller: 7
     with_caller: 0
     proposal: DELETE-candidate (all decls unreferenced)
   - header: include/uft/uft_merge_engine.h
@@ -497,21 +487,11 @@ c2_headers:
     zero_caller: 7
     with_caller: 0
     proposal: DELETE-candidate (all decls unreferenced)
-  - header: include/uft/uft_crc.h
-    missing: 6
-    zero_caller: 6
-    with_caller: 0
-    proposal: DELETE-candidate (all decls unreferenced)
   - header: include/uft/uft_format_autodetect.h
     missing: 6
     zero_caller: 4
     with_caller: 2
     proposal: SPLIT (delete unreferenced decls, keep referenced)
-  - header: include/uft/uft_format_validate.h
-    missing: 6
-    zero_caller: 6
-    with_caller: 0
-    proposal: DELETE-candidate (all decls unreferenced)
   - header: include/uft/uft_hfe.h
     missing: 6
     zero_caller: 6
@@ -672,16 +652,6 @@ c2_headers:
     zero_caller: 2
     with_caller: 0
     proposal: DELETE-candidate (all decls unreferenced)
-  - header: include/uft/uft_format_probes.h
-    missing: 2
-    zero_caller: 2
-    with_caller: 0
-    proposal: DELETE-candidate (all decls unreferenced)
-  - header: include/uft/crc/uft_crc_polys.h
-    missing: 2
-    zero_caller: 2
-    with_caller: 0
-    proposal: DELETE-candidate (all decls unreferenced)
   - header: include/uft/formats/uft_imd_adapter.h
     missing: 2
     zero_caller: 2
@@ -718,16 +688,6 @@ c2_headers:
     with_caller: 0
     proposal: DELETE-candidate (all decls unreferenced)
   - header: include/uft/uft_god_mode.h
-    missing: 1
-    zero_caller: 1
-    with_caller: 0
-    proposal: DELETE-candidate (all decls unreferenced)
-  - header: include/uft/uft_tzx_wav.h
-    missing: 1
-    zero_caller: 1
-    with_caller: 0
-    proposal: DELETE-candidate (all decls unreferenced)
-  - header: include/uft/uft_zxtap.h
     missing: 1
     zero_caller: 1
     with_caller: 0
