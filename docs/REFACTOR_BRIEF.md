@@ -1,9 +1,15 @@
 # Refactor Brief — Type-Driven HAL
 
-**Branch:** `refactor/type-driven-hal`
+> **HISTORISCH (MF-289):** Der Refactor ist abgeschlossen und auf `main`
+> gemerged (MF-176). Die Architektur-Entscheidungen hier (Outcomes,
+> Concepts, Mixins) sind jetzt geltender Ist-Zustand in
+> `include/uft/hal/{outcomes,concepts,mixins}.h` — das Brief bleibt als
+> Begründungs-Referenz erhalten.
+
+**Branch:** `refactor/type-driven-hal` (gemerged, geschlossen)
 **Goal:** Replace the dual-architecture GUI↔HAL pile with one type-driven system.
 **Author:** Axel Fuchs (MysticFoxDE)
-**Status:** Foundation landed (P0 complete). Provider migration pending (P1).
+**Status:** ABGESCHLOSSEN — P0 Foundation + P1 Provider-Migration + P2 DTO-Cutover alle gelandet.
 
 This document is the architecture spec the AI agents and human reviewers
 work against. It is the source-of-truth for every decision during the

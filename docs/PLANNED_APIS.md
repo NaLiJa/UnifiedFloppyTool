@@ -1,6 +1,11 @@
 # Planned APIs (MF-011 DOCUMENT+IMPLEMENT-Wellen)
 
-**Stand:** auto-generated, 151 headers · 2939 unimplemented declarations
+**Stand:** M1-Wellen-Snapshot (2026-04-25: 151 headers · 2939 decls).
+**Live-Zahlen (2026-07-02): 133 headers · 2613 decls** — die Differenz
+stammt aus den M3.2/M3.3 Partial-Implementierungen (XUM1541, Applesauce).
+Aktuelle Zählung jederzeit via `python scripts/audit_skeleton_headers.py`;
+die Bucket-Tabellen unten sind der eingefrorene M1-Stand.
+Steuerung des Abbaus: `docs/STUB_ELIMINATION_PLAN.md`.
 
 Every header listed below declares public `uft_*` functions that are promised by the API surface but have no implementation in `src/`. DOCUMENT-bucket files have a `/* PLANNED FEATURE */` banner (zero impls); IMPLEMENT-bucket files have a `/* PARTIALLY IMPLEMENTED */` banner (some impls, some stubs). Consumers are warned before adding new call sites. Implementation belongs to M2/M3 depending on subsystem.
 

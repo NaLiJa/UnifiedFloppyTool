@@ -1,31 +1,39 @@
 # UFT Masterplan
 
-**Stand:** 2026-04-23
-**Zweck:** Einheitlicher Fahrplan der alle bisherigen Findings
-(`KNOWN_ISSUES.md`, must-fix-hunter-Backlog, Skeleton-Audit,
-XCopy/a8rawconv-Todos) zusammenführt. Soll verhindern, dass jede
-Session mit einem neuen Audit „von vorne" anfängt.
+**Stand:** 2026-07-02 (Konsolidierungs-Pass MF-289; ursprünglich 2026-04-23)
+**Zweck:** DAS führende Status-Dokument. Einheitlicher Fahrplan der alle
+Findings (`KNOWN_ISSUES.md`, must-fix-hunter-Backlog, Skeleton-Audit,
+XCopy/a8rawconv-Todos) zusammenführt. Jede Session beginnt hier —
+nicht mit einem frischen Scan.
 
 ---
 
 ## Die ehrliche Bestandsaufnahme
 
-**UFT als Codebase:**
-- ~860 Quelldateien, ~17 Subsysteme
-- 969 Header in `include/uft/`
-- **175 davon sind Skelette** (≥10 Deklarationen, ≥80 % nicht implementiert) — siehe `SKELETON_HEADERS_AUDIT.md`
-- 3 355 nicht implementierte `uft_*`-Funktions-Deklarationen
-- 80 Format-Plugins, davon ca. 15 mit realen Tests (19 %)
+**UFT als Codebase (Zahlen verifiziert 2026-07-02):**
+- ~756 Quelldateien, ~644 Header (nach MF-011 19-Wellen-Cleanup)
+- **133 Skeleton-Header** (≥10 Deklarationen, ≥80 % nicht implementiert),
+  **2 613** nicht implementierte `uft_*`-Deklarationen — live nachprüfbar
+  via `python scripts/audit_skeleton_headers.py`
+- 84 Format-Plugin-Registrierungen (138 Format-IDs), 41 % mit realen Tests
+- 45 Konvertierungspfade, 13 Roundtrip-Matrix-Einträge
+- Noch 11 Alt-Dateien im Pattern-A-Stil (`*_parser_v3.c`) — Rest der
+  ehemals „287 Stubs" wurde in MF-011 gelöscht oder nach Pattern B migriert
 
 **UFT als Produkt:**
-- v4.1.3 taggt auf Release-Basis
-- GUI mit mehreren Tabs (XCopy, Hardware, Analyse, Format Converter)
-- Davon **2 Tabs Phantom-Features** ohne Backend (XCopy, teile der FS-Browser)
+- **v4.1.5 released** (Hardware Hardening + Tier-2.5 Simulators)
+- Type-Driven-HAL-Refactor abgeschlossen und auf `main` gemerged
+  (MF-150/169/174/176)
+- Voll-Audit 2026-06-10 mit 16 Findings: 14 geschlossen (3 P0-Forensik-
+  Blocker im Converter-Stack, ABI-Bombe, Versions-SSOT, GUI-Consent) —
+  Details in `KNOWN_ISSUES.md` §Audit-Closing-Note
+- Emulator-Sequenz: SCP ✓, Greaseweazle ✓ (2 von 9 Controllern),
+  XUM1541 in Arbeit
 
-**Fazit:** Die Kluft zwischen Anspruch (was Header und GUI versprechen)
-und Umsetzung (was die `.c`-Files liefern) ist **das** strukturelle
-Problem. Alle Sub-Findings (MF-001..MF-011, SSOT-Drift, Build-Divergenz)
-sind Symptome dieser Kluft.
+**Fazit:** Die Kluft zwischen Anspruch (Header/GUI) und Umsetzung
+(`.c`-Files) bleibt das strukturelle Kern-Problem — aber sie ist jetzt
+vollständig inventarisiert und banner-markiert. Der Abbau läuft nach
+`docs/STUB_ELIMINATION_PLAN.md` (6 Phasen mit Gates).
 
 ---
 
@@ -211,13 +219,10 @@ sind auf Production-Niveau.
 Detail-Fahrplan: `docs/M3_HAL_PLAN.md` (M3.1 bis M3.7).
 
 Muss:
-- [~] M3.1 SCP-Direct HAL Scaffold: API (`uft_scp_direct.h`),
-      honest NOT_IMPLEMENTED-Stubs, Hardware-Capabilities (can_read_flux,
-      can_write_flux, **25 ns sample rate** — Korrektur in Commit b52c491,
-      ehemals fälschlich 40 ns; das war ein Unit-Confusion-Bug,
-      40 MHz = 25 ns/Sample, nicht 40 ns), 167 track slots, 5 revs,
-      Input-Validation aktiv, USB-VID/PID-Konstanten korrekt. 10 Tests
-      grün. libusb-Integration folgt in Folge-Commit.
+- [x] M3.1 SCP-Direct HAL: Scaffold (Commit b52c491, 25-ns-Unit-Fix,
+      10 Tests grün) + **libusb-Wiring LANDED (MF-254)**. Verbleibend:
+      Tier-3 HW-Bench am realen Gerät (UFT-008) — bis dahin gilt der
+      Pfad als wired-but-unbenched.
 - [~] M3.2 XUM1541 HAL real statt stubbed — Commit 10f170f scaffold:
       `src/hal/uft_xum1541.c` (+359 LOC) mit 13/26 echten Funktionen
       (drive_name, tracks_for_drive, sectors_for_track 4-zone für 1541
@@ -559,16 +564,30 @@ nach MF-106-bundle.
 
 ---
 
-## Verwandte Dokumente
+## Verwandte Dokumente (Doku-Index, konsolidiert MF-289)
 
-- `docs/DESIGN_PRINCIPLES.md` — die 7 Kernprinzipien (unverändert gültig)
+**Lebend (bei jeder Änderung aktuell halten):**
 - `docs/KNOWN_ISSUES.md` — laufender Principle-Compliance-Tracker
-- `docs/SKELETON_HEADERS_AUDIT.md` — Detailliste zu MF-011
-- `docs/XCOPY_INTEGRATION_TODO.md` — Detailplan M2 Amiga-Block
-- `docs/A8RAWCONV_INTEGRATION_TODO.md` — Detailplan M2 Atari-Block
-- `docs/PERFORMANCE_REVIEW.md` — 10 Algorithmus/Performance-Befunde (extern)
-- `docs/XCOPY_ALGORITHM_MIGRATION.md` — 7 X-Copy-Algorithmen für M2 (extern)
+  + Audit-Closing-Notes
+- `docs/STUB_ELIMINATION_PLAN.md` — 6-Phasen-Plan für Skeleton/Stub-Abbau
+  (löst das frühere Nebeneinander von PLANNED_APIS-Zählung,
+  Skeleton-Audit und Stub-Guide als Steuerungs-Dokument ab)
+- `docs/M3_HAL_PLAN.md` — Detail-Fahrplan HAL-Wiring M3.1–M3.7
+- `docs/DESIGN_PRINCIPLES.md` — die 7 Kernprinzipien (unverändert gültig)
 - `.claude/CONSULT_PROTOCOL.md` — Agenten-Zusammenarbeit
+
+**Backlog-Detail (Stand eingefroren, Items noch offen):**
+- `docs/XCOPY_INTEGRATION_TODO.md` — M2 Amiga-Block (T1-T8, Status oben in §M2)
+- `docs/A8RAWCONV_INTEGRATION_TODO.md` — M2 Atari-Block (TA1-TA3)
+
+**Auto-generiert (nicht von Hand editieren):**
+- `docs/SKELETON_HEADERS_AUDIT.md` — via `scripts/audit_skeleton_headers.py`
+- `docs/PLANNED_APIS.md` — M1-Wellen-Snapshot; Live-Zahlen via Audit-Script
+
+**Historisch (abgeschlossen, nur Referenz):**
+- `docs/REFACTOR_BRIEF.md` + `docs/REFACTOR_TASKS.md` — Type-Driven-HAL-
+  Refactor, gemerged MF-176
+- `docs/XCOPY_ALGORITHM_MIGRATION.md` — externes Review, in M2-Items überführt
 
 ---
 

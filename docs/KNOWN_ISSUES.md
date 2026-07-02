@@ -408,6 +408,30 @@ scaffold-done). Verbleibende 3:
 - SCOPE.switch_decision — User wählt A/B/C in `docs/SCOPE_DECISION_NON_FLOPPY.md`
 - TAG.v415 — Composite; 8/11 Gates ✓, wartet auf HIL+P2.4 + LOSS Phase 2 (v4.1.6)
 
+### M.4 XUM1541 HAL-vs-OpenCBM Protokoll-Deltas (Emulator-Probe 2026-07-02)
+
+- **Status:** OPEN — blockiert M3.2 libusb-Wiring-Fortsetzung
+- **Quelle:** XUM1541-Emulator-Probe-Run (hardware-emulation-author 3/9),
+  Details in `tests/emulators/xum1541/DIVERGENCES.md` X-DELTA-1/2
+- **Befund 1 (HIGH):** `src/hal/uft_xum1541.c:239` (`xum_iec_command`) und
+  `:580` (`uft_xum_iec_write`) lesen 1-Byte Bulk-IN-Status; die
+  OpenCBM-Referenz liest 3 Bytes (`XUM_STATUSBUF_SIZE = 3`:
+  `[status, val_lo, val_hi]`). Mit realer Firmware → vermutlich
+  `LIBUSB_ERROR_OVERFLOW`, IEC-Pfad bricht beim ersten Silizium-Kontakt.
+- **Befund 2 (HIGH):** WRITE/READ-Bulk-Header: HAL sendet
+  `[opcode, len_lo, len_hi, 0]`, OpenCBM `[opcode, mode, len_lo, len_hi]`
+  (Mode-Byte wählt serial/parallel-nibbler). Eine der beiden Seiten ist
+  falsch — OpenCBM-Re-Audit nötig BEVOR M3.2-Wiring weitergeht.
+- **Befund 3 (MEDIUM):** `include/uft/hal/uft_xum1541.h:101`
+  IOCTL-Kommentar mehrdeutig (bRequest-Basis vs. Bulk-Command) — bei
+  M3.2 abgleichen.
+- **Befund 4 (LOW):** `uft_xum_iec_read` hat keinen Out-Parameter für
+  tatsächlich empfangene Bytes — EOI-verkürzte Transfers nicht von
+  vollen unterscheidbar (forensisch relevant sobald wired).
+- **Plan:** M3.2-Wiring-Session beginnt mit OpenCBM-Quell-Audit dieser
+  4 Punkte; der Emulator modelliert bewusst die OpenCBM-dokumentierte
+  Seite — keine Seite gilt als verifiziert bis zur Bench-Session.
+
 ---
 
 ## Wie beitragen

@@ -1,7 +1,17 @@
 # Einweisung: Stub-Parser → echte Implementierung
+
+> **ZAHLEN-KORREKTUR (MF-289):** Die „287 Format-Stubs" unten sind der
+> historische Zensus von vor dem MF-011-Cleanup. Aktueller Stand
+> 2026-07-02: nur noch **11** Pattern-A-Dateien (`*_parser_v3.c`) im
+> Tree; die Skeleton-Lücke liegt heute in den 133 banner-markierten
+> Headern (live via `scripts/audit_skeleton_headers.py`). Die
+> **Methodik** dieses Guides (Pattern A→B, 6 Touchpoints, Tier-Listen,
+> Regelwerk) bleibt gültig und ist das Referenz-How-To für
+> `docs/STUB_ELIMINATION_PLAN.md` Phase 4.
+
 **Für:** Claude Code Agent  
 **Projekt:** UnifiedFloppyTool 4.1.0  
-**Aufgabe:** 287 Format-Stubs in vollständige Parser umwandeln  
+**Aufgabe:** Format-Stubs in vollständige Parser umwandeln (Tier-Auswahl siehe STUB_ELIMINATION_PLAN Phase 4)  
 **Oberste Regel:** Kein neuer Compile-Error. Kein neues Sicherheitsrisiko. Kein verändertes Verhalten bestehender Funktionen.
 
 ---

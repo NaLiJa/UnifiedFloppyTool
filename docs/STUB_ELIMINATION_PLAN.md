@@ -4,22 +4,29 @@
 **Owner:** `stub-eliminator` Agent (Pro-Stub-Entscheidung: IMPLEMENT /
 DELEGATE / DOCUMENT / DELETE).
 
-## Bestandsaufnahme (verifizierte Counts)
+## Bestandsaufnahme (verifizierte Counts — korrigiert MF-289)
+
+> **Zahlen-Korrektur 2026-07-02:** Die Erst-Fassung dieses Plans übernahm
+> die stale „287 Format-Stubs" aus KNOWN_ISSUES §7.3 (Zensus von VOR dem
+> MF-011-Cleanup). Realer Bestand nachgemessen:
 
 | # | Kategorie | Anzahl | Quelle | Aktueller Status |
 |---|---|---|---|---|
-| **C1** | Format-Plugin-Stubs (kein echter Parser, `is_stub` nicht gesetzt) | 287 | `src/formats/**/*.c` | KNOWN_ISSUES §7.3 — MITIGATED |
-| **C2** | `UFT_SKELETON_PLANNED` Header-Banner | 86 Dateien | `include/uft/**` | KNOWN_ISSUES M.0 — dokumentiert |
-| **C3** | Funktions-Deklarationen in C2-Headern ohne Implementierung | ~1473 | dito | überlappt mit C1/C5 |
+| **C1** | Pattern-A Alt-Parser (`*_parser_v3.c`, kein Plugin, kein `is_stub`) | **11** | `find src/formats -name "*_parser_v3.c"` | Rest der ehemals 287; Triage nötig |
+| **C2** | Skeleton-Header (≥10 decls, ≥80 % missing) | **133** | `scripts/audit_skeleton_headers.py` | banner-markiert (M1-Wellen) |
+| **C3** | Unimplementierte `uft_*`-Deklarationen in C2 | **2613** | dito | überlappt mit C5 |
 | **C4** | HAL honest-stubs (USB/Serial wiring pending) | 12 | `src/hal/uft_xum1541.c` (6) + `uft_applesauce.c` (6) | KNOWN_ISSUES M.3 — honest-stub |
-| **C5** | `uft_core_stubs.c` Residual-Implementierungen | ~18 Funktionen | `src/core/uft_core_stubs.c` (412 LOC) | unflagged, A07-Klasse |
+| **C5** | `uft_core_stubs.c` Residual-Implementierungen | ~17 Funktionen | `src/core/uft_core_stubs.c` (post-A07) | unflagged, A07-Klasse |
 | **C6** | ADF Write-Side | 3 | `src/formats/uft_adf.c:897/907/1013` | KNOWN_ISSUES §7.4 — honest-stub |
 | **C7** | Recovery / Salvage scaffolds | 3 doc-comments | `src/recovery/uft_salvage_fs.c` | XCOPY_INTEGRATION_TODO.md — by-design |
 | **C8** | Sonstige Stub-Marker in `src/` (Triage nötig) | 39 Dateien | diverse | unbewertet |
 
-**Total ≈ 1832 zu erfassende Items.** Nicht alle sind „Lazy Stubs"; ein
-nennenswerter Teil ist *honest-stub* mit dokumentiertem Plan und gehört
-NICHT eliminiert — er wird in der Inventar-Spalte „DOCUMENT" verankert.
+**Total ≈ 2800 zu erfassende Items** (dominiert von C3). Nicht alle sind
+„Lazy Stubs"; ein nennenswerter Teil ist *honest-stub* mit dokumentiertem
+Plan und gehört NICHT eliminiert — er wird in der Inventar-Spalte
+„DOCUMENT" verankert. Die 84 registrierten Plugins sind NICHT pauschal
+Stubs — 41 % haben reale Tests; die per-Plugin-Triage (`is_stub`-Flag)
+bleibt Phase-1-Arbeit.
 
 ## Konvention: honest vs. lazy
 

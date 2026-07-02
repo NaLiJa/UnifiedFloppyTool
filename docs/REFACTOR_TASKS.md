@@ -1,6 +1,13 @@
 # Refactor Tasks — Type-Driven HAL
 
-**Branch:** `refactor/type-driven-hal`
+> **HISTORISCH (MF-289):** Der Refactor ist abgeschlossen und auf `main`
+> gemerged (MF-150 Foundation, MF-169 P1.17, MF-174 P2.2, MF-176 Merge).
+> Dieses Dokument bleibt als Referenz für die §STOP-Bedingungen (die auf
+> `main` weitergelten, siehe `.claude/CLAUDE.md` §Daueraufgaben) und für
+> Code-Kommentare die auf Task-Nummern verweisen. Nichts hier ist mehr
+> „in progress".
+
+**Branch:** `refactor/type-driven-hal` (gemerged, geschlossen)
 **Source-of-truth:** `docs/REFACTOR_BRIEF.md`
 **Status legend:** ✅ done · 🟡 in progress · ⬜ pending
 
