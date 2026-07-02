@@ -201,29 +201,11 @@ typedef struct uft_disk_unified {
  * (e.g. uft_disk_unified_create). */
 void uft_disk_free(uft_disk_unified_t *disk);
 
-uft_track_base_t* uft_disk_get_track(uft_disk_unified_t *disk, 
-                                      uint8_t cyl, uint8_t head);
-
-/* Sector Access */
-uft_sector_unified_t* uft_disk_get_sector(uft_disk_unified_t *disk,
-                                           uint8_t cyl, uint8_t head, 
-                                           uint8_t sector);
-int uft_disk_read_sector(uft_disk_unified_t *disk,
-                         uint8_t cyl, uint8_t head, uint8_t sector,
-                         uint8_t *buffer, size_t size);
-
-/* Metadata */
-int uft_disk_set_meta(uft_disk_unified_t *disk, 
-                      const char *key, const char *value);
 
 
-/* Info */
-int uft_disk_get_info(const uft_disk_unified_t *disk, 
-                      char *buffer, size_t size);
 
-int uft_disk_set_geometry(uft_disk_unified_t *disk,
-                          uint8_t cyls, uint8_t heads, 
-                          uint8_t spt, uint16_t sector_size);
+
+
 
 #ifdef __cplusplus
 }

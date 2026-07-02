@@ -336,46 +336,16 @@ int uft_fat_read_root(uft_fat_t *fat, uft_fat_file_info_t *entries,
 int uft_fat_read_dir(uft_fat_t *fat, uint32_t cluster,
                       uft_fat_file_info_t *entries, int max_entries);
 
-/**
- * @brief Find file by name
- */
-int uft_fat_find_file(uft_fat_t *fat, const char *path,
-                       uft_fat_file_info_t *info);
 
-/**
- * @brief Get raw directory entry
- */
-int uft_fat_get_dirent(uft_fat_t *fat, uint32_t cluster, int index,
-                        uft_fat_dirent_t *entry);
 
-/**
- * @brief Set raw directory entry
- */
-int uft_fat_set_dirent(uft_fat_t *fat, uint32_t cluster, int index,
-                        const uft_fat_dirent_t *entry);
 
 /*===========================================================================
  * FILE OPERATIONS
  *===========================================================================*/
 
-/**
- * @brief Read file data
- */
-int uft_fat_read_file(uft_fat_t *fat, const char *path,
-                       uint8_t *buffer, size_t max_size);
-
-/**
- * @brief Write file data
- */
-int uft_fat_write_file(uft_fat_t *fat, const char *path,
-                        const uint8_t *data, size_t size);
 
 
-/**
- * @brief Recover deleted file
- */
-int uft_fat_recover_file(uft_fat_t *fat, uint32_t cluster,
-                          const char *new_name);
+
 
 /*===========================================================================
  * BOOT SECTOR EDITING
@@ -403,11 +373,6 @@ int uft_fat_set_volume_label(uft_fat_t *fat, const char *label);
 int uft_fat_find_lost_clusters(uft_fat_t *fat, 
                                 uint32_t *clusters, int max_clusters);
 
-/**
- * @brief Find cross-linked files
- */
-int uft_fat_find_cross_links(uft_fat_t *fat,
-                              uint32_t *clusters, int max_clusters);
 
 
 /**
@@ -422,17 +387,6 @@ int uft_fat_repair(uft_fat_t *fat, bool fix_cross_links,
  * VISUALIZATION
  *===========================================================================*/
 
-/**
- * @brief Get cluster map (for visualization)
- * 
- * @param fat FAT context
- * @param map Output: array of cluster statuses
- * @param max_clusters Maximum clusters to return
- * @return Number of clusters
- */
-int uft_fat_get_cluster_map(uft_fat_t *fat, 
-                             uft_cluster_status_t *map,
-                             int max_clusters);
 
 
 
@@ -446,11 +400,6 @@ int uft_fat_get_cluster_map(uft_fat_t *fat,
 void uft_fat_name_to_string(const uft_fat_dirent_t *entry, 
                              char *name, size_t size);
 
-/**
- * @brief Convert string to 8.3 name
- */
-int uft_fat_string_to_name(const char *name, 
-                            char *name83, char *ext83);
 
 /**
  * @brief Decode FAT date

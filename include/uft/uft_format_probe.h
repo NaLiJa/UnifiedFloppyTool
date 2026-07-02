@@ -149,18 +149,7 @@ uft_format_t uft_probe_format(const uint8_t* data, size_t size,
                                const char* filename,
                                uft_probe_result_t* result);
 
-/**
- * @brief Probe for specific format
- */
-int uft_probe_specific(const uint8_t* data, size_t size,
-                        uft_format_t format,
-                        uft_probe_result_t* result);
 
-/**
- * @brief Get all possible formats sorted by confidence
- */
-int uft_probe_all(const uint8_t* data, size_t size,
-                   uft_probe_result_t* results, int max_results);
 
 /**
  * @brief Handle unknown/ambiguous format
@@ -172,9 +161,6 @@ typedef enum uft_unknown_action {
     UFT_UNKNOWN_RAW,        // Treat as raw data
 } uft_unknown_action_t;
 
-uft_error_t uft_probe_handle_unknown(const uft_probe_result_t* result,
-                                      uft_unknown_action_t action,
-                                      uft_format_t* chosen);
 
 // ============================================================================
 // Registration

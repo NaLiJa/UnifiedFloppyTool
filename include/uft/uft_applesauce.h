@@ -334,32 +334,7 @@ typedef struct {
  * 255-Run Encoding (A2R/MOOF Flux)
  *============================================================================*/
 
-/**
- * @brief Decode 255-run encoded flux deltas
- *
- * Flux timing is encoded as byte values where 255 indicates continuation.
- * Example: {255, 255, 10} decodes to single delta of 520 ticks.
- *
- * @param packed Packed byte stream
- * @param packed_len Length of packed data
- * @param deltas Output: decoded delta values
- * @param deltas_count Output: number of deltas
- * @return true on success
- */
-bool uft_decode_255_run(const uint8_t *packed, uint32_t packed_len,
-                        uint32_t **deltas, uint32_t *deltas_count);
 
-/**
- * @brief Encode delta values to 255-run format
- *
- * @param deltas Delta values
- * @param deltas_count Number of deltas
- * @param packed Output: packed bytes
- * @param packed_len Output: packed length
- * @return true on success
- */
-bool uft_encode_255_run(const uint32_t *deltas, uint32_t deltas_count,
-                        uint8_t **packed, uint32_t *packed_len);
 
 /*============================================================================
  * WOZ API
@@ -381,28 +356,7 @@ uft_woz_image_t *uft_woz_open(const char *path);
 uft_woz_image_t *uft_woz_open_mem(const uint8_t *data, size_t len);
 
 
-/**
- * @brief Get track bitstream for quarter-track
- *
- * @param woz Image handle
- * @param qtrack Quarter-track (0-159)
- * @param bits Output: bitstream data
- * @param bit_count Output: number of bits
- * @return true if track exists
- */
-bool uft_woz_get_track(const uft_woz_image_t *woz, uint8_t qtrack,
-                       const uint8_t **bits, uint32_t *bit_count);
 
-/**
- * @brief Get WOZ metadata value
- * @param woz Image handle
- * @param key Metadata key
- * @param value Output buffer
- * @param value_len Buffer size
- * @return true if found
- */
-bool uft_woz_get_meta(const uft_woz_image_t *woz, const char *key,
-                      char *value, size_t value_len);
 
 /*============================================================================
  * MOOF API
@@ -421,32 +375,7 @@ uft_moof_image_t *uft_moof_open(const char *path);
  */
 void uft_moof_close(uft_moof_image_t *moof);
 
-/**
- * @brief Map physical track/side to TRKS index
- * @param moof Image handle
- * @param track Track (0-79)
- * @param side Side (0-1)
- * @param trk_index Output: TRKS index
- * @return true if track exists (not 0xFF)
- */
-bool uft_moof_map_track(const uft_moof_image_t *moof,
-                        uint8_t track, uint8_t side,
-                        uint8_t *trk_index);
 
-/**
- * @brief Get track payload
- * @param moof Image handle
- * @param trk_index TRKS index
- * @param data Output: data pointer
- * @param data_len Output: allocated bytes
- * @param valid_count Output: valid bits (BITS) or bytes (FLUX)
- * @param payload_type Output: BITS or FLUX
- * @return true on success
- */
-bool uft_moof_get_track(const uft_moof_image_t *moof, uint8_t trk_index,
-                        const uint8_t **data, size_t *data_len,
-                        uint32_t *valid_count,
-                        uft_moof_payload_type_t *payload_type);
 
 /*============================================================================
  * A2R API
@@ -460,17 +389,6 @@ bool uft_moof_get_track(const uft_moof_image_t *moof, uint8_t trk_index,
 uft_a2r_image_t *uft_a2r_open(const char *path);
 
 
-/**
- * @brief Get raw captures for track location
- * @param a2r Image handle
- * @param location Quarter-track location
- * @param captures Output: array of captures
- * @param count Output: number of captures
- * @return true if any captures found
- */
-bool uft_a2r_get_captures(const uft_a2r_image_t *a2r, uint32_t location,
-                          const uft_a2r_capture_t ***captures,
-                          size_t *count);
 
 /**
  * @brief Get solved track for location
@@ -481,15 +399,6 @@ bool uft_a2r_get_captures(const uft_a2r_image_t *a2r, uint32_t location,
 const uft_a2r_solved_t *uft_a2r_get_solved(const uft_a2r_image_t *a2r,
                                            uint32_t location);
 
-/**
- * @brief Convert A2R deltas to nanoseconds
- * @param deltas Delta ticks
- * @param count Number of deltas
- * @param resolution_ps Resolution in picoseconds
- * @param ns_out Output: nanosecond values
- */
-void uft_a2r_deltas_to_ns(const uint32_t *deltas, uint32_t count,
-                          uint32_t resolution_ps, double *ns_out);
 
 /*============================================================================
  * Conversion Functions

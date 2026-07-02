@@ -129,11 +129,6 @@ uft_mfm_codec_t* uft_mfm_codec_create(void);
  */
 void uft_mfm_codec_destroy(uft_mfm_codec_t *codec);
 
-/**
- * @brief Set codec options
- */
-int uft_mfm_codec_set_options(uft_mfm_codec_t *codec,
-                               const uft_codec_options_t *opts);
 
 
 /*===========================================================================
@@ -202,11 +197,6 @@ int uft_mfm_encode_track(uft_mfm_codec_t *codec,
 uint16_t uft_fm_encode_byte(uint8_t data);
 #endif /* UFT_FM_ENCODE_BYTE_DECLARED */
 
-/**
- * @brief Encode data buffer to FM bitstream
- */
-int uft_fm_encode(const uint8_t *data, size_t data_len,
-                  uint8_t *fm, size_t fm_size);
 
 
 /*===========================================================================
@@ -247,11 +237,6 @@ int uft_mfm_decode_track(uft_mfm_codec_t *codec,
                           uft_track_data_t *track);
 
 
-/**
- * @brief Find address mark after sync
- */
-int uft_mfm_find_address_mark(const uint8_t *mfm, size_t mfm_bits,
-                               int start_bit, uint8_t *mark);
 
 /*===========================================================================
  * FM DECODING
@@ -265,18 +250,7 @@ int uft_mfm_find_address_mark(const uint8_t *mfm, size_t mfm_bits,
 uint8_t uft_fm_decode_byte(uint16_t fm);
 #endif /* UFT_FM_DECODE_BYTE_DECLARED */
 
-/**
- * @brief Decode FM bitstream to data
- */
-int uft_fm_decode(const uint8_t *fm, size_t fm_bits,
-                  uint8_t *data, size_t data_size);
 
-/**
- * @brief Decode FM track
- */
-int uft_fm_decode_track(uft_mfm_codec_t *codec,
-                         const uint8_t *fm, size_t fm_bits,
-                         uft_track_data_t *track);
 
 /*===========================================================================
  * CRC CALCULATION
@@ -296,57 +270,13 @@ uint16_t uft_disk_crc(const uint8_t *data, size_t len);
  * FLUX CONVERSION
  *===========================================================================*/
 
-/**
- * @brief Convert MFM bits to flux transitions
- * 
- * @param mfm MFM bitstream
- * @param mfm_bits Number of bits
- * @param data_rate Data rate in bits/second
- * @param flux Output: flux intervals in nanoseconds
- * @param max_flux Maximum flux values
- * @return Number of flux transitions
- */
-int uft_mfm_to_flux(const uint8_t *mfm, size_t mfm_bits,
-                    uint32_t data_rate,
-                    uint32_t *flux, size_t max_flux);
 
-/**
- * @brief Convert flux transitions to MFM bits
- * 
- * Uses PLL for clock recovery.
- * 
- * @param flux Flux intervals in nanoseconds
- * @param flux_count Number of intervals
- * @param data_rate Expected data rate
- * @param mfm Output MFM bitstream
- * @param max_bytes Maximum bytes
- * @param out_bits Output: actual bits written
- * @return 0 on success
- */
-int uft_flux_to_mfm(const uint32_t *flux, size_t flux_count,
-                    uint32_t data_rate,
-                    uint8_t *mfm, size_t max_bytes,
-                    int *out_bits);
 
 /*===========================================================================
  * AMIGA MFM
  *===========================================================================*/
 
-/**
- * @brief Encode Amiga track
- * 
- * Amiga uses different track format with long/short words.
- */
-int uft_amiga_mfm_encode_track(int track, int head,
-                                const uint8_t *data,  /* 11*512 bytes */
-                                uint8_t *mfm, size_t mfm_size);
 
-/**
- * @brief Decode Amiga track
- */
-int uft_amiga_mfm_decode_track(const uint8_t *mfm, size_t mfm_bits,
-                                int *track, int *head,
-                                uint8_t *data, size_t data_size);
 
 
 /*===========================================================================

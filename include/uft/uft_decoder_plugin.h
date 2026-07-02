@@ -287,21 +287,7 @@ const uft_decoder_plugin_t* uft_find_decoder_plugin_for_flux(
 // High-Level Decode/Encode
 // ============================================================================
 
-/**
- * @brief Flux dekodieren (Auto-Detect)
- * 
- * Findet automatisch das passende Plugin.
- */
-uft_error_t uft_decode_flux(const uint32_t* flux, size_t count,
-                             uft_sector_t* sectors, size_t max_sectors,
-                             size_t* sector_count, uft_decode_stats_t* stats);
 
-/**
- * @brief Sektoren enkodieren
- */
-uft_error_t uft_encode_sectors(const uft_sector_t* sectors, size_t sector_count,
-                                uft_encoding_t encoding, int cylinder, int head,
-                                uint32_t** flux, size_t* flux_count);
 
 // ============================================================================
 // Built-in Decoder Plugin Deklarationen

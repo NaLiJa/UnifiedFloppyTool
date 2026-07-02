@@ -95,12 +95,6 @@ typedef struct {
     bool checksum_valid;        /**< Checksum validation */
 } uft_viterbi_result_t;
 
-/**
- * @brief Viterbi decode GCR/MFM data
- */
-int uft_viterbi_decode(const uint8_t* raw_bits, size_t bit_count,
-                       const uft_viterbi_config_t* config,
-                       uft_viterbi_result_t* result);
 
 /**
  * @brief Free Viterbi result resources

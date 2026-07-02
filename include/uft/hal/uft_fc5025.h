@@ -112,8 +112,6 @@ int uft_fc_open(uft_fc_config_t *cfg);
  * CAPTURE
  *============================================================================*/
 
-int uft_fc_read_track(uft_fc_config_t *cfg, int track, int side,
-                       uint8_t **data, size_t *size);
 
 /*============================================================================
  * UTILITIES

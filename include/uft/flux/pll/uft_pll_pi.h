@@ -175,15 +175,6 @@ typedef struct {
  * Initialization
  * ============================================================================ */
 
-/**
- * @brief Get default configuration
- * @param[out] config Configuration to initialize
- * @param encoding Encoding type
- * @param data_rate Data rate in bps
- */
-void uft_pll_config_default(uft_pll_config_t *config,
-                            uft_encoding_t encoding,
-                            uint32_t data_rate);
 
 
 /**
@@ -199,50 +190,8 @@ int uft_pll_init(uft_pll_t *pll, const uft_pll_config_t *config);
  * Processing
  * ============================================================================ */
 
-/**
- * @brief Process a single flux transition
- * @param pll PLL state
- * @param delta_ns Time since last transition in nanoseconds
- * @param[out] bits Output bit buffer (caller allocates, size >= 8)
- * @param[out] bit_count Number of bits produced
- * @return 0 on success, UFT_ERR_* on error
- * 
- * May produce 0-8 bits per transition depending on encoding and timing.
- */
-int uft_pll_process_transition(uft_pll_t *pll,
-                               double delta_ns,
-                               uft_pll_bit_t *bits,
-                               int *bit_count);
 
-/**
- * @brief Process transition and extract bytes
- * @param pll PLL state
- * @param delta_ns Time since last transition
- * @param[out] byte_out Output byte (if complete)
- * @param[out] byte_ready True if byte is complete
- * @return 0 on success
- */
-int uft_pll_process_to_byte(uft_pll_t *pll,
-                            double delta_ns,
-                            uft_pll_byte_t *byte_out,
-                            bool *byte_ready);
 
-/**
- * @brief Process multiple transitions at once
- * @param pll PLL state
- * @param deltas Array of transition times (ns)
- * @param count Number of transitions
- * @param[out] bytes Output buffer (caller allocates)
- * @param max_bytes Size of output buffer
- * @param[out] bytes_decoded Number of bytes produced
- * @return 0 on success
- */
-int uft_pll_process_batch(uft_pll_t *pll,
-                          const double *deltas,
-                          size_t count,
-                          uft_pll_byte_t *bytes,
-                          size_t max_bytes,
-                          size_t *bytes_decoded);
 
 /* ============================================================================
  * Sync Detection
@@ -250,16 +199,6 @@ int uft_pll_process_batch(uft_pll_t *pll,
 
 
 
-/**
- * @brief Force sync acquisition from known preamble
- * @param pll PLL state
- * @param preamble_deltas Preamble transition times
- * @param count Number of transitions
- * @return 0 on success
- */
-int uft_pll_force_sync(uft_pll_t *pll,
-                       const double *preamble_deltas,
-                       size_t count);
 
 /* ============================================================================
  * Address Mark Detection

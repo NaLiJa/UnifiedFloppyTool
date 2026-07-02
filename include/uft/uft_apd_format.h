@@ -202,52 +202,13 @@ int uft_apd_detect(const uint8_t *data, size_t size);
  */
 void uft_apd_track_free(uft_apd_track_t *track);
 
-/**
- * @brief Get track by cylinder/head
- */
-int uft_apd_get_track(uft_apd_t *apd, int cylinder, int head, 
-                       uft_apd_track_t *track);
 
 /*===========================================================================
  * SECTOR OPERATIONS
  *===========================================================================*/
 
-/**
- * @brief Decode sectors from track
- * 
- * @param track Track data
- * @param density Which density to decode (SD/DD/QD)
- * @param sectors Output: sector array
- * @param max_sectors Maximum sectors to return
- * @return Number of sectors found
- */
-int uft_apd_decode_sectors(const uft_apd_track_t *track, int density,
-                            uft_acorn_sector_t *sectors, int max_sectors);
 
-/**
- * @brief Read sector data
- * 
- * @param track Track data
- * @param sector Sector info
- * @param data Output buffer
- * @param max_size Buffer size
- * @return Bytes read, or -1 on error
- */
-int uft_apd_read_sector(const uft_apd_track_t *track,
-                         const uft_acorn_sector_t *sector,
-                         uint8_t *data, size_t max_size);
 
-/**
- * @brief Read logical sector
- * 
- * @param apd Context
- * @param lba Logical block address
- * @param data Output buffer
- * @param sector_size Expected sector size
- * @return Bytes read
- */
-int uft_apd_read_logical_sector(uft_apd_t *apd, uint32_t lba,
-                                 uint8_t *data, int sector_size);
 
 /*===========================================================================
  * CONVERSION
@@ -265,17 +226,7 @@ int uft_apd_read_logical_sector(uft_apd_t *apd, uint32_t lba,
 
 
 
-/**
- * @brief Encode data as FM bitstream
- */
-int uft_apd_encode_fm(const uint8_t *data, size_t len,
-                       uint8_t *fm_out, size_t fm_max);
 
-/**
- * @brief Encode data as MFM bitstream
- */
-int uft_apd_encode_mfm(const uint8_t *data, size_t len,
-                        uint8_t *mfm_out, size_t mfm_max);
 
 /*===========================================================================
  * PROTECTION DETECTION

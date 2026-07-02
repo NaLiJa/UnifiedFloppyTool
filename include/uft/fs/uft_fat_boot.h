@@ -158,26 +158,7 @@ uft_boot_template_t uft_boot_find_by_name(const char *name);
 int uft_boot_apply_template(void *boot, uft_boot_template_t type,
                             uft_fat_type_t fat_type);
 
-/**
- * @brief Apply custom boot code
- * @param boot Boot sector (modified)
- * @param code Boot code data
- * @param code_size Size of boot code
- * @param fat_type FAT type
- * @return 0 on success
- */
-int uft_boot_apply_custom(void *boot, const uint8_t *code, size_t code_size,
-                          uft_fat_type_t fat_type);
 
-/**
- * @brief Apply boot code from file
- * @param boot Boot sector (modified)
- * @param filename Path to boot code file
- * @param fat_type FAT type
- * @return 0 on success
- */
-int uft_boot_apply_from_file(void *boot, const char *filename,
-                             uft_fat_type_t fat_type);
 
 
 /*===========================================================================
@@ -193,16 +174,6 @@ int uft_boot_apply_from_file(void *boot, const char *filename,
 bool uft_boot_is_bootable(const void *boot, uft_fat_type_t fat_type);
 
 
-/**
- * @brief Extract boot code to buffer
- * @param boot Boot sector
- * @param code Output buffer
- * @param max_size Buffer size
- * @param fat_type FAT type
- * @return Actual code size extracted
- */
-size_t uft_boot_extract_code(const void *boot, uint8_t *code, size_t max_size,
-                             uft_fat_type_t fat_type);
 
 /*===========================================================================
  * API - OEM Name Handling
@@ -235,14 +206,6 @@ void uft_boot_get_oem(const void *boot, char *oem_name);
  */
 const char *uft_boot_required_files(uft_boot_template_t type);
 
-/**
- * @brief Check if image has required system files
- * @param ctx FAT context
- * @param type Boot template
- * @return true if all required files present
- */
-bool uft_boot_check_system_files(const uft_fat_ctx_t *ctx, 
-                                 uft_boot_template_t type);
 
 /*===========================================================================
  * Boot Code Templates (Embedded)

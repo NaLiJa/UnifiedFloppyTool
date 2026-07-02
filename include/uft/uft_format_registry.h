@@ -209,12 +209,6 @@ void uft_format_registry_shutdown(void);
 
 
 
-/**
- * @brief Get all formats for a category
- */
-int uft_format_get_by_category(uft_format_category_t cat,
-                                const uft_format_driver_t **drivers,
-                                int max_drivers);
 
 /**
  * @brief Get all formats for a platform
@@ -227,14 +221,6 @@ int uft_format_get_by_platform(uft_format_platform_t plat,
  * AUTO-DETECTION
  *===========================================================================*/
 
-/**
- * @brief Detect format from file
- * 
- * @param path File path
- * @param results Output: detection results (sorted by score)
- * @return 0 on success
- */
-int uft_format_detect_file(const char *path, uft_detect_results_t *results);
 
 /**
  * @brief Detect format from data
@@ -249,12 +235,6 @@ int uft_format_detect(const uint8_t *data, size_t size,
                        const char *filename,
                        uft_detect_results_t *results);
 
-/**
- * @brief Quick detect - returns best match only
- */
-const uft_format_driver_t* uft_format_detect_best(const uint8_t *data,
-                                                   size_t size,
-                                                   const char *filename);
 
 
 
@@ -262,22 +242,12 @@ const uft_format_driver_t* uft_format_detect_best(const uint8_t *data,
  * FORMAT OPERATIONS
  *===========================================================================*/
 
-/**
- * @brief Open file with auto-detection
- */
-void* uft_format_open_auto(const char *path,
-                            const uft_format_driver_t **out_driver);
 
 /**
  * @brief Check if format can convert to another
  */
 bool uft_format_can_convert(const char *from_id, const char *to_id);
 
-/**
- * @brief Get list of convertible formats
- */
-int uft_format_get_convertible(const char *from_id,
-                                const char **to_ids, int max);
 
 /*===========================================================================
  * UTILITIES
@@ -293,11 +263,6 @@ const char* uft_format_category_name(uft_format_category_t cat);
  */
 const char* uft_format_platform_name(uft_format_platform_t plat);
 
-/**
- * @brief Check if format has capability
- */
-bool uft_format_has_capability(const uft_format_driver_t *driver,
-                                uft_format_caps_t cap);
 
 
 

@@ -243,33 +243,8 @@ uft_error_t uft_cpm_read_directory(const uft_disk_image_t *disk,
                                    size_t max_files,
                                    size_t *file_count);
 
-/**
- * @brief Extract file from CP/M disk
- */
-uft_error_t uft_cpm_extract_file(const uft_disk_image_t *disk,
-                                 const cpm_diskdef_t *def,
-                                 const char *filename,
-                                 uint8_t user,
-                                 uint8_t **out_data,
-                                 size_t *out_size);
 
-/**
- * @brief Write file to CP/M disk
- */
-uft_error_t uft_cpm_write_file(uft_disk_image_t *disk,
-                               const cpm_diskdef_t *def,
-                               const char *filename,
-                               uint8_t user,
-                               const uint8_t *data,
-                               size_t size);
 
-/**
- * @brief Delete file from CP/M disk
- */
-uft_error_t uft_cpm_delete_file(uft_disk_image_t *disk,
-                                const cpm_diskdef_t *def,
-                                const char *filename,
-                                uint8_t user);
 
 /**
  * @brief Format disk with CP/M filesystem

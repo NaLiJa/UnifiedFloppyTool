@@ -289,59 +289,21 @@ int64_t uft_cart7_write_save(uft_cart7_device_t *device,
                              const void *buffer,
                              size_t length);
 
-/**
- * Dump save to file
- */
-uft_cart7_error_t uft_cart7_dump_save(uft_cart7_device_t *device,
-                                      const char *filename);
 
-/**
- * Restore save from file
- */
-uft_cart7_error_t uft_cart7_restore_save(uft_cart7_device_t *device,
-                                         const char *filename);
 
 /*============================================================================
  * NES SPECIFIC
  *============================================================================*/
 
-/**
- * Read NES PRG-ROM
- */
-int64_t uft_cart7_nes_read_prg(uft_cart7_device_t *device,
-                               uint32_t offset,
-                               void *buffer,
-                               size_t length);
-
-/**
- * Read NES CHR-ROM
- */
-int64_t uft_cart7_nes_read_chr(uft_cart7_device_t *device,
-                               uint32_t offset,
-                               void *buffer,
-                               size_t length);
 
 
-/**
- * Create iNES file from cartridge
- */
-uft_cart7_error_t uft_cart7_nes_create_ines(uft_cart7_device_t *device,
-                                            const char *filename,
-                                            uft_cart7_progress_cb progress,
-                                            void *user_data);
+
 
 /*============================================================================
  * SNES SPECIFIC
  *============================================================================*/
 
 
-/**
- * Create SFC file from cartridge
- */
-uft_cart7_error_t uft_cart7_snes_create_sfc(uft_cart7_device_t *device,
-                                            const char *filename,
-                                            uft_cart7_progress_cb progress,
-                                            void *user_data);
 
 /*============================================================================
  * N64 SPECIFIC
@@ -349,71 +311,27 @@ uft_cart7_error_t uft_cart7_snes_create_sfc(uft_cart7_device_t *device,
 
 
 
-/**
- * Create Z64 file from cartridge (big-endian)
- */
-uft_cart7_error_t uft_cart7_n64_create_z64(uft_cart7_device_t *device,
-                                           const char *filename,
-                                           uft_cart7_progress_cb progress,
-                                           void *user_data);
 
 /*============================================================================
  * MEGA DRIVE SPECIFIC
  *============================================================================*/
 
 
-/**
- * Create BIN file from cartridge
- */
-uft_cart7_error_t uft_cart7_md_create_bin(uft_cart7_device_t *device,
-                                          const char *filename,
-                                          uft_cart7_progress_cb progress,
-                                          void *user_data);
 
 /*============================================================================
  * GBA SPECIFIC
  *============================================================================*/
 
 
-/**
- * Read GBA GPIO (RTC, Solar sensor, etc.)
- */
-uft_cart7_error_t uft_cart7_gba_read_gpio(uft_cart7_device_t *device,
-                                          void *buffer,
-                                          size_t *size);
 
-/**
- * Create GBA file from cartridge
- */
-uft_cart7_error_t uft_cart7_gba_create_gba(uft_cart7_device_t *device,
-                                           const char *filename,
-                                           uft_cart7_progress_cb progress,
-                                           void *user_data);
 
 /*============================================================================
  * GB/GBC SPECIFIC
  *============================================================================*/
 
 
-/**
- * Read GB RTC (MBC3)
- */
-uft_cart7_error_t uft_cart7_gb_read_rtc(uft_cart7_device_t *device,
-                                        cart7_gb_rtc_t *rtc);
 
-/**
- * Write GB RTC (MBC3)
- */
-uft_cart7_error_t uft_cart7_gb_write_rtc(uft_cart7_device_t *device,
-                                         const cart7_gb_rtc_t *rtc);
 
-/**
- * Create GB file from cartridge
- */
-uft_cart7_error_t uft_cart7_gb_create_gb(uft_cart7_device_t *device,
-                                         const char *filename,
-                                         uft_cart7_progress_cb progress,
-                                         void *user_data);
 
 /*============================================================================
  * ABORT

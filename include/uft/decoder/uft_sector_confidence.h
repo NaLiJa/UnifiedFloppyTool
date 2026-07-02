@@ -199,79 +199,15 @@ void uft_conf_init(uft_sector_confidence_t *conf);
  * Component Confidence Functions
  *===========================================================================*/
 
-/**
- * @brief Calculate hardware confidence
- * @param flux_timing Flux timing stability (0-1)
- * @param signal_strength Signal strength (0-1)
- * @param head_alignment Head alignment quality (0-1)
- * @param rpm_stability RPM stability (0-1)
- * @param hw Output hardware confidence
- */
-void uft_conf_calc_hardware(float flux_timing, float signal_strength,
-                            float head_alignment, float rpm_stability,
-                            uft_hw_confidence_t *hw);
 
-/**
- * @brief Calculate decoder confidence
- * @param sync_quality Sync pattern quality (0-1)
- * @param address_quality Address mark quality (0-1)
- * @param data_quality Data region quality (0-1)
- * @param encoding_confidence Encoding detection confidence (0-1)
- * @param dec Output decoder confidence
- */
-void uft_conf_calc_decoder(float sync_quality, float address_quality,
-                           float data_quality, float encoding_confidence,
-                           uft_dec_confidence_t *dec);
 
-/**
- * @brief Calculate multi-revolution confidence
- * @param revolutions Number of revolutions
- * @param agreements Number of agreeing revolutions
- * @param variance Bit-level variance
- * @param multirev Output multi-rev confidence
- */
-void uft_conf_calc_multirev(uint8_t revolutions, uint8_t agreements,
-                            float variance, uft_multirev_confidence_t *multirev);
 
-/**
- * @brief Calculate CRC confidence
- * @param crc_valid CRC validation result
- * @param calculated Calculated CRC
- * @param stored Stored CRC
- * @param bits_corrected Bits corrected (0 if none)
- * @param crc Output CRC confidence
- */
-void uft_conf_calc_crc(bool crc_valid, uint16_t calculated, uint16_t stored,
-                       uint8_t bits_corrected, uft_crc_confidence_t *crc);
 
 /*===========================================================================
  * Combined Confidence Functions
  *===========================================================================*/
 
-/**
- * @brief Calculate combined sector confidence
- * @param conf Sector confidence (with components filled)
- * @param config Calculation configuration
- */
-void uft_conf_calculate_combined(uft_sector_confidence_t *conf,
-                                 const uft_confidence_config_t *config);
 
-/**
- * @brief Calculate all confidences from raw metrics
- * @param conf Output sector confidence
- * @param config Calculation configuration
- * @param flux_timing Hardware: flux timing stability
- * @param signal_strength Hardware: signal strength
- * @param sync_quality Decoder: sync quality
- * @param crc_valid CRC: validation result
- * @param revolutions Multi-rev: revolution count
- * @param agreements Multi-rev: agreement count
- */
-void uft_conf_calculate_full(uft_sector_confidence_t *conf,
-                             const uft_confidence_config_t *config,
-                             float flux_timing, float signal_strength,
-                             float sync_quality, bool crc_valid,
-                             uint8_t revolutions, uint8_t agreements);
 
 
 /**
@@ -285,66 +221,14 @@ const char *uft_conf_quality_desc(uint8_t quality_level);
  * Track-Level Functions
  *===========================================================================*/
 
-/**
- * @brief Calculate track confidence summary
- * @param sectors Array of sector confidences
- * @param sector_count Number of sectors
- * @param track Track number
- * @param side Side
- * @param summary Output track summary
- */
-void uft_conf_track_summary(const uft_sector_confidence_t *sectors,
-                            size_t sector_count, uint16_t track, uint8_t side,
-                            uft_track_confidence_t *summary);
 
-/**
- * @brief Find lowest confidence sector on track
- * @param sectors Array of sector confidences
- * @param sector_count Number of sectors
- * @return Index of lowest confidence sector
- */
-size_t uft_conf_find_weakest(const uft_sector_confidence_t *sectors,
-                             size_t sector_count);
 
-/**
- * @brief Get sectors needing re-read
- * @param sectors Array of sector confidences
- * @param sector_count Number of sectors
- * @param threshold Confidence threshold below which re-read is needed
- * @param indices Output array of sector indices (caller allocates)
- * @param max_indices Maximum indices to return
- * @return Number of sectors needing re-read
- */
-size_t uft_conf_needs_reread(const uft_sector_confidence_t *sectors,
-                             size_t sector_count, float threshold,
-                             size_t *indices, size_t max_indices);
 
 /*===========================================================================
  * Export Functions
  *===========================================================================*/
 
-/**
- * @brief Export sector confidence to JSON
- * @param conf Sector confidence
- * @param track Track number
- * @param sector Sector number
- * @param buffer Output buffer
- * @param buffer_size Buffer size
- * @return Bytes written
- */
-size_t uft_conf_export_json(const uft_sector_confidence_t *conf,
-                            uint16_t track, uint8_t sector,
-                            char *buffer, size_t buffer_size);
 
-/**
- * @brief Export track summary to JSON
- * @param summary Track summary
- * @param buffer Output buffer
- * @param buffer_size Buffer size
- * @return Bytes written
- */
-size_t uft_conf_track_export_json(const uft_track_confidence_t *summary,
-                                  char *buffer, size_t buffer_size);
 
 /*===========================================================================
  * Utility Functions

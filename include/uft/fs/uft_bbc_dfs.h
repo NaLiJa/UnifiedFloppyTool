@@ -395,20 +395,6 @@ uft_bbc_ctx_t *uft_bbc_create(void);
 
 
 
-/**
- * @brief Open disk image with explicit format
- * @param ctx Context
- * @param data Image data
- * @param size Image size
- * @param is_adfs True for ADFS, false for DFS
- * @param variant DFS variant (if DFS)
- * @param geometry Disk geometry
- * @param copy Copy data flag
- * @return UFT_BBC_OK or error code
- */
-int uft_bbc_open_with_format(uft_bbc_ctx_t *ctx, const uint8_t *data, size_t size,
-                             bool is_adfs, uft_dfs_variant_t variant,
-                             uft_dfs_geometry_t geometry, bool copy);
 
 
 
@@ -416,14 +402,6 @@ int uft_bbc_open_with_format(uft_bbc_ctx_t *ctx, const uint8_t *data, size_t siz
  * Detection API
  *===========================================================================*/
 
-/**
- * @brief Detect disk format
- * @param data Image data
- * @param size Image size
- * @param result Output detection result
- * @return UFT_BBC_OK or error code
- */
-int uft_bbc_detect(const uint8_t *data, size_t size, uft_bbc_detect_t *result);
 
 
 
@@ -431,29 +409,7 @@ int uft_bbc_detect(const uint8_t *data, size_t size, uft_bbc_detect_t *result);
  * Sector I/O API
  *===========================================================================*/
 
-/**
- * @brief Read sector
- * @param ctx Context
- * @param track Track number
- * @param side Side (0 or 1)
- * @param sector Sector number
- * @param buffer Output buffer (256 or 512 bytes)
- * @return UFT_BBC_OK or error code
- */
-int uft_bbc_read_sector(uft_bbc_ctx_t *ctx, int track, int side, int sector,
-                        uint8_t *buffer);
 
-/**
- * @brief Write sector
- * @param ctx Context
- * @param track Track number
- * @param side Side (0 or 1)
- * @param sector Sector number
- * @param data Data to write
- * @return UFT_BBC_OK or error code
- */
-int uft_bbc_write_sector(uft_bbc_ctx_t *ctx, int track, int side, int sector,
-                         const uint8_t *data);
 
 
 /*===========================================================================
@@ -471,152 +427,27 @@ int uft_bbc_write_sector(uft_bbc_ctx_t *ctx, int track, int side, int sector,
  * Directory API
  *===========================================================================*/
 
-/**
- * @brief Read directory listing
- * @param ctx Context
- * @param side Side (0 or 1 for DFS, ignored for ADFS)
- * @param directory Directory letter (DFS) or path (ADFS), NULL for all/root
- * @param dir Output directory structure
- * @return UFT_BBC_OK or error code
- */
-int uft_bbc_read_directory(uft_bbc_ctx_t *ctx, int side, const char *directory,
-                           uft_bbc_dir_t *dir);
 
 
-/**
- * @brief Find file by name
- * @param ctx Context
- * @param side Side (0 or 1)
- * @param filename Full filename (D.NAME or NAME)
- * @param entry Output file entry
- * @return UFT_BBC_OK or UFT_BBC_ERR_NOT_FOUND
- */
-int uft_bbc_find_file(uft_bbc_ctx_t *ctx, int side, const char *filename,
-                      uft_bbc_file_t *entry);
 
-/**
- * @brief Iterate over files
- * @param ctx Context
- * @param side Side (0 or 1)
- * @param callback Called for each file
- * @param user_data User data passed to callback
- * @return Number of files processed
- */
-int uft_bbc_foreach_file(uft_bbc_ctx_t *ctx, int side,
-                         int (*callback)(const uft_bbc_file_t *entry, void *user),
-                         void *user_data);
 
 /*===========================================================================
  * File Operations API
  *===========================================================================*/
 
-/**
- * @brief Extract file data
- * @param ctx Context
- * @param entry File entry
- * @param buffer Output buffer
- * @param buffer_size Buffer size
- * @return Bytes extracted or negative error
- */
-int uft_bbc_extract_file(uft_bbc_ctx_t *ctx, const uft_bbc_file_t *entry,
-                         uint8_t *buffer, size_t buffer_size);
-
-/**
- * @brief Extract file to disk
- * @param ctx Context
- * @param entry File entry
- * @param path Output file path
- * @return UFT_BBC_OK or error code
- */
-int uft_bbc_extract_to_file(uft_bbc_ctx_t *ctx, const uft_bbc_file_t *entry,
-                            const char *path);
-
-/**
- * @brief Inject file into disk image
- * @param ctx Context
- * @param side Side (0 or 1)
- * @param filename BBC filename (e.g., "$.PROGRAM" or "PROGRAM")
- * @param load_addr Load address
- * @param exec_addr Exec address
- * @param data File data
- * @param length Data length
- * @return UFT_BBC_OK or error code
- */
-int uft_bbc_inject_file(uft_bbc_ctx_t *ctx, int side, const char *filename,
-                        uint32_t load_addr, uint32_t exec_addr,
-                        const uint8_t *data, size_t length);
-
-/**
- * @brief Inject file from disk
- * @param ctx Context
- * @param side Side (0 or 1)
- * @param filename BBC filename
- * @param load_addr Load address
- * @param exec_addr Exec address
- * @param path Source file path
- * @return UFT_BBC_OK or error code
- */
-int uft_bbc_inject_from_file(uft_bbc_ctx_t *ctx, int side, const char *filename,
-                             uint32_t load_addr, uint32_t exec_addr,
-                             const char *path);
 
 
-/**
- * @brief Rename file
- * @param ctx Context
- * @param side Side (0 or 1)
- * @param old_name Current filename
- * @param new_name New filename
- * @return UFT_BBC_OK or error code
- */
-int uft_bbc_rename_file(uft_bbc_ctx_t *ctx, int side, const char *old_name,
-                        const char *new_name);
 
-/**
- * @brief Lock/unlock file
- * @param ctx Context
- * @param side Side (0 or 1)
- * @param filename Filename
- * @param locked True to lock, false to unlock
- * @return UFT_BBC_OK or error code
- */
-int uft_bbc_set_locked(uft_bbc_ctx_t *ctx, int side, const char *filename,
-                       bool locked);
 
-/**
- * @brief Set file attributes (ADFS)
- * @param ctx Context
- * @param filename Filename
- * @param attributes Attribute byte
- * @return UFT_BBC_OK or error code
- */
-int uft_bbc_set_attributes(uft_bbc_ctx_t *ctx, const char *filename,
-                           uint8_t attributes);
+
+
+
 
 /*===========================================================================
  * Image Creation API
  *===========================================================================*/
 
-/**
- * @brief Create blank DFS disk image
- * @param buffer Output buffer
- * @param geometry Disk geometry
- * @param title Disk title (optional)
- * @param boot_option Boot option
- * @return Image size or negative error
- */
-int uft_bbc_create_dfs_image(uint8_t *buffer, uft_dfs_geometry_t geometry,
-                             const char *title, uft_dfs_boot_t boot_option);
 
-/**
- * @brief Create blank ADFS disk image
- * @param buffer Output buffer
- * @param format ADFS format
- * @param title Disk title (optional)
- * @return Image size or negative error
- */
-int uft_bbc_create_adfs_image(uint8_t *buffer, uft_adfs_format_t format,
-                              const char *title);
 
 
 /*===========================================================================
@@ -674,16 +505,6 @@ const char *uft_bbc_error_string(int error);
 
 
 
-/**
- * @brief Export directory as JSON
- * @param ctx Context
- * @param side Side (0 or 1)
- * @param buffer Output buffer
- * @param buffer_size Buffer size
- * @return Bytes written or negative error
- */
-int uft_bbc_directory_to_json(uft_bbc_ctx_t *ctx, int side, char *buffer,
-                              size_t buffer_size);
 
 
 /*===========================================================================

@@ -70,8 +70,6 @@ typedef struct {
  */
 typedef struct uft_pll_s uft_pll_t;
 
-/* Configuration */
-void uft_pll_config_default(uft_pll_config_t* config, int encoding);
 
 /* Lifecycle */
 uft_pll_t* uft_pll_create(const uft_pll_config_t* config);
@@ -81,8 +79,6 @@ void uft_pll_destroy(uft_pll_t* pll);
 int uft_pll_process(uft_pll_t* pll, uint32_t flux_time_ns,
                     uint8_t* bits, int max_bits);
 
-int uft_pll_decode(uft_pll_t* pll, const uint32_t* flux,
-                   size_t flux_count, uint8_t* bits, size_t max_bits);
 
 
 

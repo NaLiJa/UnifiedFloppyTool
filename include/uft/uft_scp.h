@@ -97,28 +97,7 @@ int uft_scp_open(uft_scp_image_t *img, const char *path);
 void uft_scp_close(uft_scp_image_t *img);
 
 
-/* Read per-revolution descriptors for a given track entry. Caller provides array revs[num_revs]. */
-int uft_scp_read_track_revs(uft_scp_image_t *img, uint8_t track_index,
-                           uft_scp_track_rev_t *revs, size_t revs_cap,
-                           uft_scp_track_header_t *out_trk_hdr);
 
-/*
- * Read flux transition times for a given track + revolution.
- *
- * Output:
- *  - transitions_out: cumulative times (ticks) of each transition in the revolution.
- *    (No implicit index, first transition is relative to 0.)
- *  - out_count: number of transitions written
- *  - out_total_time: cumulative time at end of revolution (ticks)
- *
- * The function will:
- *  - parse delta list (16-bit big endian values)
- *  - convert to cumulative times
- *  - stop early if transitions_cap is reached (returns UFT_SCP_EBOUNDS but still writes what fits)
- */
-int uft_scp_read_rev_transitions(uft_scp_image_t *img, uint8_t track_index, uint8_t rev_index,
-                                uint32_t *transitions_out, size_t transitions_cap,
-                                size_t *out_count, uint32_t *out_total_time);
 
 #ifdef __cplusplus
 }

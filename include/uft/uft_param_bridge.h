@@ -362,36 +362,13 @@ const char **uft_params_list_presets_in_category(uft_param_category_t category);
  */
 const uft_preset_t *uft_params_get_preset_info(const char *name);
 
-/**
- * @brief Eigenes Preset speichern
- */
-uft_error_t uft_params_save_preset(
-    const uft_params_t *params,
-    const char *name,
-    const char *description
-);
 
 /* ═══════════════════════════════════════════════════════════════════════════════
  * API Functions - Validation
  * ═══════════════════════════════════════════════════════════════════════════════ */
 
 
-/**
- * @brief Einzelnen Parameter validieren
- */
-bool uft_params_validate_value(
-    const char *name,
-    const char *value,
-    char **error_message
-);
 
-/**
- * @brief Parameter-Kombination validieren
- */
-bool uft_params_validate_combination(
-    const uft_params_t *params,
-    char **error_message
-);
 
 /* ═══════════════════════════════════════════════════════════════════════════════
  * API Functions - GUI Bridge
@@ -460,33 +437,8 @@ uft_params_t *uft_params_merge(
  * API Functions - Session Export
  * ═══════════════════════════════════════════════════════════════════════════════ */
 
-/**
- * @brief Parameter als Shell-Script exportieren
- */
-uft_error_t uft_params_export_shell(
-    const uft_params_t *params,
-    const char *path,
-    const char *input_file,
-    const char *output_file
-);
 
-/**
- * @brief Parameter als Batch-Datei exportieren
- */
-uft_error_t uft_params_export_batch(
-    const uft_params_t *params,
-    const char *path,
-    const char *input_file,
-    const char *output_file
-);
 
-/**
- * @brief Parameter als Python-Script exportieren
- */
-uft_error_t uft_params_export_python(
-    const uft_params_t *params,
-    const char *path
-);
 
 /* ═══════════════════════════════════════════════════════════════════════════════
  * Utility Functions

@@ -63,25 +63,8 @@ typedef struct {
  * YDSK File I/O
  * ============================================================================ */
 
-/**
- * @brief Read YDSK file
- */
-uft_error_t uft_ydsk_read(const char *path,
-                          uft_disk_image_t **out_disk,
-                          ydsk_read_result_t *result);
 
-/**
- * @brief Read YDSK from memory
- */
-uft_error_t uft_ydsk_read_mem(const uint8_t *data, size_t size,
-                              uft_disk_image_t **out_disk,
-                              ydsk_read_result_t *result);
 
-/**
- * @brief Write YDSK file
- */
-uft_error_t uft_ydsk_write(const uft_disk_image_t *disk,
-                           const char *path);
 
 /**
  * @brief Validate YDSK header

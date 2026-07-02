@@ -355,51 +355,17 @@ int uft_fat12_init(uft_fat12_t* fs, uint8_t* data, size_t size, bool copy);
 void uft_fat12_free(uft_fat12_t* fs);
 
 
-/**
- * @brief Detect format from disk image
- * @param data Disk image data
- * @param size Data size
- * @return Pointer to matching format or NULL
- */
-const uft_fat12_format_t* uft_fat12_detect_format(const uint8_t* data, 
-                                                   size_t size);
 
 
 
 
 
-/**
- * @brief Write cluster data
- */
-int uft_fat12_write_cluster(uft_fat12_t* fs, uint16_t cluster, 
-                            const uint8_t* buffer);
 
 /*============================================================================
  * Directory Functions
  *============================================================================*/
 
-/**
- * @brief List directory contents
- * @param fs Filesystem
- * @param path Directory path (NULL or "" for root)
- * @param callback Called for each entry
- * @param user_data User data passed to callback
- * @return Number of entries or -1 on error
- */
-int uft_fat12_list_dir(uft_fat12_t* fs, const char* path,
-                       void (*callback)(const uft_fat12_dirent_t* entry,
-                                        void* user_data),
-                       void* user_data);
 
-/**
- * @brief Find file in directory
- * @param fs Filesystem
- * @param path File path
- * @param entry Output directory entry
- * @return 0 if found, -1 if not found
- */
-int uft_fat12_find_file(uft_fat12_t* fs, const char* path,
-                        uft_fat12_dirent_t* entry);
 
 /**
  * @brief Create directory entry
@@ -416,15 +382,6 @@ int uft_fat12_delete(uft_fat12_t* fs, const char* path);
  * File Functions
  *============================================================================*/
 
-/**
- * @brief Open file
- * @param fs Filesystem
- * @param path File path
- * @param mode Open mode ('r', 'w', 'a')
- * @return File handle or NULL on error
- */
-uft_fat12_file_t* uft_fat12_fopen(uft_fat12_t* fs, const char* path, 
-                                   const char* mode);
 
 
 
@@ -437,11 +394,6 @@ uft_fat12_file_t* uft_fat12_fopen(uft_fat12_t* fs, const char* path,
 
 
 
-/**
- * @brief Get filesystem statistics
- */
-void uft_fat12_get_stats(uft_fat12_t* fs, uint32_t* total_clusters,
-                         uint32_t* free_clusters, uint32_t* bad_clusters);
 
 
 #ifdef __cplusplus

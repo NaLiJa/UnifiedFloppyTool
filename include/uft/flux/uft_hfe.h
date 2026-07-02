@@ -206,55 +206,9 @@ static inline bool uft_hfe_check_signature(const uint8_t *data) {
 
 
 
-/**
- * @brief Get track data offset and length
- * @param hfe Context
- * @param track Track number
- * @param offset Output: byte offset in file
- * @param length Output: track length (for one head)
- * @return 0 on success, -1 if track out of range
- */
-int uft_hfe_get_track_info(const uft_hfe_t *hfe, uint8_t track,
-                           uint32_t *offset, uint32_t *length);
 
-/**
- * @brief Deinterleave track data for one head
- * 
- * HFE stores track data interleaved in 256-byte blocks:
- * Block 0: Head 0, Block 1: Head 1, Block 2: Head 0, etc.
- * 
- * @param interleaved Source interleaved data
- * @param track_len Total track length (both heads)
- * @param head Head number (0 or 1)
- * @param output Output buffer (must be track_len/2 bytes)
- */
-void uft_hfe_deinterleave(const uint8_t *interleaved, uint32_t track_len,
-                          uint8_t head, uint8_t *output);
 
-/**
- * @brief Interleave track data for writing
- * @param head0 Head 0 data
- * @param head1 Head 1 data (can be NULL for single-sided)
- * @param track_len Length per head
- * @param output Output buffer (must be track_len*2 bytes)
- */
-void uft_hfe_interleave(const uint8_t *head0, const uint8_t *head1,
-                        uint32_t track_len, uint8_t *output);
 
-/**
- * @brief Create HFE header
- * @param header Output header structure
- * @param tracks Number of tracks
- * @param sides Number of sides (1 or 2)
- * @param encoding Track encoding
- * @param bitrate Data rate in kbps
- * @param mode Interface mode
- */
-void uft_hfe_create_header(uft_hfe_header_t *header,
-                           uint8_t tracks, uint8_t sides,
-                           uft_hfe_encoding_t encoding,
-                           uint16_t bitrate,
-                           uft_hfe_interface_mode_t mode);
 
 #ifdef __cplusplus
 }

@@ -326,15 +326,6 @@ int uft_fdi_set_fat(uft_fdi_image_t* img, uint16_t cluster, uint16_t value);
  */
 uint16_t uft_fdi_find_free_cluster(const uft_fdi_image_t* img);
 
-/**
- * @brief Open directory for reading
- * @param img Disk image
- * @param path Directory path (NULL or "" for root)
- * @param first_cluster Output: first cluster of directory
- * @return 0 on success
- */
-int uft_fdi_open_dir(const uft_fdi_image_t* img, const char* path,
-                     uint16_t* first_cluster);
 
 /**
  * @brief Read next directory entry
@@ -347,15 +338,6 @@ int uft_fdi_open_dir(const uft_fdi_image_t* img, const char* path,
 int uft_fdi_read_dir_entry(const uft_fdi_image_t* img, uint16_t cluster,
                            uint16_t index, uft_fdi_dir_entry_t* entry);
 
-/**
- * @brief Find file by name
- * @param img Disk image
- * @param path Full path to file
- * @param entry Output directory entry
- * @return 0 on success
- */
-int uft_fdi_find_file(const uft_fdi_image_t* img, const char* path,
-                      uft_fdi_dir_entry_t* entry);
 
 /**
  * @brief Extract file to buffer
@@ -378,8 +360,6 @@ int uft_fdi_extract_file(const uft_fdi_image_t* img,
  */
 typedef void (*uft_fdi_dir_callback_t)(const uft_fdi_dir_entry_t* entry,
                                         void* user_data);
-int uft_fdi_list_dir(const uft_fdi_image_t* img, const char* path,
-                     uft_fdi_dir_callback_t callback, void* user_data);
 
 /**
  * @brief Print filesystem information

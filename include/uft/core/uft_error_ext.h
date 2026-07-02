@@ -96,9 +96,6 @@ static inline bool uft_failed(uft_rc_t rc)  { return rc != UFT_SUCCESS; }
 
 /* ------------------------------------------------------------------------ */
 /* Thread-local context setters                                             */
-/* ------------------------------------------------------------------------ */
-void uft_error_set_context(const char* file, int line,
-                           const char* function, const char* message);
 
 /* ------------------------------------------------------------------------ */
 /* Helper macros                                                            */

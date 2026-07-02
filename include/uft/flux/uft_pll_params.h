@@ -245,17 +245,7 @@ const char* uft_pll_preset_name(uft_pll_preset_id_t preset);
 
 
 
-/**
- * @brief Adjust params for specific platform
- */
-void uft_pll_params_adjust_for_platform(uft_pll_params_t* params, 
-                                         const char* platform);
 
-/**
- * @brief Adjust params for specific hardware
- */
-void uft_pll_params_adjust_for_hardware(uft_pll_params_t* params,
-                                         const char* hardware);
 
 #ifdef __cplusplus
 }

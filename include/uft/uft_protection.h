@@ -570,273 +570,35 @@ void uft_prot_result_free(uft_prot_result_t* result);
  * PUBLIC API - Analysis Functions
  *============================================================================*/
 
-/**
- * @brief Analyze disk for copy protection
- * @param flux_data Raw flux data
- * @param flux_size Size of flux data
- * @param config Analysis configuration
- * @param result Result structure (output)
- * @return 0 on success, negative on error
- */
-int uft_prot_analyze_flux(
-    const uint8_t* flux_data,
-    size_t flux_size,
-    const uft_prot_config_t* config,
-    uft_prot_result_t* result
-);
 
-/**
- * @brief Analyze decoded track data for copy protection
- * @param bitstream Decoded bitstream
- * @param bit_count Number of bits
- * @param cylinder Cylinder number
- * @param head Head number
- * @param config Analysis configuration
- * @param track_result Track result (output)
- * @return 0 on success, negative on error
- */
-int uft_prot_analyze_track(
-    const uint8_t* bitstream,
-    uint32_t bit_count,
-    uint8_t cylinder,
-    uint8_t head,
-    const uft_prot_config_t* config,
-    uft_prot_track_t* track_result
-);
 
 
 /*============================================================================
  * PUBLIC API - C64 Protection Suite (S-001)
  *============================================================================*/
 
-/**
- * @brief Detect V-MAX! protection
- * @param bitstream GCR-encoded bitstream
- * @param bit_count Number of bits
- * @param track Track number
- * @param scheme Output scheme details
- * @return Confidence 0-100
- */
-uint8_t uft_prot_c64_detect_vmax(
-    const uint8_t* bitstream,
-    uint32_t bit_count,
-    uint8_t track,
-    uft_prot_scheme_t* scheme
-);
 
-/**
- * @brief Detect RapidLok protection
- * @param bitstream GCR-encoded bitstream
- * @param bit_count Number of bits
- * @param track Track number
- * @param scheme Output scheme details
- * @return Confidence 0-100
- */
-uint8_t uft_prot_c64_detect_rapidlok(
-    const uint8_t* bitstream,
-    uint32_t bit_count,
-    uint8_t track,
-    uft_prot_scheme_t* scheme
-);
 
-/**
- * @brief Detect Vorpal protection
- * @param bitstream GCR-encoded bitstream
- * @param bit_count Number of bits
- * @param track Track number
- * @param scheme Output scheme details
- * @return Confidence 0-100
- */
-uint8_t uft_prot_c64_detect_vorpal(
-    const uint8_t* bitstream,
-    uint32_t bit_count,
-    uint8_t track,
-    uft_prot_scheme_t* scheme
-);
 
-/**
- * @brief Detect Fat Track protection
- * @param flux_samples Flux timing samples
- * @param sample_count Number of samples
- * @param track_count Total tracks (>35 indicates fat tracks)
- * @param scheme Output scheme details
- * @return Confidence 0-100
- */
-uint8_t uft_prot_c64_detect_fat_track(
-    const uint32_t* flux_samples,
-    size_t sample_count,
-    uint8_t track_count,
-    uft_prot_scheme_t* scheme
-);
 
-/**
- * @brief Detect GCR timing variations
- * @param flux_samples Flux timing samples
- * @param sample_count Number of samples
- * @param nominal_bitcell_ns Nominal bitcell time
- * @param indicators Output indicators array
- * @param max_indicators Maximum indicators to return
- * @return Number of indicators found
- */
-uint8_t uft_prot_c64_detect_gcr_timing(
-    const uint32_t* flux_samples,
-    size_t sample_count,
-    uint32_t nominal_bitcell_ns,
-    uft_prot_indicator_t* indicators,
-    uint8_t max_indicators
-);
 
 /*============================================================================
  * PUBLIC API - Apple II Protection Suite (S-002)
  *============================================================================*/
 
-/**
- * @brief Detect Nibble Count protection
- * @param track_data Raw track data
- * @param track_size Track size in bytes
- * @param scheme Output scheme details
- * @return Confidence 0-100
- */
-uint8_t uft_prot_apple_detect_nibble_count(
-    const uint8_t* track_data,
-    size_t track_size,
-    uint8_t track,
-    uft_prot_scheme_t* scheme
-);
 
-/**
- * @brief Detect Timing Bit protection
- * @param flux_samples Flux timing samples
- * @param sample_count Number of samples
- * @param track Track number
- * @param scheme Output scheme details
- * @return Confidence 0-100
- */
-uint8_t uft_prot_apple_detect_timing_bits(
-    const uint32_t* flux_samples,
-    size_t sample_count,
-    uint8_t track,
-    uft_prot_scheme_t* scheme
-);
 
-/**
- * @brief Detect Spiral Track protection
- * @param quarter_track_data Data from multiple quarter-tracks
- * @param track_count Number of quarter-tracks
- * @param scheme Output scheme details
- * @return Confidence 0-100
- */
-uint8_t uft_prot_apple_detect_spiral(
-    const uint8_t** quarter_track_data,
-    size_t* track_sizes,
-    uint8_t track_count,
-    uft_prot_scheme_t* scheme
-);
 
-/**
- * @brief Detect Cross-Track Sync protection
- * @param track_data Array of track data
- * @param track_sizes Array of track sizes
- * @param track_count Number of tracks
- * @param scheme Output scheme details
- * @return Confidence 0-100
- */
-uint8_t uft_prot_apple_detect_cross_track(
-    const uint8_t** track_data,
-    const size_t* track_sizes,
-    uint8_t track_count,
-    uft_prot_scheme_t* scheme
-);
 
-/**
- * @brief Detect custom address/data marks
- * @param track_data Track data
- * @param track_size Track size
- * @param indicators Output indicators
- * @param max_indicators Maximum indicators
- * @return Number of indicators found
- */
-uint8_t uft_prot_apple_detect_custom_marks(
-    const uint8_t* track_data,
-    size_t track_size,
-    uft_prot_indicator_t* indicators,
-    uint8_t max_indicators
-);
 
 /*============================================================================
  * PUBLIC API - Atari ST Protection Suite (S-003)
  *============================================================================*/
 
-/**
- * @brief Detect Copylock ST protection
- * @param bitstream MFM-encoded bitstream
- * @param bit_count Number of bits
- * @param track Track number
- * @param scheme Output scheme details
- * @return Confidence 0-100
- */
-uint8_t uft_prot_atari_detect_copylock(
-    const uint8_t* bitstream,
-    uint32_t bit_count,
-    uint8_t track,
-    uft_prot_scheme_t* scheme
-);
 
-/**
- * @brief Detect Macrodos protection
- * @param bitstream MFM-encoded bitstream
- * @param bit_count Number of bits
- * @param track Track number
- * @param scheme Output scheme details
- * @return Confidence 0-100
- */
-uint8_t uft_prot_atari_detect_macrodos(
-    const uint8_t* bitstream,
-    uint32_t bit_count,
-    uint8_t track,
-    uft_prot_scheme_t* scheme
-);
 
-/**
- * @brief Detect Flaschel protection (FDC bug exploit)
- * @param sector_data Sector data array
- * @param sector_count Number of sectors
- * @param scheme Output scheme details
- * @return Confidence 0-100
- */
-uint8_t uft_prot_atari_detect_flaschel(
-    const uint8_t** sector_data,
-    uint8_t sector_count,
-    uft_prot_scheme_t* scheme
-);
 
-/**
- * @brief Detect Fuzzy Sector protection
- * @param sector_reads Multiple reads of same sector
- * @param read_count Number of reads
- * @param sector_size Sector size
- * @param scheme Output scheme details
- * @return Confidence 0-100
- */
-uint8_t uft_prot_atari_detect_fuzzy(
-    const uint8_t** sector_reads,
-    uint8_t read_count,
-    size_t sector_size,
-    uft_prot_scheme_t* scheme
-);
 
-/**
- * @brief Detect Long Track protection
- * @param track_length Actual track length in bytes
- * @param expected_length Expected length (typically 6250)
- * @param scheme Output scheme details
- * @return Confidence 0-100
- */
-uint8_t uft_prot_atari_detect_long_track(
-    uint32_t track_length,
-    uint32_t expected_length,
-    uft_prot_scheme_t* scheme
-);
 
 /*============================================================================
  * PUBLIC API - Utility Functions
@@ -863,31 +625,7 @@ const char* uft_prot_platform_name(uft_platform_t platform);
  */
 const char* uft_prot_indicator_name(uft_indicator_type_t type);
 
-/**
- * @brief Export protection analysis to JSON
- * @param result Analysis result
- * @param buffer Output buffer
- * @param buffer_size Buffer size
- * @return Bytes written, or negative on error
- */
-int uft_prot_export_json(
-    const uft_prot_result_t* result,
-    char* buffer,
-    size_t buffer_size
-);
 
-/**
- * @brief Export protection analysis to Markdown report
- * @param result Analysis result
- * @param buffer Output buffer
- * @param buffer_size Buffer size
- * @return Bytes written, or negative on error
- */
-int uft_prot_export_markdown(
-    const uft_prot_result_t* result,
-    char* buffer,
-    size_t buffer_size
-);
 
 /**
  * @brief Print protection analysis summary

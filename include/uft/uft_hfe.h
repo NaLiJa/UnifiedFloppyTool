@@ -193,49 +193,8 @@ uft_hfe_image_t *uft_hfe_create(int tracks, int sides,
  * Track Operations
  *============================================================================*/
 
-/**
- * @brief Get track data for one side
- *
- * HFE stores both sides interleaved in 256-byte chunks.
- * This extracts data for a single side.
- *
- * @param img Image handle
- * @param track Track number
- * @param side Side (0 or 1)
- * @param buffer Output buffer
- * @param buffer_len Buffer size
- * @return Bytes copied
- */
-uint32_t uft_hfe_get_track(const uft_hfe_image_t *img,
-                           int track, int side,
-                           uint8_t *buffer, uint32_t buffer_len);
 
-/**
- * @brief Set track data for one side
- * @param img Image handle
- * @param track Track number
- * @param side Side (0 or 1)
- * @param data Track data (bitstream, LSB first)
- * @param data_len Data length in bytes
- */
-void uft_hfe_set_track(uft_hfe_image_t *img,
-                       int track, int side,
-                       const uint8_t *data, uint32_t data_len);
 
-/**
- * @brief Convert HFE to flux samples
- *
- * @param hfe_data HFE bitstream data
- * @param hfe_len Data length
- * @param bitrate Bitrate in kbit/s
- * @param sample_rate Target sample rate
- * @param samples Output samples
- * @param max_samples Maximum samples
- * @return Number of samples
- */
-uint32_t uft_hfe_to_flux(const uint8_t *hfe_data, uint32_t hfe_len,
-                         uint32_t bitrate, uint32_t sample_rate,
-                         uint32_t *samples, uint32_t max_samples);
 
 /*============================================================================
  * Bit Manipulation

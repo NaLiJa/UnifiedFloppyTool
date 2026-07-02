@@ -262,42 +262,15 @@ const char* uft_format_name(uft_format_id_t id);
 
 
 
-/**
- * @brief Get all formats in category
- */
-size_t uft_format_list_by_category(uft_format_category_t cat,
-                                    uft_format_id_t *out, size_t max);
 
-/**
- * @brief Get all formats for platform
- */
-size_t uft_format_list_by_platform(const char *platform,
-                                    uft_format_id_t *out, size_t max);
 
 /*===========================================================================
  * Detection Functions
  *===========================================================================*/
 
-/**
- * @brief Detect format from file
- */
-int uft_format_detect_file(const char *path,
-                           uft_format_detect_result_t *result);
-
-/**
- * @brief Detect format from buffer
- */
-int uft_format_detect_buffer(const uint8_t *data, size_t size,
-                             const char *ext,
-                             uft_format_detect_result_t *result);
 
 
-/**
- * @brief Probe format (detailed detection)
- */
-int uft_format_probe(const uint8_t *data, size_t size,
-                     uft_format_id_t hint,
-                     uft_format_detect_result_t *result);
+
 
 /*===========================================================================
  * Utility Functions

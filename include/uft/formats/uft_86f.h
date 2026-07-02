@@ -136,11 +136,6 @@ typedef struct uft_86f_context uft_86f_t;
 bool uft_86f_probe(const char *path);
 
 
-/**
- * @brief Create new 86F file
- */
-uft_86f_t* uft_86f_create(const char *path, int tracks, int sides,
-                           int encoding, int rpm);
 
 
 /*===========================================================================
@@ -155,54 +150,17 @@ uft_86f_t* uft_86f_create(const char *path, int tracks, int sides,
  * TRACK OPERATIONS
  *===========================================================================*/
 
-/**
- * @brief Get track header
- */
-int uft_86f_get_track_header(uft_86f_t *ctx, int track, int side,
-                              uft_86f_track_header_t *header);
 
-/**
- * @brief Read track bitstream
- */
-int uft_86f_read_track_bits(uft_86f_t *ctx, int track, int side,
-                             uint8_t *bits, size_t max_bytes,
-                             uint32_t *bit_count);
 
-/**
- * @brief Write track bitstream
- */
-int uft_86f_write_track_bits(uft_86f_t *ctx, int track, int side,
-                              const uint8_t *bits, uint32_t bit_count,
-                              int encoding, int data_rate);
 
-/**
- * @brief Read track surface data (weak bits)
- */
-int uft_86f_read_surface(uft_86f_t *ctx, int track, int side,
-                          uint8_t *surface, size_t max_bytes);
 
 /*===========================================================================
  * SECTOR OPERATIONS
  *===========================================================================*/
 
 
-/**
- * @brief Get sector info
- */
-int uft_86f_get_sector_info(uft_86f_t *ctx, int track, int side, int index,
-                             uft_86f_sector_t *sector);
 
-/**
- * @brief Read sector data
- */
-int uft_86f_read_sector(uft_86f_t *ctx, int track, int side, int sector,
-                         uint8_t *buffer, size_t size);
 
-/**
- * @brief Write sector data
- */
-int uft_86f_write_sector(uft_86f_t *ctx, int track, int side, int sector,
-                          const uint8_t *buffer, size_t size);
 
 /*===========================================================================
  * CONVERSION

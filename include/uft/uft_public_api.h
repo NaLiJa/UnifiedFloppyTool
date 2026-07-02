@@ -87,12 +87,6 @@ uft_error_t uft_detect_format(const char *path,
                               uft_format_id_t *out_format,
                               uint8_t *out_confidence);
 
-/**
- * @brief Detect format from memory
- */
-uft_error_t uft_detect_format_mem(const uint8_t *data, size_t size,
-                                  uft_format_id_t *out_format,
-                                  uint8_t *out_confidence);
 
 
 /**
@@ -115,8 +109,6 @@ typedef struct {
     
 } uft_format_info_t;
 
-uft_error_t uft_get_format_info(uft_format_id_t format,
-                                uft_format_info_t *out_info);
 
 
 /* ============================================================================
@@ -134,23 +126,7 @@ typedef struct {
 } uft_read_options_t;
 
 
-/**
- * @brief Read disk image from file
- * @param path File path
- * @param out_disk Output: disk image (caller must free with uft_disk_free)
- * @param opts Read options (NULL for defaults)
- * @return UFT_OK on success
- */
-uft_error_t uft_read(const char *path,
-                     uft_disk_image_t **out_disk,
-                     const uft_read_options_t *opts);
 
-/**
- * @brief Read disk image from memory
- */
-uft_error_t uft_read_mem(const uint8_t *data, size_t size,
-                         uft_disk_image_t **out_disk,
-                         const uft_read_options_t *opts);
 
 /**
  * @brief Write options
@@ -163,30 +139,7 @@ typedef struct {
 } uft_write_options_t;
 
 
-/**
- * @brief Write disk image to file
- * @param disk Disk image
- * @param path Output path
- * @param opts Write options (NULL for defaults)
- * @return UFT_OK on success
- */
-uft_error_t uft_write(const uft_disk_image_t *disk,
-                      const char *path,
-                      const uft_write_options_t *opts);
 
-/**
- * @brief Write disk image to memory
- * @param disk Disk image
- * @param buffer Output buffer
- * @param buffer_size Buffer size
- * @param out_size Output: actual size written
- * @param opts Write options (NULL for defaults)
- * @return UFT_OK on success
- */
-uft_error_t uft_write_mem(const uft_disk_image_t *disk,
-                          uint8_t *buffer, size_t buffer_size,
-                          size_t *out_size,
-                          const uft_write_options_t *opts);
 
 /* ============================================================================
  * SECTION 5: DISK IMAGE ACCESS
@@ -206,32 +159,9 @@ typedef struct {
 } uft_geometry_t;
 #endif /* UFT_GEOMETRY_T_DEFINED */
 
-uft_error_t uft_get_geometry(const uft_disk_image_t *disk,
-                             uft_geometry_t *out_geom);
 
-/**
- * @brief Get track (borrowed reference)
- * @note Do NOT free the returned pointer
- */
-uft_track_t* uft_get_track(const uft_disk_image_t *disk,
-                           uint16_t track, uint8_t head);
 
-/**
- * @brief Get sector data (borrowed reference)
- * @note Do NOT free the returned pointer
- */
-const uint8_t* uft_get_sector_data(const uft_disk_image_t *disk,
-                                   uint16_t track, uint8_t head,
-                                   uint8_t sector,
-                                   size_t *out_size);
 
-/**
- * @brief Set sector data
- */
-uft_error_t uft_set_sector_data(uft_disk_image_t *disk,
-                                uint16_t track, uint8_t head,
-                                uint8_t sector,
-                                const uint8_t *data, size_t size);
 
 /* ============================================================================
  * SECTION 6: ANALYSIS & DIAGNOSTICS
@@ -269,11 +199,6 @@ typedef struct {
     
 } uft_analysis_t;
 
-/**
- * @brief Analyze disk image
- */
-uft_error_t uft_analyze(const uft_disk_image_t *disk,
-                        uft_analysis_t *out_analysis);
 
 /**
  * @brief Get diagnostic info for track
@@ -295,31 +220,12 @@ typedef struct {
     
 } uft_track_diag_t;
 
-uft_error_t uft_diagnose_track(const uft_disk_image_t *disk,
-                               uint16_t track, uint8_t head,
-                               uft_track_diag_t *out_diag);
 
 /* ============================================================================
  * SECTION 7: CONVERSION
  * ============================================================================ */
 
-/**
- * @brief Convert between formats
- * @param input_path Input file
- * @param output_path Output file
- * @param output_format Target format (0 = auto from extension)
- * @return UFT_OK on success
- */
-uft_error_t uft_convert(const char *input_path,
-                        const char *output_path,
-                        uft_format_id_t output_format);
 
-/**
- * @brief Convert disk in memory
- */
-uft_error_t uft_convert_disk(const uft_disk_image_t *src,
-                             uft_format_id_t target_format,
-                             uft_disk_image_t **out_dst);
 
 /* ============================================================================
  * SECTION 8: COPY & RECOVERY
@@ -338,12 +244,6 @@ typedef struct {
 } uft_copy_options_t;
 
 
-/**
- * @brief Copy disk with protection awareness
- */
-uft_error_t uft_copy(const uft_disk_image_t *src,
-                     uft_disk_image_t **out_dst,
-                     const uft_copy_options_t *opts);
 
 /**
  * @brief Recovery options
@@ -362,12 +262,6 @@ typedef struct {
 } uft_recovery_options_t;
 
 
-/**
- * @brief Attempt to recover damaged disk
- */
-uft_error_t uft_recover(const uft_disk_image_t *damaged,
-                        uft_disk_image_t **out_recovered,
-                        const uft_recovery_options_t *opts);
 
 /* ============================================================================
  * SECTION 9: PROGRESS & CALLBACKS

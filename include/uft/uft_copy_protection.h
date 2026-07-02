@@ -376,14 +376,6 @@ static inline bool uft_prot_detect_xemag_xelok_v2(const uft_copy_protection_ctx_
     return sector == UFT_PROT_XEMAG_SECTOR;
 }
 
-/**
- * @brief Detect all copy protection schemes
- * @param ctx Detection context
- * @param result Output result
- * @return true if protection detected
- */
-bool uft_copy_protection_detect(const uft_copy_protection_ctx_t *ctx,
-                                uft_protection_result_t *result);
 
 /**
  * @brief Get protection scheme name

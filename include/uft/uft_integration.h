@@ -168,22 +168,7 @@ typedef struct {
 } uft_flux_result_t;
 
 
-/**
- * @brief Decode flux stream
- */
-uft_error_t uft_flux_decode(uft_flux_decoder_t *decoder,
-                            const uint32_t *flux_times,
-                            size_t flux_count,
-                            uft_flux_result_t *result);
 
-/**
- * @brief Decode flux with multiple revolutions
- */
-uft_error_t uft_flux_decode_multi_rev(uft_flux_decoder_t *decoder,
-                                      const uint32_t **flux_times,
-                                      const size_t *flux_counts,
-                                      size_t rev_count,
-                                      uft_flux_result_t *result);
 
 
 
@@ -232,19 +217,7 @@ typedef struct {
     uint8_t  confidence;        /**< Decode confidence */
 } uft_bitstream_result_t;
 
-/**
- * @brief Create bitstream decoder
- */
-uft_bitstream_decoder_t* uft_bitstream_decoder_create(
-    const uft_bitstream_config_t *config);
 
-/**
- * @brief Decode bitstream to sectors
- */
-uft_error_t uft_bitstream_decode(uft_bitstream_decoder_t *decoder,
-                                 const uint8_t *bitstream,
-                                 size_t bit_count,
-                                 uft_bitstream_result_t *result);
 
 
 
@@ -284,13 +257,6 @@ typedef struct uft_track_driver {
 
 
 
-/**
- * @brief Auto-detect and decode track
- */
-uft_error_t uft_track_decode_auto(const uint8_t *track_data, size_t len,
-                                  uint8_t track_num, uint8_t head,
-                                  uft_bitstream_result_t *result,
-                                  const uft_track_driver_t **used_driver);
 
 /* ============================================================================
  * Filesystem Interface

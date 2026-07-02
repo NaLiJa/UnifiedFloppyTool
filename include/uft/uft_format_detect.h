@@ -145,15 +145,7 @@ bool uft_detect_buffer(const uint8_t* data, size_t size,
  */
 const char* uft_format_name(uft_detect_format_t format);
 
-/**
- * @brief Gibt Standard-Extension zurück
- */
-const char* uft_format_extension(uft_detect_format_t format);
 
-/**
- * @brief Prüft ob Format Schreiben unterstützt
- */
-bool uft_format_is_writable(uft_detect_format_t format);
 
 /**
  * @brief Prüft ob Format Flux-Level ist
@@ -177,30 +169,10 @@ typedef enum {
     D64_VARIANT_UNKNOWN
 } uft_d64_variant_t;
 
-/**
- * @brief Erkennt D64-Variante aus Größe
- */
-uft_d64_variant_t uft_d64_detect_variant(size_t file_size);
 
-/**
- * @brief Gibt D64-Varianten-Name zurück
- */
-const char* uft_d64_variant_name(uft_d64_variant_t variant);
 
-/**
- * @brief Berechnet Dateigröße für D64-Variante
- */
-size_t uft_d64_variant_size(uft_d64_variant_t variant);
 
-/**
- * @brief Anzahl Tracks für Variante
- */
-int uft_d64_variant_tracks(uft_d64_variant_t variant);
 
-/**
- * @brief Hat Variante Error-Info?
- */
-bool uft_d64_variant_has_errors(uft_d64_variant_t variant);
 
 // ============================================================================
 // ADF Specific Detection
@@ -240,15 +212,7 @@ typedef struct {
     bool        is_special;     ///< DMF, XDF, etc.
 } uft_img_geometry_t;
 
-/**
- * @brief Erkennt IMG/ST Geometrie aus Größe
- */
-const uft_img_geometry_t* uft_img_detect_geometry(size_t file_size);
 
-/**
- * @brief Liste aller bekannten IMG-Geometrien
- */
-const uft_img_geometry_t* uft_img_get_geometries(size_t* count);
 
 // ============================================================================
 // Implementation Helpers

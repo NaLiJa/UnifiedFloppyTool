@@ -227,42 +227,8 @@ typedef struct {
  * Decode API
  * ═══════════════════════════════════════════════════════════════════════════════ */
 
-/**
- * @brief Decode single track (async)
- * @param job Track job specification
- * @param result Output result structure
- * @return UFT_PARALLEL_OK on success
- */
-int uft_parallel_decode_track(
-    const uft_track_job_t *job,
-    uft_track_result_t *result
-);
 
-/**
- * @brief Decode multiple tracks in parallel
- * @param request Batch request
- * @param result Batch result (caller allocates)
- * @return UFT_PARALLEL_OK on success
- */
-int uft_parallel_decode_batch(
-    const uft_batch_request_t *request,
-    uft_batch_result_t *result
-);
 
-/**
- * @brief Decode all tracks from flux image
- * @param flux_image Flux image data
- * @param cylinders Number of cylinders
- * @param heads Number of heads (1 or 2)
- * @param result Batch result
- * @return UFT_PARALLEL_OK on success
- */
-int uft_parallel_decode_image(
-    const void *flux_image,
-    int cylinders,
-    int heads,
-    uft_batch_result_t *result
-);
 
 /* ═══════════════════════════════════════════════════════════════════════════════
  * Control API

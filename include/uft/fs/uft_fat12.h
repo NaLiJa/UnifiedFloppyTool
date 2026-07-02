@@ -802,11 +802,6 @@ typedef int (*uft_fat_dir_callback_t)(const uft_fat_entry_t *entry, void *user_d
 int uft_fat_foreach_entry(const uft_fat_ctx_t *ctx, uint32_t cluster,
                           uft_fat_dir_callback_t callback, void *user_data);
 
-/**
- * @brief Iterate recursively over all files
- */
-int uft_fat_foreach_file(const uft_fat_ctx_t *ctx, uint32_t cluster,
-                         uft_fat_dir_callback_t callback, void *user_data);
 
 /*===========================================================================
  * API - File Operations
@@ -933,16 +928,6 @@ int uft_fat_set_time(uft_fat_ctx_t *ctx, const char *path, time_t mtime);
  *===========================================================================*/
 
 
-/**
- * @brief Generate unique short filename
- * @param ctx Context
- * @param dir_cluster Directory cluster
- * @param lfn Long filename
- * @param sfn Output short name
- * @return 0 on success
- */
-int uft_fat_generate_sfn(const uft_fat_ctx_t *ctx, uint32_t dir_cluster,
-                         const char *lfn, char sfn[11]);
 
 
 
@@ -974,19 +959,7 @@ int uft_fat_repair(uft_fat_ctx_t *ctx, const uft_fat_validation_t *val);
  */
 typedef int (*uft_fat_recover_callback_t)(const uft_fat_entry_t *entry,
                                           bool can_recover, void *user_data);
-int uft_fat_find_deleted(const uft_fat_ctx_t *ctx, uft_fat_dir_t *dir,
-                         uft_fat_recover_callback_t callback, void *user_data);
 
-/**
- * @brief Attempt to recover deleted file
- * @param ctx Context
- * @param entry Deleted entry
- * @param output Output buffer
- * @param size In: buffer size, Out: recovered size
- * @return 0 on success
- */
-int uft_fat_recover_file(const uft_fat_ctx_t *ctx, const uft_fat_entry_t *entry,
-                         uint8_t *output, size_t *size);
 
 /*===========================================================================
  * API - Formatting

@@ -288,16 +288,6 @@ const char* uft_woz_disk_type_name(uint8_t disk_type);
 
 
 
-/**
- * @brief Decode nibbles from bitstream
- * @param bitstream Bitstream data
- * @param bit_count Number of bits
- * @param nibbles Output nibble buffer
- * @param max_nibbles Maximum nibbles
- * @return Number of nibbles decoded
- */
-int uft_woz_decode_nibbles(const uint8_t* bitstream, uint32_t bit_count,
-                           uint8_t* nibbles, int max_nibbles);
 
 #ifdef __cplusplus
 }

@@ -243,14 +243,6 @@ typedef void (*uft_process_callback_t)(
     bool is_stderr,
     void *user_data);
 
-/**
- * @brief Start async process
- */
-uft_async_process_t* uft_process_start_async(
-    const char *command,
-    const uft_process_options_t *options,
-    uft_process_callback_t callback,
-    void *user_data);
 
 
 

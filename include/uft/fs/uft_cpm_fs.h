@@ -440,43 +440,8 @@ typedef enum {
 uft_cpm_ctx_t *uft_cpm_create(void);
 
 
-/**
- * @brief Open a CP/M disk image
- * @param ctx Context
- * @param data Image data
- * @param size Data size
- * @param copy Whether to copy data (true) or reference it (false)
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_open(uft_cpm_ctx_t *ctx, 
-                           const uint8_t *data, size_t size,
-                           bool copy);
 
-/**
- * @brief Open with specific format
- * @param ctx Context
- * @param data Image data
- * @param size Data size
- * @param format Format to use
- * @param copy Whether to copy data
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_open_format(uft_cpm_ctx_t *ctx,
-                                   const uint8_t *data, size_t size,
-                                   uft_cpm_format_t format, bool copy);
 
-/**
- * @brief Open with custom DPB
- * @param ctx Context
- * @param data Image data
- * @param size Data size
- * @param dpb Custom disk parameter block
- * @param copy Whether to copy data
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_open_dpb(uft_cpm_ctx_t *ctx,
-                                const uint8_t *data, size_t size,
-                                const uft_cpm_dpb_t *dpb, bool copy);
 
 
 
@@ -484,15 +449,6 @@ uft_cpm_err_t uft_cpm_open_dpb(uft_cpm_ctx_t *ctx,
  * Detection Functions
  *===========================================================================*/
 
-/**
- * @brief Detect CP/M filesystem
- * @param data Image data
- * @param size Data size
- * @param result Detection result (output)
- * @return true if CP/M detected
- */
-bool uft_cpm_detect(const uint8_t *data, size_t size,
-                    uft_cpm_detect_t *result);
 
 
 
@@ -514,230 +470,32 @@ const char *uft_cpm_version_name(uft_cpm_version_t version);
  * Sector/Block Access
  *===========================================================================*/
 
-/**
- * @brief Convert track/sector/side to image offset
- * @param ctx Context
- * @param track Track number
- * @param sector Sector number
- * @param side Side number (0 or 1)
- * @return Byte offset or -1 on error
- */
-int32_t uft_cpm_sector_offset(const uft_cpm_ctx_t *ctx,
-                               uint8_t track, uint8_t sector, uint8_t side);
 
-/**
- * @brief Read a sector
- * @param ctx Context
- * @param track Track number
- * @param sector Sector number
- * @param side Side number
- * @param buffer Output buffer (must be sector_size bytes)
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_read_sector(const uft_cpm_ctx_t *ctx,
-                                   uint8_t track, uint8_t sector, uint8_t side,
-                                   uint8_t *buffer);
 
-/**
- * @brief Write a sector
- * @param ctx Context
- * @param track Track number
- * @param sector Sector number
- * @param side Side number
- * @param buffer Input buffer (must be sector_size bytes)
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_write_sector(uft_cpm_ctx_t *ctx,
-                                    uint8_t track, uint8_t sector, uint8_t side,
-                                    const uint8_t *buffer);
 
-/**
- * @brief Convert block number to sector list
- * @param ctx Context
- * @param block Block number
- * @param track_out Output track array
- * @param sector_out Output sector array
- * @param side_out Output side array
- * @param count_out Number of sectors in block
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_block_to_sectors(const uft_cpm_ctx_t *ctx,
-                                        uint16_t block,
-                                        uint8_t *track_out, uint8_t *sector_out,
-                                        uint8_t *side_out, uint8_t *count_out);
 
-/**
- * @brief Read a block
- * @param ctx Context
- * @param block Block number
- * @param buffer Output buffer (must be block_size bytes)
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_read_block(const uft_cpm_ctx_t *ctx,
-                                  uint16_t block, uint8_t *buffer);
 
-/**
- * @brief Write a block
- * @param ctx Context
- * @param block Block number
- * @param buffer Input buffer (must be block_size bytes)
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_write_block(uft_cpm_ctx_t *ctx,
-                                   uint16_t block, const uint8_t *buffer);
 
 /*===========================================================================
  * Directory Operations
  *===========================================================================*/
 
-/**
- * @brief Read directory
- * @param ctx Context
- * @param dir Directory listing (output)
- * @param user User number filter (-1 for all)
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_read_dir(const uft_cpm_ctx_t *ctx,
-                                uft_cpm_dir_t *dir, int user);
 
 
-/**
- * @brief Find file in directory
- * @param ctx Context
- * @param user User number
- * @param name Filename (with or without extension)
- * @param file Output file info
- * @return Error code (UFT_CPM_ERR_NOT_FOUND if not found)
- */
-uft_cpm_err_t uft_cpm_find_file(const uft_cpm_ctx_t *ctx,
-                                 uint8_t user, const char *name,
-                                 uft_cpm_file_t *file);
 
-/**
- * @brief Iterate over directory entries
- * @param ctx Context
- * @param callback Callback function (return false to stop)
- * @param userdata User data for callback
- * @param user User number filter (-1 for all)
- * @return Number of entries processed
- */
-size_t uft_cpm_foreach_file(const uft_cpm_ctx_t *ctx,
-                             bool (*callback)(const uft_cpm_file_t *file, void *userdata),
-                             void *userdata, int user);
 
 /*===========================================================================
  * File Operations
  *===========================================================================*/
 
-/**
- * @brief Extract file to buffer
- * @param ctx Context
- * @param user User number
- * @param name Filename
- * @param buffer Output buffer
- * @param buffer_size Buffer size
- * @param bytes_read Actual bytes read (output)
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_extract(const uft_cpm_ctx_t *ctx,
-                               uint8_t user, const char *name,
-                               uint8_t *buffer, size_t buffer_size,
-                               size_t *bytes_read);
 
-/**
- * @brief Extract file to disk
- * @param ctx Context
- * @param user User number
- * @param name Source filename
- * @param dest_path Destination path
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_extract_file(const uft_cpm_ctx_t *ctx,
-                                    uint8_t user, const char *name,
-                                    const char *dest_path);
 
-/**
- * @brief Inject file from buffer
- * @param ctx Context
- * @param user User number
- * @param name Filename
- * @param data File data
- * @param size Data size
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_inject(uft_cpm_ctx_t *ctx,
-                              uint8_t user, const char *name,
-                              const uint8_t *data, size_t size);
 
-/**
- * @brief Inject file from disk
- * @param ctx Context
- * @param user User number
- * @param name Destination filename (NULL = use source name)
- * @param src_path Source path
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_inject_file(uft_cpm_ctx_t *ctx,
-                                   uint8_t user, const char *name,
-                                   const char *src_path);
 
-/**
- * @brief Delete file
- * @param ctx Context
- * @param user User number
- * @param name Filename
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_delete(uft_cpm_ctx_t *ctx,
-                              uint8_t user, const char *name);
 
-/**
- * @brief Rename file
- * @param ctx Context
- * @param user User number
- * @param old_name Current filename
- * @param new_name New filename
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_rename(uft_cpm_ctx_t *ctx,
-                              uint8_t user, const char *old_name,
-                              const char *new_name);
 
-/**
- * @brief Change file user number
- * @param ctx Context
- * @param old_user Current user
- * @param name Filename
- * @param new_user New user number
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_change_user(uft_cpm_ctx_t *ctx,
-                                   uint8_t old_user, const char *name,
-                                   uint8_t new_user);
 
-/**
- * @brief Set file attributes
- * @param ctx Context
- * @param user User number
- * @param name Filename
- * @param attrib Attributes to set
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_set_attrib(uft_cpm_ctx_t *ctx,
-                                  uint8_t user, const char *name,
-                                  const uft_cpm_attrib_t *attrib);
 
-/**
- * @brief Get file attributes
- * @param ctx Context
- * @param user User number
- * @param name Filename
- * @param attrib Attributes (output)
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_get_attrib(const uft_cpm_ctx_t *ctx,
-                                  uint8_t user, const char *name,
-                                  uft_cpm_attrib_t *attrib);
 
 /*===========================================================================
  * Block Allocation
@@ -753,16 +511,6 @@ uft_cpm_err_t uft_cpm_get_attrib(const uft_cpm_ctx_t *ctx,
  *===========================================================================*/
 
 
-/**
- * @brief Allocate directory entry
- * @param ctx Context
- * @param user User number
- * @param name Filename
- * @param ext Extension
- * @return Entry index or -1 on error
- */
-int16_t uft_cpm_alloc_entry(uft_cpm_ctx_t *ctx,
-                             uint8_t user, const char *name, const char *ext);
 
 /**
  * @brief Get raw directory entry
@@ -776,25 +524,7 @@ uft_cpm_dir_entry_t *uft_cpm_get_entry(uft_cpm_ctx_t *ctx, uint16_t index);
  * Image Creation
  *===========================================================================*/
 
-/**
- * @brief Create blank CP/M disk image
- * @param format Format to create
- * @param data Output data pointer
- * @param size Output size
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_create_image(uft_cpm_format_t format,
-                                    uint8_t **data, size_t *size);
 
-/**
- * @brief Create image with custom DPB
- * @param dpb Disk parameter block
- * @param data Output data pointer
- * @param size Output size
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_create_image_dpb(const uft_cpm_dpb_t *dpb,
-                                        uint8_t **data, size_t *size);
 
 /**
  * @brief Format existing image
@@ -811,28 +541,9 @@ uft_cpm_err_t uft_cpm_format(uft_cpm_ctx_t *ctx);
 
 
 
-/**
- * @brief Convert Unix time to CP/M date
- * @param unix_time Unix timestamp
- * @param cpm_date Output days since 1/1/1978
- * @param hour Output hour (BCD)
- * @param minute Output minute (BCD)
- */
-void uft_cpm_from_unix_time(time_t unix_time, uint16_t *cpm_date,
-                             uint8_t *hour, uint8_t *minute);
 
 
 
-/**
- * @brief Export directory as JSON
- * @param ctx Context
- * @param user User number filter (-1 for all)
- * @param buffer Output buffer
- * @param size Buffer size
- * @return Bytes written or -1 on error
- */
-int uft_cpm_to_json(const uft_cpm_ctx_t *ctx, int user,
-                    char *buffer, size_t size);
 
 /**
  * @brief Get error message
@@ -845,39 +556,12 @@ const char *uft_cpm_strerror(uft_cpm_err_t err);
  * Advanced: Deleted File Recovery
  *===========================================================================*/
 
-/**
- * @brief List deleted files
- * @param ctx Context
- * @param dir Directory listing (output)
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_list_deleted(const uft_cpm_ctx_t *ctx,
-                                    uft_cpm_dir_t *dir);
 
-/**
- * @brief Attempt to recover deleted file
- * @param ctx Context
- * @param index Deleted entry index
- * @param user New user number
- * @return Error code
- */
-uft_cpm_err_t uft_cpm_recover_deleted(uft_cpm_ctx_t *ctx,
-                                       uint16_t index, uint8_t user);
 
 /*===========================================================================
  * Advanced: Disk Analysis
  *===========================================================================*/
 
-/**
- * @brief Validate disk structure
- * @param ctx Context
- * @param fix Attempt to fix errors
- * @param report Output report buffer
- * @param report_size Report buffer size
- * @return Number of errors found
- */
-int uft_cpm_validate(uft_cpm_ctx_t *ctx, bool fix,
-                     char *report, size_t report_size);
 
 
 

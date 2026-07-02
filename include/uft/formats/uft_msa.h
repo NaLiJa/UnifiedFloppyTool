@@ -113,19 +113,6 @@ uft_msa_error_t uft_msa_decompress(const uint8_t *src, size_t src_len,
                                     uint8_t *dst, size_t dst_len,
                                     size_t *out_len);
 
-/**
- * Decompress single track
- *
- * @param src           Compressed track data (after 2-byte length)
- * @param src_len       Compressed data length
- * @param dst           Destination buffer
- * @param expected_len  Expected uncompressed length
- * @param out_len       Actual bytes written
- * @return              UFT_MSA_OK or error code
- */
-uft_msa_error_t uft_msa_decompress_track(const uint8_t *src, size_t src_len,
-                                          uint8_t *dst, size_t expected_len,
-                                          size_t *out_len);
 
 /**
  * Compress raw sector data to MSA format

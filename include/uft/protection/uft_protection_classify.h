@@ -330,17 +330,6 @@ int uft_protect_analyze_track(const uint8_t *track_data,
                                const uft_protection_context_t *ctx,
                                uft_protection_analysis_t *result);
 
-/**
- * @brief Analyze complete disk image for protection
- * 
- * @param image_path Path to disk image file
- * @param ctx Detection context
- * @param result Output: analysis result
- * @return 0 on success
- */
-int uft_protect_analyze_image(const char *image_path,
-                               const uft_protection_context_t *ctx,
-                               uft_protection_analysis_t *result);
 
 /**
  * @brief Quick check for any protection on track
@@ -480,16 +469,6 @@ const char* uft_protect_confidence_name(uft_protection_confidence_t conf);
 size_t uft_protect_report(const uft_protection_analysis_t *result,
                            char *buffer, size_t buffer_size);
 
-/**
- * @brief Generate single detection report
- * 
- * @param det Detection result
- * @param buffer Output buffer
- * @param buffer_size Buffer size
- * @return Bytes written
- */
-size_t uft_protect_detection_report(const uft_protection_detection_t *det,
-                                     char *buffer, size_t buffer_size);
 
 /**
  * @brief Export analysis to JSON

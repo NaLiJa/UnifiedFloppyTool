@@ -338,15 +338,6 @@ int uft_adf_lookup(uft_adf_volume_t *vol, const char *path,
 ssize_t uft_adf_read_file(uft_adf_volume_t *vol, uint32_t block,
                           uint32_t offset, void *buffer, size_t size);
 
-/**
- * @brief Extract file to disk
- * @param vol Volume handle
- * @param src_path Source path in ADF
- * @param dst_path Destination path on disk
- * @return 0 on success, -1 on error
- */
-int uft_adf_extract(uft_adf_volume_t *vol, const char *src_path,
-                    const char *dst_path);
 
 /**
  * @brief Extract all files to directory
@@ -371,15 +362,6 @@ int uft_adf_extract_all(uft_adf_volume_t *vol, const char *dst_dir);
 int uft_adf_create(const char *path, uft_adf_density_t density,
                    uft_adf_fs_type_t fs_type, const char *name);
 
-/**
- * @brief Format an existing ADF
- * @param vol Volume handle
- * @param fs_type Filesystem type
- * @param name Volume name
- * @return 0 on success, -1 on error
- */
-int uft_adf_format(uft_adf_volume_t *vol, uft_adf_fs_type_t fs_type,
-                   const char *name);
 
 /**
  * @brief Add file to ADF
@@ -428,15 +410,6 @@ int uft_adf_rename(uft_adf_volume_t *vol, const char *old_path,
  */
 bool uft_adf_is_bootable(uft_adf_volume_t *vol);
 
-/**
- * @brief Install boot block
- * @param vol Volume handle
- * @param bootcode Boot code data (max 1012 bytes)
- * @param size Boot code size
- * @return 0 on success, -1 on error
- */
-int uft_adf_install_bootblock(uft_adf_volume_t *vol,
-                              const void *bootcode, size_t size);
 
 
 /*============================================================================

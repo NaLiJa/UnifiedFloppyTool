@@ -48,19 +48,7 @@ extern "C" {
 // Simple Operations (Auto-select tools)
 // ============================================================================
 
-/**
- * @brief Read disk from hardware
- */
-uft_error_t uft_read_disk(int device_id,
-                           const uft_tool_read_params_t* params,
-                           uft_unified_image_t* output);
 
-/**
- * @brief Write disk to hardware
- */
-uft_error_t uft_write_disk(int device_id,
-                            const uft_tool_write_params_t* params,
-                            const uft_unified_image_t* input);
 
 
 /**
@@ -70,12 +58,6 @@ uft_error_t uft_save_image(const uft_unified_image_t* image,
                             const char* path,
                             uft_format_t format);
 
-/**
- * @brief Convert image format
- */
-uft_error_t uft_convert_image(const uft_unified_image_t* input,
-                               uft_format_t target_format,
-                               uft_unified_image_t* output);
 
 // ============================================================================
 // Device Management

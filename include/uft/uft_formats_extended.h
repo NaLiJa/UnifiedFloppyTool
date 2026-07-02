@@ -141,8 +141,6 @@ typedef struct td0_track_header {
 }  td0_track_header_t;
 
 uft_error_t uft_td0_probe(const void* data, size_t size, int* confidence);
-uft_error_t uft_td0_decompress(const uint8_t* src, size_t src_size, 
-                                uint8_t* dst, size_t* dst_size);
 
 // ============================================================================
 // IMD Format (ImageDisk)
@@ -268,8 +266,6 @@ typedef struct uft_conversion_info {
 
 bool uft_format_can_convert(uft_format_t src, uft_format_t dst, 
                              const char** warning);
-uft_error_t uft_format_convert(const char* src_path, const char* dst_path,
-                                uft_format_t dst_format);
 
 #ifdef __cplusplus
 }

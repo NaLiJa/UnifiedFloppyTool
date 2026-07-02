@@ -233,41 +233,13 @@ void uft_fat32_format_opts_init(uft_fat32_format_opts_t *opts);
 int uft_fat32_read_fsinfo(const uint8_t *data, const uft_fat32_bootsect_t *boot,
                           uft_fat32_fsinfo_t *info);
 
-/**
- * @brief Write FSInfo sector
- * @param data Image data (modified)
- * @param boot Boot sector
- * @param info FSInfo to write
- * @return 0 on success
- */
-int uft_fat32_write_fsinfo(uint8_t *data, const uft_fat32_bootsect_t *boot,
-                           const uft_fat32_fsinfo_t *info);
 
 
 /*===========================================================================
  * FAT32 API - FAT Operations
  *===========================================================================*/
 
-/**
- * @brief Get FAT32 entry
- * @param data Image data
- * @param boot Boot sector
- * @param cluster Cluster number
- * @return Next cluster or special value
- */
-uint32_t uft_fat32_get_entry(const uint8_t *data, const uft_fat32_bootsect_t *boot,
-                             uint32_t cluster);
 
-/**
- * @brief Set FAT32 entry
- * @param data Image data (modified)
- * @param boot Boot sector
- * @param cluster Cluster number
- * @param value New value
- * @return 0 on success
- */
-int uft_fat32_set_entry(uint8_t *data, const uft_fat32_bootsect_t *boot,
-                        uint32_t cluster, uint32_t value);
 
 /**
  * @brief Check if cluster value indicates EOF
@@ -308,26 +280,7 @@ static inline uint32_t uft_fat32_cluster_size(const uft_fat32_bootsect_t *boot) 
  */
 uint32_t uft_fat32_count_clusters(const uft_fat32_bootsect_t *boot);
 
-/**
- * @brief Allocate cluster chain
- * @param data Image data (modified)
- * @param boot Boot sector
- * @param count Number of clusters needed
- * @param first_cluster Output: first allocated cluster
- * @return 0 on success
- */
-int uft_fat32_alloc_chain(uint8_t *data, const uft_fat32_bootsect_t *boot,
-                          uint32_t count, uint32_t *first_cluster);
 
-/**
- * @brief Free cluster chain
- * @param data Image data (modified)
- * @param boot Boot sector
- * @param start First cluster of chain
- * @return Number of clusters freed
- */
-uint32_t uft_fat32_free_chain(uint8_t *data, const uft_fat32_bootsect_t *boot,
-                              uint32_t start);
 
 /*===========================================================================
  * FAT32 API - Backup Boot Sector

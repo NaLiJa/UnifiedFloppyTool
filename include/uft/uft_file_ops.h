@@ -72,16 +72,6 @@ typedef struct {
  */
 int uft_list_files(const char *path, uft_directory_t *dir);
 
-/**
- * @brief Extract file from disk image
- * 
- * @param image_path    Path to disk image
- * @param filename      Name of file to extract
- * @param output_path   Destination path
- * @return              0 on success, -1 on error
- */
-int uft_extract_file(const char *image_path, const char *filename,
-                     const char *output_path);
 
 /**
  * @brief Inject file into disk image
@@ -152,11 +142,6 @@ int fat12_list_files(const uint8_t *image, size_t size, uft_directory_t *dir);
 int fat12_extract_file(const uint8_t *image, size_t img_size,
                        const char *filename, uint8_t **data, size_t *size);
 
-/**
- * @brief Extended inject (supports more formats)
- */
-int uft_inject_file_extended(const char *image_path, const char *filename,
-                             const char *input_path, uft_file_type_t type);
 
 #ifdef __cplusplus
 }

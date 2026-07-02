@@ -394,16 +394,6 @@ static inline bool uft_fat12_is_allocated(uint16_t value, uint16_t max_cluster)
  * Cluster Chain Operations
  *============================================================================*/
 
-/**
- * @brief Get cluster chain
- * @param fat FAT table
- * @param start_cluster Starting cluster
- * @param chain Output chain array
- * @param max_length Maximum chain length
- * @return Chain length
- */
-size_t uft_fat12_get_chain(const uft_fat12_t *fat, uint16_t start_cluster,
-                           uint16_t *chain, size_t max_length);
 
 
 
@@ -484,17 +474,6 @@ static inline bool uft_fat_is_lfn(const uft_dir_entry_t *entry)
 
 
 
-/**
- * @brief Read file data
- * @param fs Filesystem context
- * @param entry Directory entry
- * @param buffer Output buffer
- * @param buffer_size Buffer size
- * @return Bytes read
- */
-size_t uft_fat12_fs_read_file(const uft_fat12_fs_t *fs, 
-                              const uft_dir_entry_t *entry,
-                              uint8_t *buffer, size_t buffer_size);
 
 
 #ifdef __cplusplus

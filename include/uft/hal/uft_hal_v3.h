@@ -196,48 +196,13 @@ void uft_hal_close(uft_hal_device_t* device);
  * API: READING - UFT-IR OUTPUT
  * ═══════════════════════════════════════════════════════════════════════════ */
 
-/**
- * @brief Read single track to UFT-IR format
- * @param device Device handle
- * @param cylinder Cylinder number
- * @param head Head number
- * @param revolutions Number of revolutions
- * @param track Output: UFT-IR track (caller must free)
- * @return 0 on success, error code on failure
- */
-int uft_hal_read_track(uft_hal_device_t* device, uint8_t cylinder, uint8_t head,
-                       uint8_t revolutions, uft_ir_track_t** track);
 
-/**
- * @brief Read entire disk to UFT-IR format
- * @param device Device handle
- * @param params Read parameters
- * @param progress Progress callback (can be NULL)
- * @param user_data User context for callback
- * @param disk Output: UFT-IR disk (caller must free)
- * @return 0 on success, error code on failure
- */
-int uft_hal_read_disk(uft_hal_device_t* device, const uft_hal_read_params_t* params,
-                      uft_hal_progress_cb progress, void* user_data,
-                      uft_ir_disk_t** disk);
 
 /* ═══════════════════════════════════════════════════════════════════════════
  * API: WRITING - UFT-IR INPUT
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 
-/**
- * @brief Write entire disk from UFT-IR format
- * @param device Device handle
- * @param disk UFT-IR disk data
- * @param params Write parameters
- * @param progress Progress callback (can be NULL)
- * @param user_data User context for callback
- * @return 0 on success, error code on failure
- */
-int uft_hal_write_disk(uft_hal_device_t* device, const uft_ir_disk_t* disk,
-                       const uft_hal_write_params_t* params,
-                       uft_hal_progress_cb progress, void* user_data);
 
 /* ═══════════════════════════════════════════════════════════════════════════
  * API: LOW-LEVEL ACCESS
@@ -258,21 +223,7 @@ int uft_hal_seek(uft_hal_device_t* device, uint8_t cylinder);
  * API: UTILITIES
  * ═══════════════════════════════════════════════════════════════════════════ */
 
-/**
- * @brief Get default read parameters for drive profile
- * @param profile Drive profile
- * @param params Output: read parameters
- */
-void uft_hal_get_default_read_params(uft_hal_drive_profile_t profile,
-                                      uft_hal_read_params_t* params);
 
-/**
- * @brief Get default write parameters for drive profile
- * @param profile Drive profile
- * @param params Output: write parameters
- */
-void uft_hal_get_default_write_params(uft_hal_drive_profile_t profile,
-                                       uft_hal_write_params_t* params);
 
 /**
  * @brief Get controller type name

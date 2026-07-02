@@ -266,17 +266,6 @@ const uft_atari_geometry_t *uft_atari_geometry_from_size(size_t size);
 int uft_atari_format(uint8_t *data, size_t size, uft_atari_format_t format,
                      const char *label);
 
-/**
- * @brief Format with custom geometry
- * @param data Image buffer (modified)
- * @param size Buffer size
- * @param geom Custom geometry
- * @param label Volume label
- * @return 0 on success
- */
-int uft_atari_format_custom(uint8_t *data, size_t size,
-                            const uft_atari_geometry_t *geom,
-                            const char *label);
 
 /**
  * @brief Calculate logical sector size for large volumes
@@ -302,17 +291,6 @@ uint16_t uft_atari_calc_sector_size(uint64_t total_size);
 const uft_ahdi_root_t *uft_ahdi_get_root(const uint8_t *data);
 
 
-/**
- * @brief Get partition info
- * @param root AHDI root sector
- * @param index Partition index (0-3)
- * @param start Output: start sector
- * @param size Output: size in sectors
- * @param type Output: type string (4 bytes)
- * @return 0 on success
- */
-int uft_ahdi_get_partition(const uft_ahdi_root_t *root, int index,
-                           uint32_t *start, uint32_t *size, char *type);
 
 /*===========================================================================
  * Standard Atari Geometries

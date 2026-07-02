@@ -209,27 +209,8 @@ uft_error_t uft_scp_read(const char *path,
                          scp_read_result_t *result);
 #endif /* UFT_SCP_READ_DECLARED */
 
-/**
- * @brief Read SCP from memory
- */
-uft_error_t uft_scp_read_mem(const uint8_t *data, size_t size,
-                             scp_image_t *image,
-                             const scp_read_options_t *opts,
-                             scp_read_result_t *result);
 
-/**
- * @brief Write SCP file
- */
-uft_error_t uft_scp_write(const scp_image_t *image,
-                          const char *path,
-                          const scp_write_options_t *opts);
 
-/**
- * @brief Convert SCP to sector-based disk image
- */
-uft_error_t uft_scp_to_disk(const scp_image_t *scp,
-                            uft_disk_image_t **out_disk,
-                            const scp_read_options_t *opts);
 
 /**
  * @brief Probe if data is SCP format

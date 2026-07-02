@@ -93,17 +93,7 @@ typedef struct uft_write_job_params {
 // Job Submission
 // ============================================================================
 
-uft_error_t uft_job_submit_read(uft_job_manager_t* mgr,
-                                 const uft_read_job_params_t* params,
-                                 uft_job_callback_t callback,
-                                 void* user_data,
-                                 uint32_t* job_id);
 
-uft_error_t uft_job_submit_write(uft_job_manager_t* mgr,
-                                  const uft_write_job_params_t* params,
-                                  uft_job_callback_t callback,
-                                  void* user_data,
-                                  uint32_t* job_id);
 
 // ============================================================================
 // Job Control
@@ -114,9 +104,6 @@ uft_error_t uft_job_submit_write(uft_job_manager_t* mgr,
 // Job Query
 // ============================================================================
 
-uft_error_t uft_job_get_status(uft_job_manager_t* mgr,
-                                uint32_t job_id,
-                                uft_job_status_t* status);
 
 
 #ifdef __cplusplus

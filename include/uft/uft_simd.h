@@ -138,40 +138,8 @@ bool uft_cpu_has_feature(uft_cpu_features_t feature);
  * MFM directly without going through uft_simd). Keeping
  * _avx512 variants below in case external benchmarking hooks exist. */
 
-/**
- * @brief MFM Decode - AVX-512 implementation
- * ~15-20x faster than scalar
- * Requires: AVX-512F + AVX-512BW (Skylake-X 2017+)
- */
-size_t uft_mfm_decode_flux_avx512(
-    const uint64_t *flux_transitions,
-    size_t transition_count,
-    uint8_t *output_bits
-);
 
-/**
- * @brief MFM Encode - AVX-512 implementation
- * @param input_data Raw data bytes
- * @param input_bytes Number of input bytes
- * @param output_mfm Output MFM bits (2x input size)
- * @return Number of MFM bits written
- */
-size_t uft_mfm_encode_avx512(
-    const uint8_t *input_data,
-    size_t input_bytes,
-    uint8_t *output_mfm
-);
 
-/**
- * @brief Find MFM sync patterns using AVX-512
- */
-size_t uft_mfm_find_sync_avx512(
-    const uint8_t *mfm_data,
-    size_t data_size,
-    uint16_t pattern,
-    size_t *positions,
-    size_t max_positions
-);
 
 
 /* =============================================================================

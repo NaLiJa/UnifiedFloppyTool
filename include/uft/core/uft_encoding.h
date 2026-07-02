@@ -210,12 +210,6 @@ static inline bool uft_encoding_is_gcr(uft_disk_encoding_t enc) {
 
 
 
-/**
- * @brief Detect encoding from bitstream pattern
- */
-uft_disk_encoding_t uft_encoding_detect(const uint8_t *bitstream, 
-                                         size_t bits, 
-                                         float *confidence);
 
 #ifdef __cplusplus
 }

@@ -306,10 +306,6 @@ static inline int32_t uft_total_sectors(const uft_format_params_t* fmt) {
     return fmt->cylinders * fmt->heads * fmt->sectors;
 }
 
-/**
- * @brief Validate format parameters
- */
-bool uft_format_validate(const uft_format_params_t* fmt);
 
 /**
  * @brief Get data rate in bits per second

@@ -219,19 +219,6 @@ uft_verify_status_t uft_verify_d88_buffer(
  * Generic File Verify
  * ═══════════════════════════════════════════════════════════════════════════════ */
 
-/**
- * @brief Auto-detect format and verify file
- * 
- * Detects format by magic bytes and size, calls appropriate verifier.
- * Supports: WOZ, A2R, TD0, IMG, IMD, D71, D81, HFE, D88
- * 
- * @param path      File path
- * @param result    Result structure (optional, can be NULL)
- * @return UFT_VERIFY_OK on success
- */
-uft_verify_status_t uft_verify_file(
-    const char *path,
-    uft_verify_result_t *result);
 
 #ifdef __cplusplus
 }

@@ -216,52 +216,14 @@ typedef struct {
 
 
 
-/**
- * @brief Get all available hints
- * 
- * @param hints   Array to fill with hint pointers
- * @param max     Maximum hints to return
- * @return Number of hints returned
- */
-size_t uft_format_get_all_hints(
-    const uft_format_hint_t **hints,
-    size_t max
-);
 
 /* ============================================================================
  * Decode Context Functions
  * ============================================================================ */
 
-/**
- * @brief Initialize decode context with format hint
- */
-void uft_decode_context_init(
-    uft_decode_context_t *ctx,
-    const uft_format_hint_t *hint
-);
 
-/**
- * @brief Set current track (updates zone for GCR)
- */
-void uft_decode_context_set_track(
-    uft_decode_context_t *ctx,
-    uint8_t track,
-    uint8_t head
-);
 
-/**
- * @brief Get effective cell time for current position
- */
-double uft_decode_context_get_cell_ns(
-    const uft_decode_context_t *ctx
-);
 
-/**
- * @brief Get sectors per track for current position
- */
-uint8_t uft_decode_context_get_sectors(
-    const uft_decode_context_t *ctx
-);
 
 
 /* ============================================================================
@@ -295,95 +257,19 @@ size_t uft_format_detect(
     size_t max_candidates
 );
 
-/**
- * @brief Auto-detect format from sector data
- * 
- * @param sector_data    First sector data
- * @param sector_size    Size of sector
- * @param candidates     Output candidates
- * @param max_candidates Maximum candidates
- * @return Number of candidates
- */
-size_t uft_format_detect_from_sector(
-    const uint8_t *sector_data,
-    size_t sector_size,
-    uft_format_candidate_t *candidates,
-    size_t max_candidates
-);
 
 /* ============================================================================
  * Guided Decoding
  * ============================================================================ */
 
-/**
- * @brief Decode flux with format hints
- * 
- * @param flux_data      Flux timing data
- * @param flux_count     Number of transitions
- * @param sample_rate    Sample rate in Hz
- * @param ctx            Decode context with hints
- * @param output         Output buffer for decoded data
- * @param max_output     Maximum output size
- * @param actual_output  Actual bytes decoded
- * @return 0 on success
- */
-int uft_format_guided_decode(
-    const uint32_t *flux_data,
-    size_t flux_count,
-    double sample_rate,
-    uft_decode_context_t *ctx,
-    uint8_t *output,
-    size_t max_output,
-    size_t *actual_output
-);
 
-/**
- * @brief Find sync pattern using hints
- * 
- * @param data           Bit stream data
- * @param bit_count      Number of bits
- * @param hint           Format hint
- * @param start_bit      Start position
- * @return Position of sync, or -1 if not found
- */
-int64_t uft_format_find_sync(
-    const uint8_t *data,
-    size_t bit_count,
-    const uft_format_hint_t *hint,
-    size_t start_bit
-);
 
 /* ============================================================================
  * Zone Functions (for CLV/GCR formats)
  * ============================================================================ */
 
-/**
- * @brief Get zone number for track
- * 
- * @param hint    Format hint
- * @param track   Track number
- * @return Zone number (0-based)
- */
-uint8_t uft_format_get_zone(
-    const uft_format_hint_t *hint,
-    uint8_t track
-);
 
-/**
- * @brief Get cell time for zone
- */
-double uft_format_get_zone_cell_ns(
-    const uft_format_hint_t *hint,
-    uint8_t zone
-);
 
-/**
- * @brief Get sectors per track for zone
- */
-uint8_t uft_format_get_zone_sectors(
-    const uft_format_hint_t *hint,
-    uint8_t zone
-);
 
 /* ============================================================================
  * Utility Functions
@@ -402,14 +288,6 @@ const char* uft_format_name(uft_format_id_t format_id);
 
 
 
-/**
- * @brief Export hint to JSON
- */
-size_t uft_format_hint_to_json(
-    const uft_format_hint_t *hint,
-    char *buffer,
-    size_t size
-);
 
 #ifdef __cplusplus
 }

@@ -96,29 +96,7 @@ typedef struct FloppyDevice {
 
 
 
-/**
- * @brief Read a sector from the disk image
- * @param dev Device structure
- * @param track Track number (1-based for CBM, 0-based for others)
- * @param head Head/side number
- * @param sector Sector number
- * @param buf Output buffer (must be at least sectorSize bytes)
- * @return 0 on success
- */
-int uft_floppy_read_sector(FloppyDevice *dev, uint32_t track, uint32_t head,
-                            uint32_t sector, uint8_t *buf);
 
-/**
- * @brief Write a sector to the disk image
- * @param dev Device structure
- * @param track Track number
- * @param head Head/side number
- * @param sector Sector number
- * @param buf Input buffer
- * @return 0 on success
- */
-int uft_floppy_write_sector(FloppyDevice *dev, uint32_t track, uint32_t head,
-                              uint32_t sector, const uint8_t *buf);
 
 
 #ifdef __cplusplus

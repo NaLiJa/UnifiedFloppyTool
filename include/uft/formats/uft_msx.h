@@ -298,8 +298,6 @@ uft_msx_rc_t uft_msx_create_blank(const char* path, uft_msx_geometry_type_t geom
  *============================================================================*/
 
 uft_msx_rc_t uft_msx_to_raw(uft_msx_ctx_t* ctx, const char* output_path);
-uft_msx_rc_t uft_msx_from_raw(const char* raw_path, const char* output_path,
-                               uft_msx_geometry_type_t geometry);
 
 /*============================================================================
  * Analysis and Reporting

@@ -89,27 +89,8 @@ extern const size_t simh_geometry_count;
  * SIMH File I/O
  * ============================================================================ */
 
-/**
- * @brief Read SIMH file
- */
-uft_error_t uft_simh_read(const char *path,
-                          uft_disk_image_t **out_disk,
-                          const simh_read_options_t *opts,
-                          simh_read_result_t *result);
 
-/**
- * @brief Read SIMH from memory
- */
-uft_error_t uft_simh_read_mem(const uint8_t *data, size_t size,
-                              uft_disk_image_t **out_disk,
-                              const simh_read_options_t *opts,
-                              simh_read_result_t *result);
 
-/**
- * @brief Write SIMH file
- */
-uft_error_t uft_simh_write(const uft_disk_image_t *disk,
-                           const char *path);
 
 /**
  * @brief Auto-detect disk type from file size

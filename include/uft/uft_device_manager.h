@@ -98,13 +98,7 @@ typedef void (*uft_device_callback_t)(void* user_data,
 // Observer Pattern (GUI registriert sich hier)
 // ============================================================================
 
-uft_error_t uft_device_manager_add_observer(uft_device_manager_t* mgr,
-                                             uft_device_callback_t callback,
-                                             void* user_data,
-                                             uint32_t event_mask);
 
-uft_error_t uft_device_manager_remove_observer(uft_device_manager_t* mgr,
-                                                uft_device_callback_t callback);
 
 // ============================================================================
 // Scanning
@@ -120,10 +114,6 @@ uft_error_t uft_device_manager_remove_observer(uft_device_manager_t* mgr,
 // Query (alle Queries liefern abstrakte Info)
 // ============================================================================
 
-uft_error_t uft_device_manager_get_all(const uft_device_manager_t* mgr,
-                                        uft_device_info_t* devices,
-                                        size_t max_devices,
-                                        size_t* actual_count);
 
 // ============================================================================
 // Status

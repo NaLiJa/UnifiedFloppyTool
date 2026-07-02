@@ -116,17 +116,6 @@ int uft_xdf_sectors_for_track(int track);
  */
 int uft_xdf_recommended_copy_mode(bool has_protection);
 
-/**
- * @brief Validate XDF track data
- * 
- * @param track_data Raw track bytes
- * @param track_len Track length
- * @param track Track number
- * @param head Head number
- * @return 0 if valid, error code otherwise
- */
-int uft_xdf_validate_track(const uint8_t *track_data, size_t track_len,
-                           int track, int head);
 
 /* ============================================================================
  * XDF ↔ XCopy Integration
@@ -143,19 +132,6 @@ int uft_xdf_validate_track(const uint8_t *track_data, size_t track_len,
  */
 bool uft_format_requires_track_copy(const char *format_name);
 
-/**
- * @brief Get XDF-aware copy recommendation
- * 
- * For use by AnalyzerToolbar to suggest correct mode.
- * 
- * @param track_data Track data
- * @param track_len Track length  
- * @param out_mode Output: recommended mode (0-3)
- * @param out_reason Output: reason string
- * @return 0 on success
- */
-int uft_xdf_analyze_for_copy(const uint8_t *track_data, size_t track_len,
-                             int *out_mode, const char **out_reason);
 
 #ifdef __cplusplus
 }

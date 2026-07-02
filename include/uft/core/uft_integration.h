@@ -88,29 +88,9 @@ struct xcopy_sector;
 struct c64_sector_id;
 struct mfm_idam;
 
-/**
- * @brief Convert legacy flux_sector_id to unified
- */
-void uft_convert_from_flux_sector_id(uft_sector_id_t *dest,
-                                     const struct flux_sector_id *src);
 
-/**
- * @brief Convert unified to legacy flux_sector_id
- */
-void uft_convert_to_flux_sector_id(struct flux_sector_id *dest,
-                                   const uft_sector_id_t *src);
 
-/**
- * @brief Convert legacy xcopy_sector to unified
- */
-void uft_convert_from_xcopy_sector(uft_sector_id_t *dest,
-                                   const struct xcopy_sector *src);
 
-/**
- * @brief Convert unified to legacy xcopy_sector
- */
-void uft_convert_to_xcopy_sector(struct xcopy_sector *dest,
-                                 const uft_sector_id_t *src);
 
 /* ============================================================================
  * Data Transfer Between Modules
@@ -169,23 +149,7 @@ typedef struct {
  * Parser → Other Modules
  * ============================================================================ */
 
-/**
- * @brief Export track from parser to specified module
- * @param track Source track data
- * @param ctx Integration context
- * @param target_module Target module type
- * @return UFT_OK on success
- */
-uft_error_t uft_integration_export_track(const uft_track_t *track,
-                                         uft_integration_ctx_t *ctx,
-                                         uft_module_t target_module);
 
-/**
- * @brief Export entire disk image
- */
-uft_error_t uft_integration_export_disk(const uft_disk_image_t *disk,
-                                        uft_integration_ctx_t *ctx,
-                                        uft_module_t target_module);
 
 /* ============================================================================
  * XCopy Integration
@@ -196,19 +160,7 @@ uft_error_t uft_integration_export_disk(const uft_disk_image_t *disk,
  */
 typedef struct uft_xcopy_context uft_xcopy_context_t;
 
-/**
- * @brief Import track into XCopy
- */
-uft_error_t uft_xcopy_import_track(uft_xcopy_context_t *ctx,
-                                   const uft_track_t *track);
 
-/**
- * @brief Export track from XCopy
- */
-uft_error_t uft_xcopy_export_track(const uft_xcopy_context_t *ctx,
-                                   uint16_t track_num,
-                                   uint8_t head,
-                                   uft_track_t *out_track);
 
 /* ============================================================================
  * Recovery Integration
@@ -219,24 +171,8 @@ uft_error_t uft_xcopy_export_track(const uft_xcopy_context_t *ctx,
  */
 typedef struct uft_recovery_context uft_recovery_context_t;
 
-/**
- * @brief Import track into Recovery
- */
-uft_error_t uft_recovery_import_track(uft_recovery_context_t *ctx,
-                                      const uft_track_t *track);
 
-/**
- * @brief Import multiple revisions for fusion
- */
-uft_error_t uft_recovery_import_revisions(uft_recovery_context_t *ctx,
-                                          const uft_track_t *const *tracks,
-                                          size_t track_count);
 
-/**
- * @brief Get recovered track
- */
-uft_error_t uft_recovery_get_result(const uft_recovery_context_t *ctx,
-                                    uft_track_t *out_track);
 
 /* ============================================================================
  * Forensic Integration
@@ -247,19 +183,7 @@ uft_error_t uft_recovery_get_result(const uft_recovery_context_t *ctx,
  */
 typedef struct uft_forensic_report uft_forensic_report_t;
 
-/**
- * @brief Add track to forensic report
- */
-uft_error_t uft_forensic_add_track(uft_forensic_report_t *report,
-                                   const uft_track_t *track,
-                                   const char *source_module);
 
-/**
- * @brief Add sector to forensic report
- */
-uft_error_t uft_forensic_add_sector(uft_forensic_report_t *report,
-                                    const uft_sector_t *sector,
-                                    const char *analysis);
 
 /* ============================================================================
  * Writer Integration
@@ -270,11 +194,6 @@ uft_error_t uft_forensic_add_sector(uft_forensic_report_t *report,
  */
 typedef struct uft_writer uft_writer_t;
 
-/**
- * @brief Queue track for writing
- */
-uft_error_t uft_writer_queue_track(uft_writer_t *writer,
-                                   const uft_track_t *track);
 
 
 /* ============================================================================
@@ -286,12 +205,6 @@ uft_error_t uft_writer_queue_track(uft_writer_t *writer,
  */
 typedef struct uft_protection_analyzer uft_protection_analyzer_t;
 
-/**
- * @brief Analyze track for protection
- */
-uft_error_t uft_protection_analyze_track(uft_protection_analyzer_t *analyzer,
-                                         const uft_track_t *track,
-                                         uft_protection_info_t *out_info);
 
 /**
  * @brief Analyze full disk for protection
@@ -337,11 +250,6 @@ typedef struct {
 } uft_pipeline_ctx_t;
 
 
-/**
- * @brief Run pipeline stage
- */
-uft_error_t uft_pipeline_run_stage(uft_pipeline_ctx_t *ctx,
-                                   uft_pipeline_stage_t stage);
 
 
 

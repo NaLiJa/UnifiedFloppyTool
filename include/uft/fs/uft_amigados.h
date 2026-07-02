@@ -475,15 +475,6 @@ typedef int (*uft_amiga_dir_callback_t)(const uft_amiga_entry_t *entry,
 int uft_amiga_foreach_entry(const uft_amiga_ctx_t *ctx, uint32_t dir_block,
                             uft_amiga_dir_callback_t callback, void *user_data);
 
-/**
- * @brief Iterate all files recursively
- * @param ctx Context
- * @param callback Callback function
- * @param user_data User data for callback
- * @return 0 on success
- */
-int uft_amiga_foreach_file(const uft_amiga_ctx_t *ctx,
-                           uft_amiga_dir_callback_t callback, void *user_data);
 
 /*===========================================================================
  * File Operations
@@ -611,27 +602,10 @@ int uft_amiga_set_comment(uft_amiga_ctx_t *ctx, const char *path,
  * Bitmap Functions
  *===========================================================================*/
 
-/**
- * @brief Get bitmap information
- * @param ctx Context
- * @param info Output bitmap info
- * @return 0 on success
- */
-int uft_amiga_get_bitmap_info(const uft_amiga_ctx_t *ctx,
-                              uft_amiga_bitmap_info_t *info);
 
 
 
 
-/**
- * @brief Allocate contiguous blocks
- * @param ctx Context
- * @param count Number of blocks needed
- * @param blocks Output array
- * @return Number of blocks allocated
- */
-size_t uft_amiga_alloc_blocks(uft_amiga_ctx_t *ctx, size_t count,
-                              uint32_t *blocks);
 
 /*===========================================================================
  * Validation Functions
@@ -656,31 +630,12 @@ size_t uft_amiga_alloc_blocks(uft_amiga_ctx_t *ctx, size_t count,
 int uft_amiga_format(uft_amiga_ctx_t *ctx, uft_amiga_fs_type_t fs_type,
                      const char *volume_name);
 
-/**
- * @brief Create blank ADF image
- * @param filename Output filename
- * @param is_hd HD (true) or DD (false)
- * @param fs_type Filesystem type
- * @param volume_name Volume name
- * @return 0 on success
- */
-int uft_amiga_create_adf(const char *filename, bool is_hd,
-                         uft_amiga_fs_type_t fs_type, const char *volume_name);
 
 /*===========================================================================
  * Utility Functions
  *===========================================================================*/
 
 
-/**
- * @brief Convert Unix time to Amiga timestamp
- * @param unix_time Unix timestamp
- * @param days Output days
- * @param mins Output minutes
- * @param ticks Output ticks
- */
-void uft_amiga_from_unix_time(time_t unix_time, uint32_t *days,
-                              uint32_t *mins, uint32_t *ticks);
 
 
 
@@ -691,25 +646,7 @@ void uft_amiga_from_unix_time(time_t unix_time, uint32_t *days,
  * Bootblock Functions
  *===========================================================================*/
 
-/**
- * @brief Read bootblock
- * @param ctx Context
- * @param block0 Output block 0 (512 bytes)
- * @param block1 Output block 1 (512 bytes)
- * @return 0 on success
- */
-int uft_amiga_read_bootblock(const uft_amiga_ctx_t *ctx,
-                             uint8_t *block0, uint8_t *block1);
 
-/**
- * @brief Write bootblock
- * @param ctx Context
- * @param block0 Block 0 data
- * @param block1 Block 1 data
- * @return 0 on success
- */
-int uft_amiga_write_bootblock(uft_amiga_ctx_t *ctx,
-                              const uint8_t *block0, const uint8_t *block1);
 
 
 

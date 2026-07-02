@@ -161,11 +161,6 @@ typedef struct {
 void uft_pll_init(uft_pll_state_t *state, const uft_pll_params_t *params);
 
 
-/**
- * @brief Process next flux transition
- * @return Decoded bit (-1 if no bit, 0 or 1 otherwise)
- */
-int uft_pll_process_flux(uft_pll_state_t *state, const uft_pll_params_t *params, int flux_ns);
 
 
 #ifdef __cplusplus

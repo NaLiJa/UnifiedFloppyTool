@@ -219,29 +219,8 @@ typedef struct {
  *============================================================================*/
 
 
-/**
- * @brief Encode sector header to GCR
- *
- * @param track Track number
- * @param sector Sector number
- * @param disk_id 16-bit disk ID
- * @param gcr Output: 10 GCR bytes
- */
-void uft_c64_encode_header(int track, int sector, uint16_t disk_id,
-                           uint8_t gcr[10]);
 
 
-/**
- * @brief Decode sector header from GCR
- *
- * @param gcr 10 GCR bytes
- * @param track Output: track number
- * @param sector Output: sector number
- * @param disk_id Output: disk ID
- * @return true if valid
- */
-bool uft_c64_decode_header(const uint8_t gcr[10],
-                           int *track, int *sector, uint16_t *disk_id);
 
 
 /*============================================================================
@@ -289,20 +268,6 @@ void uft_c64_parser_init(uft_c64_parser_t *parser, int track);
 void uft_c64_parser_add_bit(uft_c64_parser_t *parser,
                             uint8_t bit, unsigned long position);
 
-/**
- * @brief Add flux sample to parser
- *
- * Converts sample count to bits and adds them.
- *
- * @param parser Parser context
- * @param samples Sample count since last flux
- * @param position Data position
- * @param track Track number (for timing buckets)
- */
-void uft_c64_parser_add_sample(uft_c64_parser_t *parser,
-                               unsigned long samples,
-                               unsigned long position,
-                               int track);
 
 /*============================================================================
  * D64/G64 Format Support
@@ -321,17 +286,6 @@ void uft_c64_parser_add_sample(uft_c64_parser_t *parser,
 #define UFT_D64_SIZE_40_ERR     197376
 
 
-/**
- * @brief Read sector from D64 data
- * @param d64_data D64 file data
- * @param d64_size D64 file size
- * @param track Track number
- * @param sector Sector number
- * @param data Output: 256 bytes
- * @return true on success
- */
-bool uft_d64_read_sector(const uint8_t *d64_data, size_t d64_size,
-                         int track, int sector, uint8_t data[256]);
 
 #ifdef __cplusplus
 }

@@ -235,16 +235,6 @@ typedef struct uft_dos_interface {
 
 
 
-/**
- * @brief Recognize DOS from boot sector
- * @param boot_sector Boot sector data
- * @param size Boot sector size
- * @param results Output recognition results (sorted by confidence)
- * @param max_results Maximum results to return
- * @return Number of matching DOS types found
- */
-int uft_dos_recognize(const uint8_t *boot_sector, size_t size,
-                      uft_dos_recognition_t *results, int max_results);
 
 
 
@@ -551,88 +541,13 @@ typedef struct {
     char     volume_label[32];          /**< Volume label */
 } uft_dos_info_t;
 
-/**
- * @brief Detect DOS type from boot/system sectors
- * @param data Boot sector or first track data
- * @param size Data size in bytes
- * @param results Array to receive detection results
- * @param max_results Maximum results to return
- * @return Number of DOS types detected (sorted by confidence)
- */
-int uft_dos_detect(const uint8_t *data, size_t size,
-                    uft_dos_info_t *results, int max_results);
 
-/**
- * @brief Probe for FAT filesystem
- * @param boot_sector 512-byte boot sector
- * @param size Size of boot sector
- * @param info Output info structure
- * @return 1 if FAT detected, 0 otherwise
- */
-int uft_dos_probe_fat(const uint8_t *boot_sector, size_t size,
-                       uft_dos_info_t *info);
 
-/**
- * @brief Probe for TR-DOS filesystem
- * @param sector0 Track 0 sector 0
- * @param sector8 Track 0 sector 8 (info sector)
- * @param size Sector size
- * @param info Output info structure
- * @return 1 if TR-DOS detected, 0 otherwise
- */
-int uft_dos_probe_trdos(const uint8_t *sector0, const uint8_t *sector8,
-                         size_t size, uft_dos_info_t *info);
 
-/**
- * @brief Probe for CP/M filesystem
- * @param directory Directory track data
- * @param size Data size
- * @param info Output info structure
- * @return 1 if CP/M detected, 0 otherwise
- */
-int uft_dos_probe_cpm(const uint8_t *directory, size_t size,
-                       uft_dos_info_t *info);
 
-/**
- * @brief Probe for Commodore 1541 DOS
- * @param bam BAM sector (track 18, sector 0)
- * @param size Sector size
- * @param info Output info structure
- * @return 1 if CBM DOS detected, 0 otherwise
- */
-int uft_dos_probe_cbm(const uint8_t *bam, size_t size,
-                       uft_dos_info_t *info);
 
-/**
- * @brief Probe for Apple DOS 3.3
- * @param vtoc VTOC sector (track 17, sector 0)
- * @param size Sector size
- * @param info Output info structure
- * @return 1 if Apple DOS detected, 0 otherwise
- */
-int uft_dos_probe_apple_dos(const uint8_t *vtoc, size_t size,
-                             uft_dos_info_t *info);
 
-/**
- * @brief Probe for ProDOS
- * @param block2 Block 2 (volume directory header)
- * @param size Block size
- * @param info Output info structure
- * @return 1 if ProDOS detected, 0 otherwise
- */
-int uft_dos_probe_prodos(const uint8_t *block2, size_t size,
-                          uft_dos_info_t *info);
 
-/**
- * @brief Probe for BBC Micro DFS
- * @param sector0 Sector 0
- * @param sector1 Sector 1
- * @param size Sector size
- * @param info Output info structure
- * @return 1 if DFS detected, 0 otherwise
- */
-int uft_dos_probe_dfs(const uint8_t *sector0, const uint8_t *sector1,
-                       size_t size, uft_dos_info_t *info);
 
 /**
  * @brief Get DOS type name string

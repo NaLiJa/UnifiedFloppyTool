@@ -363,86 +363,16 @@ void uft_verify_result_free(uft_verify_result_t *result);
  * API Functions - Write with Verify
  * ═══════════════════════════════════════════════════════════════════════════════ */
 
-/**
- * @brief Track schreiben mit automatischer Verifikation
- * @param disk Disk-Handle
- * @param cylinder Zylinder
- * @param head Kopf
- * @param data Track-Daten
- * @param size Datengröße
- * @param options Write-Optionen (inkl. Verify)
- * @param verify_result Output: Verify-Result (optional, NULL wenn nicht benötigt)
- * @return UFT_OK wenn Write und Verify erfolgreich
- */
-uft_error_t uft_disk_write_track_verified(
-    uft_disk_t *disk,
-    uint8_t cylinder,
-    uint8_t head,
-    const uint8_t *data,
-    size_t size,
-    const uft_write_verify_options_t *options,
-    uft_track_verify_t **verify_result
-);
 
-/**
- * @brief Sektor schreiben mit Verifikation
- */
-uft_error_t uft_disk_write_sector_verified(
-    uft_disk_t *disk,
-    uint8_t cylinder,
-    uint8_t head,
-    uint8_t sector,
-    const uint8_t *data,
-    size_t size,
-    const uft_write_verify_options_t *options,
-    uft_sector_verify_t **verify_result
-);
 
 /* ═══════════════════════════════════════════════════════════════════════════════
  * API Functions - Format-Specific Verifiers
  * ═══════════════════════════════════════════════════════════════════════════════ */
 
-/**
- * @brief Format-spezifischen Verifier registrieren
- */
-typedef uft_verify_status_t (*uft_format_verifier_fn)(
-    const uint8_t *expected,
-    const uint8_t *actual,
-    size_t size,
-    void *format_ctx
-);
 
-int uft_verify_register_format(
-    uft_format_t format,
-    uft_format_verifier_fn verifier
-);
 
-/**
- * @brief Amiga-spezifische Verifikation (Checksum)
- */
-uft_verify_status_t uft_verify_amiga_track(
-    const uint8_t *expected,
-    const uint8_t *actual,
-    size_t size
-);
 
-/**
- * @brief Commodore GCR Verifikation
- */
-uft_verify_status_t uft_verify_c64_track(
-    const uint8_t *expected,
-    const uint8_t *actual,
-    size_t size
-);
 
-/**
- * @brief Apple GCR Verifikation
- */
-uft_verify_status_t uft_verify_apple_track(
-    const uint8_t *expected,
-    const uint8_t *actual,
-    size_t size
-);
 
 /* ═══════════════════════════════════════════════════════════════════════════════
  * API Functions - Reporting
@@ -454,13 +384,6 @@ uft_verify_status_t uft_verify_apple_track(
  */
 char *uft_verify_result_to_json(const uft_verify_result_t *result);
 
-/**
- * @brief Verify-Report in Datei speichern
- */
-uft_error_t uft_verify_result_save(
-    const uft_verify_result_t *result,
-    const char *path
-);
 
 /* ═══════════════════════════════════════════════════════════════════════════════
  * Utility Functions
@@ -476,24 +399,7 @@ const char *uft_verify_status_string(uft_verify_status_t status);
  */
 const char *uft_verify_mode_string(uft_verify_mode_t mode);
 
-/**
- * @brief Schneller Byte-Vergleich mit erstem Mismatch
- */
-bool uft_verify_bytes(
-    const uint8_t *expected,
-    const uint8_t *actual,
-    size_t size,
-    size_t *first_mismatch
-);
 
-/**
- * @brief CRC-basierte Schnellprüfung
- */
-bool uft_verify_crc(
-    const uint8_t *data,
-    size_t size,
-    uint32_t expected_crc
-);
 
 /* ═══════════════════════════════════════════════════════════════════════════════
  * Opaque context types for write-verify module (uft_write_verify.c)

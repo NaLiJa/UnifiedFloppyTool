@@ -148,28 +148,12 @@ void uft_log_set_level(uft_log_level_t level);
 
 
 
-/**
- * @brief Set custom callback
- */
-void uft_log_set_callback(uft_log_callback_t callback, void *user_data);
 
 /* ============================================================================
  * Logging Functions
  * ============================================================================ */
 
-/**
- * @brief Log message with category
- */
-void uft_log(uft_log_mask_t category, uft_log_level_t level,
-             const char *file, int line, const char *func,
-             const char *fmt, ...);
 
-/**
- * @brief Log with va_list
- */
-void uft_log_v(uft_log_mask_t category, uft_log_level_t level,
-               const char *file, int line, const char *func,
-               const char *fmt, va_list args);
 
 /* ============================================================================
  * Convenience Macros
@@ -199,16 +183,6 @@ void uft_log_v(uft_log_mask_t category, uft_log_level_t level,
  * Log Buffer Access (for GUI/Export)
  * ============================================================================ */
 
-/**
- * @brief Get recent log entries
- * 
- * @param entries      Output array
- * @param max_entries  Maximum entries to retrieve
- * @param category     Filter by category (0 = all)
- * @return Number of entries returned
- */
-size_t uft_log_get_recent(uft_log_entry_t *entries, size_t max_entries,
-                          uint32_t category_filter);
 
 
 

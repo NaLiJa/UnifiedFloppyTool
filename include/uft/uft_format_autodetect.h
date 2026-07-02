@@ -158,18 +158,6 @@ uft_error_t uft_detect_format_buffer(const uint8_t *data, size_t size,
                                       const uft_detect_options_t *options,
                                       uft_detect_result_t *result);
 
-/**
- * @brief Detect format from first N bytes (quick check)
- * @param header First bytes of file
- * @param header_size Size of header (recommend 512+)
- * @param file_size Total file size
- * @param extension File extension (optional)
- * @param result Output result
- * @return UFT_OK on success
- */
-uft_error_t uft_detect_format_quick(const uint8_t *header, size_t header_size,
-                                     size_t file_size, const char *extension,
-                                     uft_detect_result_t *result);
 
 /**
  * @brief Initialize result structure

@@ -261,71 +261,10 @@ uft_ir_writer_t *uft_ir_writer_create(const char *path,
                                        const uft_ir_serialize_config_t *config);
 
 
-/**
- * @brief Write disk metadata block
- * @param writer Writer context
- * @param metadata Metadata key-value pairs (NULL-terminated)
- * @return 0 on success
- */
-int uft_ir_write_metadata(uft_ir_writer_t *writer,
-                          const char **metadata);
 
-/**
- * @brief Write track data
- * @param writer Writer context
- * @param track Track number
- * @param side Side
- * @param encoding Encoding type
- * @param bitstream Bitstream data
- * @param bit_count Bitstream size in bits
- * @return 0 on success
- */
-int uft_ir_write_track(uft_ir_writer_t *writer,
-                       uint16_t track, uint8_t side, uint8_t encoding,
-                       const uint8_t *bitstream, size_t bit_count);
 
-/**
- * @brief Write sector data
- * @param writer Writer context
- * @param track Track number
- * @param side Side
- * @param sector Sector number
- * @param data Sector data
- * @param size Data size
- * @param crc_valid CRC validation result
- * @param stored_crc CRC from disk
- * @return 0 on success
- */
-int uft_ir_write_sector(uft_ir_writer_t *writer,
-                        uint16_t track, uint8_t side, uint8_t sector,
-                        const uint8_t *data, size_t size,
-                        bool crc_valid, uint16_t stored_crc);
 
-/**
- * @brief Write timing data
- * @param writer Writer context
- * @param track Track number
- * @param side Side
- * @param timing Timing data (binary format)
- * @param size Timing data size
- * @return 0 on success
- */
-int uft_ir_write_timing(uft_ir_writer_t *writer,
-                        uint16_t track, uint8_t side,
-                        const uint8_t *timing, size_t size);
 
-/**
- * @brief Write raw flux data
- * @param writer Writer context
- * @param track Track number
- * @param side Side
- * @param flux_ns Flux intervals in nanoseconds
- * @param count Number of intervals
- * @return 0 on success
- */
-int uft_ir_write_flux(uft_ir_writer_t *writer,
-                      uint16_t track, uint8_t side,
-                      const uint32_t *flux_ns, size_t count);
 
 /*===========================================================================
  * Binary Deserialization (Reader)
@@ -348,34 +287,7 @@ const uft_ir_header_t *uft_ir_get_header(const uft_ir_reader_t *reader);
 
 
 
-/**
- * @brief Read track bitstream
- * @param reader Reader context
- * @param track Track number
- * @param side Side
- * @param bitstream Output buffer (caller allocates)
- * @param max_bits Buffer capacity in bits
- * @param bit_count Output: actual bit count
- * @return 0 on success
- */
-int uft_ir_read_track(uft_ir_reader_t *reader,
-                      uint16_t track, uint8_t side,
-                      uint8_t *bitstream, size_t max_bits, size_t *bit_count);
 
-/**
- * @brief Read sector data
- * @param reader Reader context
- * @param track Track number
- * @param side Side
- * @param sector Sector number
- * @param data Output buffer (caller allocates)
- * @param max_size Buffer capacity
- * @param size Output: actual size
- * @return 0 on success
- */
-int uft_ir_read_sector(uft_ir_reader_t *reader,
-                       uint16_t track, uint8_t side, uint8_t sector,
-                       uint8_t *data, size_t max_size, size_t *size);
 
 /*===========================================================================
  * JSON Export
@@ -394,15 +306,6 @@ typedef struct {
 } uft_ir_json_config_t;
 
 
-/**
- * @brief Export UFIR to JSON file
- * @param reader Reader context
- * @param path Output JSON path
- * @param config JSON configuration
- * @return 0 on success
- */
-int uft_ir_export_json(uft_ir_reader_t *reader, const char *path,
-                       const uft_ir_json_config_t *config);
 
 /**
  * @brief Export single track to JSON string
@@ -419,15 +322,6 @@ size_t uft_ir_track_to_json(uft_ir_reader_t *reader,
                             const uft_ir_json_config_t *config,
                             char *buffer, size_t buffer_size);
 
-/**
- * @brief Export metadata to JSON string
- * @param reader Reader context
- * @param buffer Output buffer
- * @param buffer_size Buffer size
- * @return Bytes written
- */
-size_t uft_ir_metadata_to_json(uft_ir_reader_t *reader,
-                               char *buffer, size_t buffer_size);
 
 /*===========================================================================
  * Utility Functions

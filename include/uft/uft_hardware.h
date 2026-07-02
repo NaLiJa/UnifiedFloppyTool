@@ -462,45 +462,11 @@ void uft_hw_close(uft_hw_device_t* device);
 
 // === Track I/O ===
 
-/**
- * @brief Track lesen
- * 
- * @param device Device Handle
- * @param cylinder Zylinder
- * @param head Seite
- * @param track [out] Track-Daten
- * @param options Lese-Optionen (NULL = defaults)
- * @return UFT_OK bei Erfolg
- */
-uft_error_t uft_hw_read_track(uft_hw_device_t* device, 
-                              uint8_t cylinder, uint8_t head,
-                              uft_track_t* track,
-                              const uft_decode_options_t* options);
 
-/**
- * @brief Track schreiben
- */
-uft_error_t uft_hw_write_track(uft_hw_device_t* device,
-                               uint8_t cylinder, uint8_t head,
-                               const uft_track_t* track,
-                               const uft_encode_options_t* options);
 
 // === Flux I/O ===
 
-/**
- * @brief Rohe Flux-Daten lesen
- */
-uft_error_t uft_hw_read_flux(uft_hw_device_t* device,
-                             uint8_t cylinder, uint8_t head,
-                             uint32_t** flux, size_t* flux_count,
-                             uint8_t revolutions);
 
-/**
- * @brief Rohe Flux-Daten schreiben
- */
-uft_error_t uft_hw_write_flux(uft_hw_device_t* device,
-                              uint8_t cylinder, uint8_t head,
-                              const uint32_t* flux, size_t flux_count);
 
 // === Disk-Level Operations ===
 
@@ -516,20 +482,7 @@ uft_error_t uft_hw_write_flux(uft_hw_device_t* device,
  */
 typedef void (*uft_hw_progress_fn)(int track, int total, void* user_data);
 
-uft_error_t uft_hw_read_disk(uft_hw_device_t* device,
-                             const char* path,
-                             uft_format_t format,
-                             const uft_geometry_t* geometry,
-                             uft_hw_progress_fn progress,
-                             void* user_data);
 
-/**
- * @brief Image auf Disk schreiben
- */
-uft_error_t uft_hw_write_disk(uft_hw_device_t* device,
-                              const char* path,
-                              uft_hw_progress_fn progress,
-                              void* user_data);
 
 // ============================================================================
 // Utility Functions
@@ -556,11 +509,6 @@ const char* uft_drive_type_name(uft_drive_type_t type);
 
 
 
-/**
- * @brief Geräte auflisten (nur aktivierte Backends)
- */
-uft_error_t uft_hw_manager_enumerate(uft_hw_info_t* devices, size_t max_devices,
-                                      size_t* found);
 
 // ============================================================================
 // Convenience Functions

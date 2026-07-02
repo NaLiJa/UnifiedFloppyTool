@@ -254,61 +254,25 @@ int uft_cbm_read_directory(uft_cbm_disk_t *disk);
  */
 const uft_cbm_dir_entry_t *uft_cbm_get_entry(const uft_cbm_disk_t *disk, size_t index);
 
-/**
- * @brief Find file by name
- */
-int uft_cbm_find_file(const uft_cbm_disk_t *disk, const char *name, 
-                      uft_cbm_dir_entry_t *entry);
 
 
 /* ============================================================================
  * File Extraction
  * ============================================================================ */
 
-/**
- * @brief Extract file from disk
- * 
- * @param disk      Disk image
- * @param entry     Directory entry
- * @param file      Output file structure
- * @return          0 on success
- */
-int uft_cbm_extract_file(const uft_cbm_disk_t *disk, 
-                         const uft_cbm_dir_entry_t *entry,
-                         uft_cbm_file_t *file);
 
-/**
- * @brief Extract file by name
- */
-int uft_cbm_extract_file_by_name(const uft_cbm_disk_t *disk, const char *name,
-                                  uft_cbm_file_t *file);
 
 /**
  * @brief Free extracted file
  */
 void uft_cbm_file_free(uft_cbm_file_t *file);
 
-/**
- * @brief Extract and analyze all PRG files
- * 
- * @param disk      Disk image
- * @param files     Output array of files
- * @param max_files Maximum files to extract
- * @return          Number of PRG files found
- */
-int uft_cbm_extract_all_prg(const uft_cbm_disk_t *disk, 
-                             uft_cbm_file_t *files, size_t max_files);
 
 /* ============================================================================
  * BAM Operations
  * ============================================================================ */
 
 
-/**
- * @brief Check if sector is allocated
- */
-int uft_cbm_is_sector_allocated(const uft_cbm_disk_t *disk, 
-                                 uint8_t track, uint8_t sector);
 
 
 /* ============================================================================
@@ -321,12 +285,6 @@ int uft_cbm_is_sector_allocated(const uft_cbm_disk_t *disk,
 const uint8_t *uft_cbm_get_sector(const uft_cbm_disk_t *disk, 
                                    uint8_t track, uint8_t sector);
 
-/**
- * @brief Get sector offset in image
- */
-int uft_cbm_sector_offset(uft_cbm_disk_format_t format, 
-                          uint8_t track, uint8_t sector,
-                          uint32_t *offset);
 
 
 /* ============================================================================
@@ -350,11 +308,6 @@ const char *uft_cbm_format_name(uft_cbm_disk_format_t format);
  */
 const char *uft_cbm_file_type_name(uft_cbm_file_type_t type);
 
-/**
- * @brief Convert PETSCII filename to ASCII
- */
-void uft_cbm_petscii_to_ascii(const uint8_t *petscii, size_t len, 
-                               char *ascii, size_t ascii_cap);
 
 
 #ifdef __cplusplus

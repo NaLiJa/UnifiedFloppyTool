@@ -80,12 +80,6 @@ typedef struct uft_mfm_context uft_mfm_context_t;
 
 
 
-/**
- * @brief Create new MFM file
- */
-uft_mfm_context_t* uft_mfm_create(const char *path, 
-                                   int num_tracks, int num_sides,
-                                   int rpm, uint32_t bitrate);
 
 /**
  * @brief Close MFM file
@@ -99,11 +93,6 @@ void uft_mfm_close(uft_mfm_context_t *ctx);
 
 
 
-/**
- * @brief Get track descriptor
- */
-const uft_mfm_track_t* uft_mfm_get_track_info(uft_mfm_context_t *ctx,
-                                               int track, int side);
 
 /*===========================================================================
  * TRACK I/O
@@ -137,26 +126,7 @@ size_t uft_mfm_get_track_length(uft_mfm_context_t *ctx, int track, int side);
  * BITSTREAM OPERATIONS
  *===========================================================================*/
 
-/**
- * @brief Convert MFM bits to flux transitions
- * 
- * @param mfm_data MFM bitstream
- * @param mfm_bits Number of bits
- * @param bitrate Bitrate in bits/second
- * @param flux_ns Output: flux transition times in nanoseconds
- * @param max_flux Maximum flux values
- * @return Number of flux transitions
- */
-int uft_mfm_to_flux(const uint8_t *mfm_data, size_t mfm_bits,
-                    uint32_t bitrate,
-                    uint32_t *flux_ns, size_t max_flux);
 
-/**
- * @brief Convert flux transitions to MFM bits
- */
-int uft_flux_to_mfm(const uint32_t *flux_ns, size_t flux_count,
-                    uint32_t bitrate,
-                    uint8_t *mfm_data, size_t max_bytes);
 
 /*===========================================================================
  * CONVERSION

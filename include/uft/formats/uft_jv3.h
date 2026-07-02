@@ -147,11 +147,6 @@ bool uft_jv3_detect(const uint8_t *data, size_t size);
 
 
 
-/**
- * @brief Get sector info by index
- */
-int uft_jv3_get_sector_info(const uft_jv3_ctx_t *ctx, int index,
-                            uft_jv3_sector_info_t *info);
 
 /**
  * @brief Find sector by track/sector/side
@@ -167,13 +162,6 @@ int uft_jv3_read_sector(const uft_jv3_ctx_t *ctx,
                         uint8_t track, uint8_t sector, uint8_t side,
                         uint8_t *buffer, size_t *size);
 
-/**
- * @brief Get all sectors for a track
- */
-int uft_jv3_get_track_sectors(const uft_jv3_ctx_t *ctx,
-                              uint8_t track, uint8_t side,
-                              uft_jv3_sector_info_t *sectors, int max_sectors,
-                              int *count);
 
 /*===========================================================================
  * Function Prototypes - Writing
@@ -185,35 +173,13 @@ int uft_jv3_get_track_sectors(const uft_jv3_ctx_t *ctx,
 uft_jv3_writer_t *uft_jv3_writer_create(size_t initial_capacity);
 
 
-/**
- * @brief Add sector to JV3 file
- */
-int uft_jv3_writer_add_sector(uft_jv3_writer_t *writer,
-                              uint8_t track, uint8_t sector, uint8_t side,
-                              uint16_t size, bool is_mfm, bool is_deleted,
-                              const uint8_t *data);
 
-/**
- * @brief Finalize and get JV3 data
- */
-int uft_jv3_writer_finalize(uft_jv3_writer_t *writer,
-                            uint8_t **data, size_t *size);
 
 /*===========================================================================
  * Function Prototypes - Conversion
  *===========================================================================*/
 
-/**
- * @brief Convert JV3 to DMK format
- */
-int uft_jv3_to_dmk(const uft_jv3_ctx_t *ctx,
-                   uint8_t *dmk_data, size_t *dmk_size);
 
-/**
- * @brief Convert DMK to JV3 format
- */
-int uft_dmk_to_jv3(const uint8_t *dmk_data, size_t dmk_size,
-                   uint8_t *jv3_data, size_t *jv3_size);
 
 /*===========================================================================
  * Function Prototypes - Utilities

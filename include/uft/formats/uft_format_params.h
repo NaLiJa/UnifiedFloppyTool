@@ -269,11 +269,6 @@ typedef struct {
 uft_format_id_t uft_format_detect(const uint8_t* data, size_t size, 
                                    const char* filename);
 
-/**
- * @brief Get all formats in a category
- */
-int uft_format_get_by_category(uft_format_category_t cat,
-                                uft_format_id_t* out, int max_count);
 
 /**
  * @brief Get category name

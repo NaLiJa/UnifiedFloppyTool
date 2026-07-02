@@ -214,31 +214,11 @@ typedef struct {
 
 
 
-/**
- * @brief Get track by cylinder and head
- */
-uft_dmk_track_t* uft_dmk_get_track(uft_dmk_image_t* img,
-                                    uint8_t cylinder, uint8_t head);
 
 
 
-/**
- * @brief Read sector data
- * @param track Track containing sector
- * @param sector_num Sector number
- * @param buffer Output buffer
- * @param size Buffer size
- * @return Bytes read or negative error
- */
-int uft_dmk_read_sector(const uft_dmk_track_t* track, uint8_t sector_num,
-                        uint8_t* buffer, size_t size);
 
 
-/**
- * @brief Convert DMK to raw binary
- */
-int uft_dmk_to_raw(const uft_dmk_image_t* img, uint8_t** data,
-                   size_t* size, uint8_t fill);
 
 /**
  * @brief Calculate CRC-16 for DMK data
@@ -264,16 +244,6 @@ uint16_t uft_dmk_crc16(const uint8_t* data, size_t length, uint16_t crc);
  * DMK Track Data Utilities
  *============================================================================*/
 
-/**
- * @brief Find address mark in track data
- * @param track Track to search
- * @param start Starting offset
- * @param mark Address mark to find
- * @param fm True for FM, false for MFM
- * @return Offset to mark or -1 if not found
- */
-int uft_dmk_find_mark(const uft_dmk_track_t* track, uint16_t start,
-                      uint8_t mark, bool fm);
 
 
 #ifdef __cplusplus

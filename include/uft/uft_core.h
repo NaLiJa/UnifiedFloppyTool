@@ -76,16 +76,6 @@ uft_error_t uft_disk_get_geometry(const uft_disk_t* disk, uft_geometry_t* geomet
 uft_track_t* uft_track_read(uft_disk_t* disk, int cylinder, int head,
                              const uft_read_options_t* options);
 
-/**
- * @brief Track schreiben
- * 
- * @param disk Disk-Handle
- * @param track Track-Daten
- * @param options Schreib-Optionen (NULL für Default)
- * @return UFT_OK bei Erfolg
- */
-uft_error_t uft_track_write(uft_disk_t* disk, const uft_track_t* track,
-                             const uft_write_options_t* options);
 
 /**
  * @brief Track freigeben
@@ -144,40 +134,9 @@ uft_error_t uft_track_get_flux(const uft_track_t* track,
 // Sektor API
 // ============================================================================
 
-/**
- * @brief Einzelnen Sektor lesen
- * 
- * @param disk Disk-Handle
- * @param cylinder Zylinder
- * @param head Seite
- * @param sector Sektor-Nummer
- * @param buffer Zielpuffer
- * @param buffer_size Puffergröße
- * @return Gelesene Bytes oder Fehler
- */
-int uft_sector_read(uft_disk_t* disk, int cylinder, int head, int sector,
-                    uint8_t* buffer, size_t buffer_size);
-
-/**
- * @brief Einzelnen Sektor schreiben
- * 
- * @param disk Disk-Handle
- * @param cylinder Zylinder
- * @param head Seite
- * @param sector Sektor-Nummer
- * @param data Quelldaten
- * @param data_size Datengröße
- * @return UFT_OK bei Erfolg
- */
-uft_error_t uft_sector_write(uft_disk_t* disk, int cylinder, int head, int sector,
-                              const uint8_t* data, size_t data_size);
 
 
-/**
- * @brief Block schreiben (LBA-Adressierung)
- */
-uft_error_t uft_block_write(uft_disk_t* disk, uint32_t lba, 
-                             const uint8_t* data, size_t data_size);
+
 
 /**
  * @brief CHS zu LBA konvertieren
@@ -194,16 +153,6 @@ void uft_lba_to_chs(const uft_geometry_t* geo, uint32_t lba,
 // Konvertierung API
 // ============================================================================
 
-/**
- * @brief Disk konvertieren
- * 
- * @param src Quell-Disk
- * @param dst_path Ziel-Pfad
- * @param options Konvertierungs-Optionen
- * @return UFT_OK bei Erfolg
- */
-uft_error_t uft_convert(uft_disk_t* src, const char* dst_path,
-                         const uft_convert_options_t* options);
 
 
 // ============================================================================
@@ -232,17 +181,6 @@ typedef struct uft_analysis {
     char              filesystem[32];
 } uft_analysis_t;
 
-/**
- * @brief Disk analysieren
- * 
- * @param disk Disk-Handle
- * @param analysis Ergebnis-Struktur
- * @param progress Progress-Callback (optional)
- * @param user User-Daten für Callback
- * @return UFT_OK bei Erfolg
- */
-uft_error_t uft_analyze(uft_disk_t* disk, uft_analysis_t* analysis,
-                         uft_progress_fn progress, void* user);
 
 /**
  * @brief Format auto-detecten

@@ -266,9 +266,6 @@ typedef struct {
 
 
 
-/** Hole Fehlermeldungen */
-int uft_params_get_errors(const uft_canonical_params_t *params,
-                          const char **errors, int max_count);
 
 /** Löse Alias für Tool auf */
 const char *uft_params_resolve_alias(const char *alias, uft_tool_e tool);
@@ -277,9 +274,6 @@ const char *uft_params_resolve_alias(const char *alias, uft_tool_e tool);
 int uft_params_set_int(uft_canonical_params_t *params, 
                        const char *name, int64_t value);
 
-/** Setze Double-Parameter */
-int uft_params_set_double(uft_canonical_params_t *params,
-                          const char *name, double value);
 
 /** Setze Bool-Parameter */
 int uft_params_set_bool(uft_canonical_params_t *params,
@@ -289,9 +283,6 @@ int uft_params_set_bool(uft_canonical_params_t *params,
 int64_t uft_params_get_int(const uft_canonical_params_t *params, 
                            const char *name);
 
-/** Hole Double-Parameter */
-double uft_params_get_double(const uft_canonical_params_t *params,
-                             const char *name);
 
 /** Hole Bool-Parameter */
 bool uft_params_get_bool(const uft_canonical_params_t *params,

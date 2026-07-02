@@ -208,13 +208,6 @@ int uft_bbc_dfs_parse(
     uft_bbc_dfs_entry_t *entries, int *entry_count,
     char *disk_title);
 
-/**
- * @brief Extract file from BBC DFS
- */
-int uft_bbc_dfs_extract(
-    const uint8_t *ssd_data, size_t ssd_size,
-    const char *filename,
-    uint8_t *output, size_t *output_size);
 
 /* ═══════════════════════════════════════════════════════════════════════════════
  * TR-DOS (Spectrum)

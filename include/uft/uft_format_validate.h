@@ -101,10 +101,6 @@ typedef struct uft_validation_result {
 // Validation API
 // ============================================================================
 
-uft_error_t uft_validate_format(const uint8_t* data, size_t size,
-                                 uft_format_t format,
-                                 uft_validation_level_t level,
-                                 uft_validation_result_t* result);
 
 // Format-specific validators
 uft_error_t uft_validate_d64(const uint8_t* data, size_t size,
@@ -149,20 +145,6 @@ typedef struct uft_format_encoding_rule {
     const char*         format_name;
 } uft_format_encoding_rule_t;
 
-/**
- * @brief Validate format-encoding combination
- * @param format Format ID
- * @param encoding Encoding type
- * @param error_msg Output buffer for error message (can be NULL)
- * @param msg_size Size of error_msg buffer
- * @return true if valid combination, false otherwise
- */
-bool uft_validate_format_encoding(
-    uft_format_id_t format,
-    uft_encoding_t encoding,
-    char* error_msg,
-    size_t msg_size
-);
 
 
 

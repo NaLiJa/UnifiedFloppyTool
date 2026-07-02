@@ -195,15 +195,7 @@ int uft_scp_read_track(uft_scp_config_t *cfg, int track, int side,
                         uint16_t **flux, size_t *count,
                         uint32_t *index_time, uint32_t *index_cells,
                         int *rev_count);
-int uft_scp_read_disk(uft_scp_config_t *cfg, uft_scp_callback_t callback,
-                       void *user);
-int uft_scp_write_track(uft_scp_config_t *cfg, int track, int side,
-                         const uint16_t *flux, size_t count, uint8_t flags);
 
-int uft_scp_sendram_usb(uft_scp_config_t *cfg, uint32_t offset,
-                         uint32_t length, uint8_t *buf);
-int uft_scp_loadram_usb(uft_scp_config_t *cfg, uint32_t offset,
-                         uint32_t length, const uint8_t *buf);
 
 double uft_scp_ticks_to_ns(uint32_t ticks);
 uint32_t uft_scp_ns_to_ticks(double ns);

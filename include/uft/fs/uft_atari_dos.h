@@ -346,46 +346,10 @@ typedef enum {
 uft_atari_ctx_t *uft_atari_create(void);
 
 
-/**
- * @brief Open Atari disk image
- * @param ctx Context
- * @param data Image data
- * @param size Data size
- * @param copy_data If true, copy data; if false, reference only
- * @return Error code
- */
-uft_atari_error_t uft_atari_open(uft_atari_ctx_t *ctx,
-                                 const uint8_t *data,
-                                 size_t size,
-                                 bool copy_data);
-
-/**
- * @brief Open with explicit geometry
- * @param ctx Context
- * @param data Image data
- * @param size Data size
- * @param density Density type
- * @param dos_type DOS type
- * @return Error code
- */
-uft_atari_error_t uft_atari_open_as(uft_atari_ctx_t *ctx,
-                                    const uint8_t *data,
-                                    size_t size,
-                                    uft_atari_density_t density,
-                                    uft_atari_dos_type_t dos_type);
 
 
 
-/**
- * @brief Get image data for external saving
- * @param ctx Context
- * @param[out] data Pointer to data
- * @param[out] size Data size
- * @return Error code
- */
-uft_atari_error_t uft_atari_get_data(const uft_atari_ctx_t *ctx,
-                                     const uint8_t **data,
-                                     size_t *size);
+
 
 /*===========================================================================
  * Detection Functions
@@ -453,29 +417,11 @@ uft_atari_error_t uft_atari_read_vtoc(uft_atari_ctx_t *ctx);
 
 
 
-/**
- * @brief Get free space info
- * @param ctx Context
- * @param[out] free_sectors Number of free sectors
- * @param[out] free_bytes Free space in bytes
- * @return Error code
- */
-uft_atari_error_t uft_atari_free_space(const uft_atari_ctx_t *ctx,
-                                       uint16_t *free_sectors,
-                                       uint32_t *free_bytes);
 
 /*===========================================================================
  * Directory Operations
  *===========================================================================*/
 
-/**
- * @brief Read directory
- * @param ctx Context
- * @param[out] dir Directory structure
- * @return Error code
- */
-uft_atari_error_t uft_atari_read_directory(uft_atari_ctx_t *ctx,
-                                           uft_atari_dir_t *dir);
 
 /**
  * @brief Find file in directory
@@ -496,99 +442,22 @@ uft_atari_error_t uft_atari_find_file(uft_atari_ctx_t *ctx,
  * @return Error code
  */
 typedef bool (*uft_atari_foreach_cb)(const uft_atari_entry_t *entry, void *user_data);
-uft_atari_error_t uft_atari_foreach(uft_atari_ctx_t *ctx,
-                                    uft_atari_foreach_cb callback,
-                                    void *user_data);
 
 /*===========================================================================
  * File Operations
  *===========================================================================*/
 
-/**
- * @brief Extract file from Atari image
- * @param ctx Context
- * @param filename Filename
- * @param[out] buffer Output buffer (caller must free)
- * @param[out] size File size
- * @return Error code
- */
-uft_atari_error_t uft_atari_extract(uft_atari_ctx_t *ctx,
-                                    const char *filename,
-                                    uint8_t **buffer,
-                                    size_t *size);
-
-/**
- * @brief Extract file to host filesystem
- * @param ctx Context
- * @param filename Atari filename
- * @param output_path Output file path
- * @return Error code
- */
-uft_atari_error_t uft_atari_extract_to_file(uft_atari_ctx_t *ctx,
-                                            const char *filename,
-                                            const char *output_path);
-
-/**
- * @brief Inject file into Atari image
- * @param ctx Context
- * @param filename Atari filename (8.3 format)
- * @param data File data
- * @param size File size
- * @return Error code
- */
-uft_atari_error_t uft_atari_inject(uft_atari_ctx_t *ctx,
-                                   const char *filename,
-                                   const uint8_t *data,
-                                   size_t size);
-
-/**
- * @brief Inject file from host filesystem
- * @param ctx Context
- * @param input_path Host file path
- * @param filename Atari filename (NULL to derive from path)
- * @return Error code
- */
-uft_atari_error_t uft_atari_inject_from_file(uft_atari_ctx_t *ctx,
-                                             const char *input_path,
-                                             const char *filename);
 
 
-/**
- * @brief Rename file in Atari image
- * @param ctx Context
- * @param old_name Current filename
- * @param new_name New filename
- * @return Error code
- */
-uft_atari_error_t uft_atari_rename(uft_atari_ctx_t *ctx,
-                                   const char *old_name,
-                                   const char *new_name);
 
-/**
- * @brief Lock/unlock file
- * @param ctx Context
- * @param filename Filename
- * @param locked True to lock, false to unlock
- * @return Error code
- */
-uft_atari_error_t uft_atari_set_locked(uft_atari_ctx_t *ctx,
-                                       const char *filename,
-                                       bool locked);
+
+
+
 
 /*===========================================================================
  * Image Creation
  *===========================================================================*/
 
-/**
- * @brief Create new blank Atari disk image
- * @param ctx Context
- * @param density Disk density
- * @param dos_type DOS type
- * @return Error code
- */
-uft_atari_error_t uft_atari_create_image(uft_atari_ctx_t *ctx,
-                                         uft_atari_density_t density,
-                                         uft_atari_dos_type_t dos_type);
 
 /**
  * @brief Format existing image (clears all data)
@@ -616,64 +485,15 @@ typedef struct {
     char     report[1024];     /**< Detailed report */
 } uft_atari_val_result_t;
 
-/**
- * @brief Validate disk image
- * @param ctx Context
- * @param[out] result Validation result
- * @return Error code
- */
-uft_atari_error_t uft_atari_validate(uft_atari_ctx_t *ctx,
-                                     uft_atari_val_result_t *result);
 
 
-/**
- * @brief List deleted files (potentially recoverable)
- * @param ctx Context
- * @param[out] entries Deleted file entries
- * @param[out] count Number of entries found
- * @return Error code
- */
-uft_atari_error_t uft_atari_list_deleted(uft_atari_ctx_t *ctx,
-                                         uft_atari_entry_t **entries,
-                                         size_t *count);
 
-/**
- * @brief Attempt to recover deleted file
- * @param ctx Context
- * @param dir_index Directory index of deleted file
- * @param[out] buffer Recovered data
- * @param[out] size Data size
- * @return Error code
- */
-uft_atari_error_t uft_atari_recover_deleted(uft_atari_ctx_t *ctx,
-                                            uint8_t dir_index,
-                                            uint8_t **buffer,
-                                            size_t *size);
 
 /*===========================================================================
  * Utility Functions
  *===========================================================================*/
 
-/**
- * @brief Parse Atari filename
- * @param input Input string (e.g., "FILE.EXT" or "FILE")
- * @param[out] filename 8-char filename buffer
- * @param[out] extension 3-char extension buffer
- * @return Error code
- */
-uft_atari_error_t uft_atari_parse_filename(const char *input,
-                                           char *filename,
-                                           char *extension);
 
-/**
- * @brief Format Atari filename for display
- * @param filename 8-char filename
- * @param extension 3-char extension
- * @param[out] buffer Output buffer (13 bytes min)
- */
-void uft_atari_format_filename(const char *filename,
-                               const char *extension,
-                               char *buffer);
 
 
 /**
@@ -699,16 +519,6 @@ const char *uft_atari_error_string(uft_atari_error_t error);
 
 
 
-/**
- * @brief Export directory to JSON
- * @param ctx Context
- * @param[out] buffer Output buffer
- * @param buffer_size Buffer size
- * @return Bytes written or negative error
- */
-int uft_atari_directory_to_json(uft_atari_ctx_t *ctx,
-                                char *buffer,
-                                size_t buffer_size);
 
 /*===========================================================================
  * ATR Header Support
@@ -732,27 +542,7 @@ UFT_PACK_END
 #define UFT_ATARI_ATR_MAGIC     0x0296
 
 
-/**
- * @brief Parse ATR header
- * @param data Image data
- * @param size Data size
- * @param[out] header Header structure
- * @param[out] data_offset Offset to actual disk data
- * @return Error code
- */
-uft_atari_error_t uft_atari_parse_atr(const uint8_t *data,
-                                      size_t size,
-                                      uft_atari_atr_header_t *header,
-                                      size_t *data_offset);
 
-/**
- * @brief Create ATR header for disk data
- * @param density Disk density
- * @param[out] header Header structure
- * @return Error code
- */
-uft_atari_error_t uft_atari_make_atr_header(uft_atari_density_t density,
-                                            uft_atari_atr_header_t *header);
 
 #ifdef __cplusplus
 }

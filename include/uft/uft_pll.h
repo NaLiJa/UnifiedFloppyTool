@@ -96,10 +96,6 @@ typedef struct uft_pll_context uft_pll_ctx_t;
 
 uft_pll_ctx_t* uft_pll_create(uft_pll_preset_t preset);
 void           uft_pll_destroy(uft_pll_ctx_t* ctx);
-int            uft_pll_process_flux(uft_pll_ctx_t* ctx,
-                                    uint32_t flux_ns,
-                                    uint8_t* bits_out,
-                                    int* bit_count_out);
 
 #ifdef __cplusplus
 }

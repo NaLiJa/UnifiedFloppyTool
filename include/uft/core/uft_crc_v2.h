@@ -203,17 +203,6 @@ typedef struct {
     float    confidence;                     /**< 0.0 - 1.0 */
 } uft_crc_correction_t;
 
-/**
- * @brief Attempt to correct CRC-16 errors (single-bit only)
- * 
- * @param data       Data to correct (modified in place)
- * @param len        Data length
- * @param expected   Expected CRC value
- * @param result     Correction result (optional, can be NULL)
- * @return           true if corrected successfully
- */
-bool uft_crc16_correct(uint8_t *data, size_t len, 
-                       uint16_t expected, uft_crc_correction_t *result);
 
 /*===========================================================================
  * Utility

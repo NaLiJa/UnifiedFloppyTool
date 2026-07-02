@@ -232,15 +232,6 @@ typedef enum {
  * API Functions - Detection
  *===========================================================================*/
 
-/**
- * @brief Detect BBC disk format
- * @param data Disk image data
- * @param size Data size
- * @param format_out Detected format (or NULL)
- * @return Confidence (0-100), 0 if not detected
- */
-int uft_bbc_detect(const uint8_t *data, size_t size,
-                   uft_bbc_format_t *format_out);
 
 /**
  * @brief Get format name
@@ -255,15 +246,6 @@ const char *uft_bbc_format_name(uft_bbc_format_t format);
  * API Functions - DFS
  *===========================================================================*/
 
-/**
- * @brief Read DFS catalog
- * @param data Disk image data
- * @param size Data size
- * @param info Output disk information
- * @return 0 on success, -1 on error
- */
-int uft_dfs_read_catalog(const uint8_t *data, size_t size,
-                          uft_dfs_info_t *info);
 
 /**
  * @brief Find file in DFS catalog
@@ -288,18 +270,6 @@ int uft_dfs_extract_file(const uint8_t *data, size_t size,
                           const uft_dfs_file_t *file,
                           uint8_t *buffer, size_t buf_size);
 
-/**
- * @brief Create new DFS disk image
- * @param buffer Output buffer
- * @param buf_size Buffer size
- * @param tracks Number of tracks (40 or 80)
- * @param double_sided Double-sided flag
- * @param title Disk title (max 12 chars)
- * @return Image size, or -1 on error
- */
-int uft_dfs_create(uint8_t *buffer, size_t buf_size,
-                   int tracks, bool double_sided,
-                   const char *title);
 
 /**
  * @brief Add file to DFS disk image
@@ -314,109 +284,23 @@ int uft_dfs_add_file(uint8_t *data, size_t size,
                       const uint8_t *file_data);
 
 
-/**
- * @brief Validate DFS image
- * @param data Disk image
- * @param size Image size
- * @param errors Optional error message buffer
- * @param err_size Error buffer size
- * @return Number of errors found (0 = valid)
- */
-int uft_dfs_validate(const uint8_t *data, size_t size,
-                      char *errors, size_t err_size);
 
 /*===========================================================================
  * API Functions - ADFS
  *===========================================================================*/
 
-/**
- * @brief Read ADFS disk info
- * @param data Disk image data
- * @param size Data size
- * @param info Output disk information
- * @return 0 on success, -1 on error
- */
-int uft_adfs_read_info(const uint8_t *data, size_t size,
-                        uft_adfs_info_t *info);
 
-/**
- * @brief Read ADFS directory
- * @param data Disk image data
- * @param size Data size
- * @param dir_addr Directory address (0 for root)
- * @param entries Output entry array
- * @param max_entries Maximum entries to return
- * @return Number of entries, or -1 on error
- */
-int uft_adfs_read_dir(const uint8_t *data, size_t size,
-                       uint32_t dir_addr,
-                       uft_adfs_entry_t *entries,
-                       size_t max_entries);
 
-/**
- * @brief Find file in ADFS by path
- * @param data Disk image data
- * @param size Data size
- * @param path Full path (e.g., "$.MyDir.MyFile")
- * @param entry Output entry
- * @return 0 on success, -1 if not found
- */
-int uft_adfs_find_path(const uint8_t *data, size_t size,
-                        const char *path,
-                        uft_adfs_entry_t *entry);
 
-/**
- * @brief Extract ADFS file
- */
-int uft_adfs_extract_file(const uint8_t *data, size_t size,
-                           const uft_adfs_entry_t *entry,
-                           uint8_t *buffer, size_t buf_size);
 
-/**
- * @brief Read ADFS free space map
- * @param data Disk image
- * @param size Image size
- * @param free_map Output bitmap (caller allocates)
- * @param map_size Bitmap size in bytes
- * @return Number of free sectors, or -1 on error
- */
-int uft_adfs_read_freemap(const uint8_t *data, size_t size,
-                           uint8_t *free_map, size_t map_size);
 
 /*===========================================================================
  * API Functions - Conversion
  *===========================================================================*/
 
-/**
- * @brief Convert DFS to SSD format
- * @param data Input disk data (any format)
- * @param size Input size
- * @param ssd_out Output buffer for SSD
- * @param ssd_size SSD buffer size
- * @return SSD size, or -1 on error
- * 
- * @note SSD is raw sector dump, 256 bytes/sector
- */
-int uft_bbc_to_ssd(const uint8_t *data, size_t size,
-                   uint8_t *ssd_out, size_t ssd_size);
 
-/**
- * @brief Convert DFS to DSD format (double-sided)
- */
-int uft_bbc_to_dsd(const uint8_t *data, size_t size,
-                   uint8_t *dsd_out, size_t dsd_size);
 
-/**
- * @brief Convert DFS to MMB format (Tube host bundle)
- */
-int uft_bbc_to_mmb(const uint8_t **images, size_t *sizes, int count,
-                   uint8_t *mmb_out, size_t mmb_size);
 
-/**
- * @brief Convert ADFS to ADF format
- */
-int uft_bbc_to_adf(const uint8_t *data, size_t size,
-                   uint8_t *adf_out, size_t adf_size);
 
 /*===========================================================================
  * Utility Functions

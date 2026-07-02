@@ -243,62 +243,12 @@ typedef struct uft_protection_pipeline uft_protection_pipeline_t;
  * API Functions
  * ═══════════════════════════════════════════════════════════════════════════════ */
 
-/**
- * @brief Create protection pipeline
- */
-uft_protection_pipeline_t* uft_protection_pipeline_create(
-    const uft_protection_options_t *options);
 
 
-/**
- * @brief Analyze disk image for protection
- */
-uft_error_t uft_protection_analyze_file(
-    uft_protection_pipeline_t *pipe,
-    const char *path,
-    uft_protection_map_t **map_out);
 
-/**
- * @brief Analyze flux data for protection
- */
-uft_error_t uft_protection_analyze_flux(
-    uft_protection_pipeline_t *pipe,
-    const uint8_t *flux_data,
-    size_t flux_size,
-    int revolutions,
-    uft_protection_map_t **map_out);
 
-/**
- * @brief Analyze single track
- */
-uft_error_t uft_protection_analyze_track(
-    uft_protection_pipeline_t *pipe,
-    int cylinder, int head,
-    const uint8_t *track_data,
-    size_t track_size,
-    const uint8_t **multi_rev_data,  /* NULL or array of revolution data */
-    int rev_count,
-    uft_track_protection_t *track_out);
 
-/**
- * @brief Apply protection to write operation
- */
-uft_error_t uft_protection_apply_to_write(
-    uft_protection_pipeline_t *pipe,
-    const uft_protection_map_t *map,
-    int cylinder, int head,
-    uint8_t *track_buffer,
-    size_t *track_size,
-    uint8_t *weak_mask_out);
 
-/**
- * @brief Preserve protection during format conversion
- */
-uft_error_t uft_protection_convert(
-    uft_protection_pipeline_t *pipe,
-    const uft_protection_map_t *source_map,
-    uft_format_t target_format,
-    uft_protection_map_t **target_map_out);
 
 
 
@@ -316,23 +266,7 @@ uft_error_t uft_protection_generate_report(
  * Weak Bit Helpers
  * ═══════════════════════════════════════════════════════════════════════════════ */
 
-/**
- * @brief Detect weak bits from multiple revolutions
- */
-int uft_detect_weak_bits_multirev(
-    const uint8_t **rev_data,
-    int rev_count,
-    size_t data_size,
-    float threshold,
-    uint8_t *weak_mask_out);
 
-/**
- * @brief Generate random data for weak bit positions
- */
-void uft_weak_bits_randomize(
-    uint8_t *data,
-    const uint8_t *weak_mask,
-    size_t size);
 
 
 /* ═══════════════════════════════════════════════════════════════════════════════
@@ -379,30 +313,8 @@ typedef enum {
     UFT_APPLE_PROT_CUSTOM
 } uft_apple_protection_t;
 
-/**
- * @brief Detect Amiga protection
- */
-uft_amiga_protection_t uft_detect_amiga_protection(
-    const uint8_t *track_data,
-    size_t track_size,
-    int cylinder,
-    int head);
 
-/**
- * @brief Detect C64 protection
- */
-uft_c64_protection_t uft_detect_c64_protection(
-    const uint8_t *track_data,
-    size_t track_size,
-    int track_number);
 
-/**
- * @brief Detect Apple II protection
- */
-uft_apple_protection_t uft_detect_apple_protection(
-    const uint8_t *track_data,
-    size_t track_size,
-    int track_number);
 
 #ifdef __cplusplus
 }

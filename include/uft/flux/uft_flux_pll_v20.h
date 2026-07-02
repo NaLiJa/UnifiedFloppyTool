@@ -214,81 +214,21 @@ void uft_pll_init(uft_pll_state_t* pll);
 
 
 
-/**
- * @brief Configure PLL for specific bitrate
- * @param pll PLL state
- * @param bitrate_kbps Bitrate in kbps (250, 300, 500, etc.)
- * @param tick_freq Tick frequency in Hz
- */
-void uft_pll_configure(uft_pll_state_t* pll, uint32_t bitrate_kbps, 
-                       uint32_t tick_freq);
 
 
 /*============================================================================
  * Histogram and Peak Detection
  *============================================================================*/
 
-/**
- * @brief Compute histogram of pulse timings
- * @param pulses Array of pulse timings
- * @param count Number of pulses
- * @param histogram Output histogram (must be UFT_PLL_HISTOGRAM_SIZE)
- */
-void uft_pll_compute_histogram(const uint32_t* pulses, size_t count,
-                                uint32_t* histogram);
 
 
-/**
- * @brief Auto-detect encoding from histogram
- * @param pll PLL state
- * @param histogram Input histogram
- * @return Detected encoding type
- */
-uft_encoding_t uft_pll_detect_encoding(uft_pll_state_t* pll, 
-                                        const uint32_t* histogram);
 
 /*============================================================================
  * PLL Processing
  *============================================================================*/
 
-/**
- * @brief Process single flux pulse
- * 
- * Returns the number of bitcells represented by this pulse.
- * Updates PLL state with phase correction.
- * 
- * @param pll PLL state
- * @param pulse Pulse timing value
- * @param bad_pulse Output: true if pulse outside window
- * @return Number of bitcells (0 = error, 1-4 typical)
- */
-int uft_pll_process_pulse(uft_pll_state_t* pll, uint32_t pulse, 
-                          bool* bad_pulse);
 
-/**
- * @brief Process flux stream to bitstream
- * 
- * @param pll PLL state
- * @param stream Input flux stream
- * @param output Output decoded track
- * @return 0 on success
- */
-int uft_pll_decode_stream(uft_pll_state_t* pll, 
-                          const uft_flux_stream_t* stream,
-                          uft_decoded_track_t* output);
 
-/**
- * @brief Pre-sync PLL to stream
- * 
- * Processes initial portion of stream to stabilize PLL.
- * 
- * @param pll PLL state
- * @param pulses Pulse timing array
- * @param count Number of pulses
- * @param sync_pulses Number of pulses to use for sync
- */
-void uft_pll_presync(uft_pll_state_t* pll, const uint32_t* pulses,
-                     size_t count, size_t sync_pulses);
 
 /*============================================================================
  * Multi-Revolution Processing
@@ -306,32 +246,7 @@ typedef struct {
     float    confidence;            /**< Decode confidence (0-1) */
 } uft_revolution_t;
 
-/**
- * @brief Process multiple revolutions and merge
- * 
- * @param pll PLL state
- * @param stream Input flux stream with multiple revolutions
- * @param output Output merged track
- * @param revolutions Array to receive revolution info
- * @param max_revolutions Maximum revolutions to process
- * @return Number of revolutions processed
- */
-int uft_pll_multi_revolution(uft_pll_state_t* pll,
-                             const uft_flux_stream_t* stream,
-                             uft_decoded_track_t* output,
-                             uft_revolution_t* revolutions,
-                             size_t max_revolutions);
 
-/**
- * @brief Fuse multiple revolutions with confidence weighting
- * 
- * @param revs Array of decoded revolutions
- * @param num_revs Number of revolutions
- * @param output Output fused track
- * @return 0 on success
- */
-int uft_pll_fuse_revolutions(const uft_decoded_track_t* revs, size_t num_revs,
-                             uft_decoded_track_t* output);
 
 /*============================================================================
  * Jitter Filtering

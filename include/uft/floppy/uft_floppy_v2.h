@@ -118,52 +118,13 @@ uft_disk_t *uft_disk_create(void);
  */
 int uft_disk_get_geometry(uft_disk_t *disk, uft_disk_geometry_t *geometry);
 
-/**
- * Set disk geometry
- */
-int uft_disk_set_geometry(uft_disk_t *disk, const uft_disk_geometry_t *geometry);
 
 /*===========================================================================
  * Sector Operations
  *===========================================================================*/
 
-/**
- * Read a sector
- * @param disk Disk handle
- * @param track Track number (0-based)
- * @param side Side number (0-based)
- * @param sector Sector number (1-based)
- * @param buffer Output buffer
- * @param size Buffer size
- * @return Bytes read or -1 on error
- */
-int uft_disk_read_sector(uft_disk_t *disk, int track, int side, int sector,
-                         uint8_t *buffer, size_t size);
 
-/**
- * Write a sector
- * @param disk Disk handle
- * @param track Track number (0-based)
- * @param side Side number (0-based)
- * @param sector Sector number (1-based)
- * @param buffer Input buffer
- * @param size Data size
- * @return Bytes written or -1 on error
- */
-int uft_disk_write_sector(uft_disk_t *disk, int track, int side, int sector,
-                          const uint8_t *buffer, size_t size);
 
-/**
- * Read an entire track
- * @param disk Disk handle
- * @param track Track number (0-based)
- * @param side Side number (0-based)
- * @param buffer Output buffer
- * @param size Buffer size
- * @return Bytes read or -1 on error
- */
-int uft_disk_read_track(uft_disk_t *disk, int track, int side,
-                        uint8_t *buffer, size_t size);
 
 /*===========================================================================
  * Utility Functions

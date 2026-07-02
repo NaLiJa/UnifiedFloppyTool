@@ -176,14 +176,7 @@ typedef struct uft_sector_unified {
 
 void uft_sector_free(uft_sector_unified_t *sector);
 
-int uft_sector_set_data(uft_sector_unified_t *sector, 
-                        const uint8_t *data, size_t size);
-int uft_sector_add_version(uft_sector_unified_t *sector,
-                           const uft_sector_data_version_t *version);
 
-/* Address */
-void uft_sector_set_addr(uft_sector_unified_t *sector,
-                         uint8_t cyl, uint8_t head, uint8_t sec, uint8_t size_code);
 
 /* Status Checks */
 static inline bool uft_sector_is_valid(const uft_sector_unified_t *s) {
@@ -203,15 +196,7 @@ static inline bool uft_sector_is_protected(const uft_sector_unified_t *s) {
 }
 
 
-/* Comparison */
-bool uft_sector_data_equals(const uft_sector_unified_t *a,
-                            const uft_sector_unified_t *b);
-int uft_sector_compare_addr(const uft_sector_unified_t *a,
-                            const uft_sector_unified_t *b);
 
-/* Debug */
-int uft_sector_dump(const uft_sector_unified_t *sector, 
-                    char *buffer, size_t size);
 
 /*===========================================================================
  * Legacy Conversion
@@ -222,16 +207,7 @@ struct uft_sector;      /* uft_unified_decoder.h */
 struct ipf_sector;      /* uft_ipf.h */
 struct amiga_sector_node;
 
-/* Conversion functions */
-int uft_sector_from_decoder(const struct uft_sector *src,
-                            uft_sector_unified_t *dst);
-int uft_sector_to_decoder(const uft_sector_unified_t *src,
-                          struct uft_sector *dst);
 
-int uft_sector_from_ipf(const struct ipf_sector *src,
-                        uft_sector_unified_t *dst);
-int uft_sector_to_ipf(const uft_sector_unified_t *src,
-                      struct ipf_sector *dst);
 
 #ifdef __cplusplus
 }

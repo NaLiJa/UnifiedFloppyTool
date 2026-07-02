@@ -156,14 +156,6 @@ void uft_badblock_list_clear(uft_badblock_list_t *list);
 int uft_badblock_list_add(uft_badblock_list_t *list, uint64_t location,
                           uft_badblock_unit_t unit);
 
-/**
- * @brief Add entry with full details
- * @param list Target list
- * @param entry Entry to add (copied)
- * @return 0 on success
- */
-int uft_badblock_list_add_entry(uft_badblock_list_t *list,
-                                const uft_badblock_entry_t *entry);
 
 
 /**
@@ -183,28 +175,7 @@ size_t uft_badblock_list_dedupe(uft_badblock_list_t *list);
  * API - File Import/Export
  *===========================================================================*/
 
-/**
- * @brief Import bad block list from file
- * @param list Target list
- * @param filename Path to bad block file
- * @param unit Unit type for entries in file
- * @return 0 on success, negative on error
- * 
- * File format: One number per line (decimal or hex with 0x prefix)
- * Lines starting with # are comments
- */
-int uft_badblock_import_file(uft_badblock_list_t *list, const char *filename,
-                             uft_badblock_unit_t unit);
 
-/**
- * @brief Import from stdio stream
- * @param list Target list
- * @param fp File stream
- * @param unit Unit type
- * @return 0 on success
- */
-int uft_badblock_import_stream(uft_badblock_list_t *list, FILE *fp,
-                               uft_badblock_unit_t unit);
 
 /**
  * @brief Import from string buffer
@@ -217,131 +188,28 @@ int uft_badblock_import_stream(uft_badblock_list_t *list, FILE *fp,
 int uft_badblock_import_buffer(uft_badblock_list_t *list, const char *data,
                                size_t size, uft_badblock_unit_t unit);
 
-/**
- * @brief Export bad block list to file
- * @param list Source list
- * @param filename Output path
- * @param unit Output unit type
- * @return 0 on success
- */
-int uft_badblock_export_file(const uft_badblock_list_t *list, 
-                             const char *filename, uft_badblock_unit_t unit);
 
-/**
- * @brief Export to stdio stream
- * @param list Source list
- * @param fp File stream
- * @param unit Output unit type
- * @return 0 on success
- */
-int uft_badblock_export_stream(const uft_badblock_list_t *list, FILE *fp,
-                               uft_badblock_unit_t unit);
 
 /*===========================================================================
  * API - FAT Integration
  *===========================================================================*/
 
-/**
- * @brief Read bad clusters from FAT table
- * @param list Target list
- * @param ctx FAT context
- * @return Number of bad clusters found
- */
-size_t uft_badblock_read_from_fat(uft_badblock_list_t *list,
-                                  const uft_fat_ctx_t *ctx);
 
-/**
- * @brief Mark bad blocks in FAT table
- * @param list Bad block list
- * @param ctx FAT context (modified)
- * @param stats Output statistics (optional)
- * @return Number of clusters marked
- * 
- * @note Converts all entries to cluster numbers and marks them
- */
-size_t uft_badblock_mark_in_fat(const uft_badblock_list_t *list,
-                                uft_fat_ctx_t *ctx,
-                                uft_badblock_stats_t *stats);
 
-/**
- * @brief Unmark bad clusters in FAT (mark as free)
- * @param list Bad block list
- * @param ctx FAT context (modified)
- * @return Number of clusters unmarked
- * 
- * @warning Use with caution - may cause data corruption
- */
-size_t uft_badblock_unmark_in_fat(const uft_badblock_list_t *list,
-                                  uft_fat_ctx_t *ctx);
 
-/**
- * @brief Analyze bad blocks against FAT
- * @param list Bad block list
- * @param ctx FAT context
- * @param stats Output statistics
- * @return 0 on success
- */
-int uft_badblock_analyze(const uft_badblock_list_t *list,
-                         const uft_fat_ctx_t *ctx,
-                         uft_badblock_stats_t *stats);
 
 /*===========================================================================
  * API - Conversion
  *===========================================================================*/
 
-/**
- * @brief Convert sector to cluster
- * @param ctx FAT context
- * @param sector Sector number
- * @return Cluster number or 0 if in system area
- */
-uint32_t uft_badblock_sector_to_cluster(const uft_fat_ctx_t *ctx, 
-                                        uint64_t sector);
 
-/**
- * @brief Convert byte offset to cluster
- * @param ctx FAT context
- * @param offset Byte offset
- * @return Cluster number or 0 if in system area
- */
-uint32_t uft_badblock_offset_to_cluster(const uft_fat_ctx_t *ctx,
-                                        uint64_t offset);
 
-/**
- * @brief Convert 1KB block to cluster (mkfs.fat format)
- * @param ctx FAT context
- * @param block Block number
- * @return Cluster number or 0 if in system area
- */
-uint32_t uft_badblock_block_to_cluster(const uft_fat_ctx_t *ctx,
-                                       uint64_t block);
 
-/**
- * @brief Convert cluster to sector range
- * @param ctx FAT context
- * @param cluster Cluster number
- * @param first_sector Output: first sector
- * @param sector_count Output: number of sectors
- * @return 0 on success
- */
-int uft_badblock_cluster_to_sectors(const uft_fat_ctx_t *ctx,
-                                    uint32_t cluster,
-                                    uint64_t *first_sector,
-                                    uint32_t *sector_count);
 
 /*===========================================================================
  * API - Utilities
  *===========================================================================*/
 
-/**
- * @brief Check if location is in data area
- * @param ctx FAT context
- * @param location Location value
- * @param unit Location unit
- * @return true if in data area
- */
-bool uft_badblock_in_data_area(const uft_fat_ctx_t *ctx, uint64_t location,
-                               uft_badblock_unit_t unit);
 
 /**
  * @brief Get string name for unit type

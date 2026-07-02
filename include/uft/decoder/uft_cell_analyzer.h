@@ -187,136 +187,17 @@ typedef struct {
  * ============================================================================ */
 
 
-/**
- * @brief Initialize cell options for specific encoding
- */
-void uft_cell_options_for_encoding(
-    uft_cell_options_t *options,
-    const char *encoding  /* "MFM_DD", "MFM_HD", "FM", "GCR_C64", "GCR_APPLE" */
-);
-
-/**
- * @brief Analyze flux data at cell level
- * 
- * @param flux_times     Array of flux timing intervals
- * @param flux_count     Number of flux intervals
- * @param options        Analysis options
- * @param result         Output analysis result
- * @return UFT_OK on success
- */
-uft_error_t uft_cell_analyze(
-    const uint32_t *flux_times,
-    size_t flux_count,
-    const uft_cell_options_t *options,
-    uft_cell_result_t *result
-);
-
-/**
- * @brief Auto-detect cell timing from flux data
- * 
- * @param flux_times     Array of flux timing intervals
- * @param flux_count     Number of flux intervals
- * @param sample_rate_hz Sample rate
- * @param detected_ns    Output detected cell time in ns
- * @param confidence     Output confidence 0-100
- * @return UFT_OK on success
- */
-uft_error_t uft_cell_auto_detect(
-    const uint32_t *flux_times,
-    size_t flux_count,
-    double sample_rate_hz,
-    double *detected_ns,
-    uint8_t *confidence
-);
-
-/**
- * @brief Detect cell bands (for multi-rate disks like C64)
- * 
- * @param flux_times     Array of flux timing intervals
- * @param flux_count     Number of flux intervals
- * @param options        Analysis options
- * @param band_result    Output band information
- * @return UFT_OK on success
- */
-uft_error_t uft_cell_detect_bands(
-    const uint32_t *flux_times,
-    size_t flux_count,
-    const uft_cell_options_t *options,
-    uft_cell_band_result_t *band_result
-);
-
-/**
- * @brief Build cell timing histogram
- * 
- * @param flux_times     Array of flux timing intervals
- * @param flux_count     Number of flux intervals
- * @param sample_rate_hz Sample rate
- * @param bin_width_ns   Histogram bin width
- * @param histogram      Output histogram
- * @return UFT_OK on success
- */
-uft_error_t uft_cell_build_histogram(
-    const uint32_t *flux_times,
-    size_t flux_count,
-    double sample_rate_hz,
-    double bin_width_ns,
-    uft_cell_histogram_t *histogram
-);
-
-/**
- * @brief Decode flux to bits using PLL
- * 
- * @param flux_times     Array of flux timing intervals
- * @param flux_count     Number of flux intervals
- * @param options        Cell options
- * @param output_bits    Output bit buffer
- * @param max_bits       Maximum bits to decode
- * @param actual_bits    Actual bits decoded
- * @return UFT_OK on success
- */
-uft_error_t uft_cell_decode_pll(
-    const uint32_t *flux_times,
-    size_t flux_count,
-    const uft_cell_options_t *options,
-    uint8_t *output_bits,
-    size_t max_bits,
-    size_t *actual_bits
-);
-
-/**
- * @brief Find sync patterns in decoded data
- * 
- * @param decoded_bits   Decoded bit stream
- * @param bit_count      Number of bits
- * @param sync_pattern   Pattern to find
- * @param pattern_bits   Pattern length in bits
- * @param positions      Output array of positions
- * @param max_positions  Maximum positions to find
- * @param found_count    Actual count found
- * @return UFT_OK on success
- */
-uft_error_t uft_cell_find_sync(
-    const uint8_t *decoded_bits,
-    size_t bit_count,
-    uint64_t sync_pattern,
-    uint8_t pattern_bits,
-    uint64_t *positions,
-    size_t max_positions,
-    size_t *found_count
-);
 
 
 
 
 
-/**
- * @brief Export cell analysis to JSON
- */
-size_t uft_cell_result_to_json(
-    const uft_cell_result_t *result,
-    char *buffer,
-    size_t size
-);
+
+
+
+
+
+
 
 /* ============================================================================
  * PLL State (for advanced use)
@@ -347,19 +228,6 @@ void uft_pll_init(
     double gain
 );
 
-/**
- * @brief Step PLL with flux transition
- * 
- * @param pll            PLL state
- * @param flux_interval  Flux interval in samples
- * @param output_bit     Output decoded bit
- * @return Number of bits output (0, 1, or more)
- */
-int uft_pll_step(
-    uft_pll_state_t *pll,
-    uint32_t flux_interval,
-    uint8_t *output_bit
-);
 
 
 #ifdef __cplusplus

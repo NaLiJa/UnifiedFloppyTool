@@ -290,34 +290,9 @@ char* woz_metadata_serialize(const woz_metadata_t *meta, size_t *out_len);
  * WOZ I/O
  * ============================================================================ */
 
-/**
- * @brief Read WOZ file
- */
-uft_error_t uft_woz_read(const char *path,
-                         uft_disk_image_t **out_disk,
-                         woz_read_result_t *result);
 
-/**
- * @brief Read WOZ from memory
- */
-uft_error_t uft_woz_read_mem(const uint8_t *data, size_t size,
-                             uft_disk_image_t **out_disk,
-                             woz_read_result_t *result);
 
-/**
- * @brief Write WOZ file
- */
-uft_error_t uft_woz_write(const uft_disk_image_t *disk,
-                          const char *path,
-                          const woz_write_options_t *opts);
 
-/**
- * @brief Write WOZ to memory
- */
-uft_error_t uft_woz_write_mem(const uft_disk_image_t *disk,
-                              uint8_t *buffer, size_t buffer_size,
-                              size_t *out_size,
-                              const woz_write_options_t *opts);
 
 
 /**
@@ -389,31 +364,9 @@ uft_error_t woz_bits_to_flux(const uint8_t *bits, size_t bit_count,
  * Conversion
  * ============================================================================ */
 
-/**
- * @brief Convert DSK to WOZ
- */
-uft_error_t uft_dsk_to_woz(const uint8_t *dsk_data, size_t dsk_size,
-                           uint8_t *woz_data, size_t *woz_size,
-                           const woz_write_options_t *opts);
 
-/**
- * @brief Convert WOZ to DSK
- */
-uft_error_t uft_woz_to_dsk(const uint8_t *woz_data, size_t woz_size,
-                           uint8_t *dsk_data, size_t *dsk_size);
 
-/**
- * @brief Convert NIB to WOZ
- */
-uft_error_t uft_nib_to_woz(const uint8_t *nib_data, size_t nib_size,
-                           uint8_t *woz_data, size_t *woz_size,
-                           const woz_write_options_t *opts);
 
-/**
- * @brief Convert WOZ to NIB
- */
-uft_error_t uft_woz_to_nib(const uint8_t *woz_data, size_t woz_size,
-                           uint8_t *nib_data, size_t *nib_size);
 
 #ifdef __cplusplus
 }

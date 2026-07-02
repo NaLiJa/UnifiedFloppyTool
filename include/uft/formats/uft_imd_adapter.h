@@ -205,23 +205,6 @@ uft_error_t uft_imd_get_track(
     uft_track_data_t *out
 );
 
-/**
- * Get sector data
- * 
- * @param ctx IMD context
- * @param track Physical track
- * @param side Side
- * @param sector Sector ID
- * @param out Output sector data
- * @return UFT_OK on success
- */
-uft_error_t uft_imd_get_sector(
-    const uft_imd_context_t *ctx,
-    uint8_t track,
-    uint8_t side,
-    uint8_t sector,
-    uft_sector_data_t *out
-);
 
 /**
  * Read sector data into buffer
@@ -249,17 +232,6 @@ uft_error_t uft_imd_adapter_read_sector(
  * Format Information
  * ═══════════════════════════════════════════════════════════════════════════════ */
 
-/**
- * Get IMD file information
- * 
- * @param ctx IMD context
- * @param info Output format info
- * @return UFT_OK on success
- */
-uft_error_t uft_imd_get_info(
-    const uft_imd_context_t *ctx,
-    uft_format_info_t *info
-);
 
 /**
  * Get comment from IMD file

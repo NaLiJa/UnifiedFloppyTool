@@ -203,59 +203,9 @@ uft_atarist_prot_result_t *uft_atarist_result_alloc(void);
  */
 void uft_atarist_result_free(uft_atarist_prot_result_t *result);
 
-/**
- * @brief Detect Flaschel protection
- * 
- * @param track_data Raw MFM track data
- * @param track_len Track data length
- * @param track_num Track number
- * @param side Disk side
- * @param result Output Flaschel result
- * @return 0 on success
- */
-int uft_atarist_detect_flaschel(const uint8_t *track_data, size_t track_len,
-                                uint8_t track_num, uint8_t side,
-                                uft_flaschel_t *result);
 
-/**
- * @brief Detect fuzzy sector protection
- * 
- * @param revolutions Array of track revolutions
- * @param rev_lens Array of revolution lengths
- * @param rev_count Number of revolutions
- * @param track_num Track number
- * @param side Disk side
- * @param results Output fuzzy sector array
- * @param max_results Maximum results
- * @return Number of fuzzy sectors found
- */
-size_t uft_atarist_detect_fuzzy(const uint8_t **revolutions,
-                                const size_t *rev_lens, uint8_t rev_count,
-                                uint8_t track_num, uint8_t side,
-                                uft_fuzzy_sector_t *results, size_t max_results);
 
-/**
- * @brief Detect long track protection
- * 
- * @param track_data Raw track data
- * @param track_len Track data length
- * @param track_num Track number
- * @param side Disk side
- * @param result Output long track result
- * @return 0 on success
- */
-int uft_atarist_detect_long_track(const uint8_t *track_data, size_t track_len,
-                                  uint8_t track_num, uint8_t side,
-                                  uft_long_track_st_t *result);
 
-/**
- * @brief Full protection detection
- */
-int uft_atarist_detect_all(const uint8_t **tracks, const size_t *track_lens,
-                           const uint8_t **revolutions, const size_t *rev_lens,
-                           uint8_t rev_count, uint8_t track_count,
-                           const uft_atarist_detect_config_t *config,
-                           uft_atarist_prot_result_t *result);
 
 /**
  * @brief Simple protection detection from raw track data

@@ -157,13 +157,6 @@ uft_error_t uft_rcpmfs_write(const uft_disk_image_t *disk,
                              const char *diskdef_name,
                              const rcpmfs_write_options_t *opts);
 
-/**
- * @brief Add disk to existing RCPMFS container
- */
-uft_error_t uft_rcpmfs_add_disk(const char *container_path,
-                                const uft_disk_image_t *disk,
-                                const char *disk_name,
-                                const char *diskdef_name);
 
 /**
  * @brief List disks in RCPMFS container

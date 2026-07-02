@@ -308,17 +308,6 @@ size_t uft_wav_get_samples(const uint8_t *data, size_t size,
 int uft_bbc_tape_decoder_init(uft_bbc_tape_decoder_t *decoder,
                                int sample_rate);
 
-/**
- * @brief Decode tape block from audio samples
- * @param decoder Decoder state
- * @param samples Audio samples
- * @param num_samples Number of samples
- * @param block Output tape block
- * @return Samples consumed, or -1 on error
- */
-int uft_bbc_tape_decode_block(uft_bbc_tape_decoder_t *decoder,
-                               const uint8_t *samples, size_t num_samples,
-                               uft_bbc_tape_block_t *block);
 
 /**
  * @brief Free decoder resources

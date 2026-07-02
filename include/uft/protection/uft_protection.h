@@ -154,47 +154,7 @@ typedef struct {
     uint8_t max_value;              /**< Maximum read value */
 } uft_weak_region_t;
 
-/**
- * @brief Compare multiple reads to find weak bits
- * 
- * Compares multiple readings of the same track to identify bits
- * that read differently each time (weak bits).
- * 
- * @param reads         Array of track readings
- * @param read_count    Number of readings
- * @param track_len     Length of each reading
- * @param regions       Output array for weak regions
- * @param max_regions   Maximum number of regions to return
- * @return Number of weak regions found
- */
-size_t uft_find_weak_bits(
-    const uint8_t **reads,
-    size_t read_count,
-    size_t track_len,
-    uft_weak_region_t *regions,
-    size_t max_regions
-);
 
-/**
- * @brief Analyze flux reversals for missing transitions
- * 
- * Looks for areas where flux transitions are missing or
- * have unusual timing, which can indicate copy protection.
- * 
- * @param flux_data     Raw flux timing data
- * @param flux_len      Length of flux data
- * @param threshold     Timing threshold for anomalies
- * @param regions       Output array for anomalous regions
- * @param max_regions   Maximum regions to return
- * @return Number of anomalous regions found
- */
-size_t uft_find_flux_anomalies(
-    const uint32_t *flux_data,
-    size_t flux_len,
-    uint32_t threshold,
-    uft_weak_region_t *regions,
-    size_t max_regions
-);
 
 /* ============================================================================
  * Sector Analysis
@@ -238,21 +198,6 @@ typedef struct {
     bool has_weak_bits;             /**< Contains weak bits */
 } uft_sector_info_t;
 
-/**
- * @brief Analyze all sectors on a track
- * 
- * @param track_data    Raw track data (MFM encoded)
- * @param track_len     Length of track data
- * @param sectors       Output array for sector info
- * @param max_sectors   Maximum sectors to return
- * @return Number of sectors found
- */
-size_t uft_analyze_track_sectors(
-    const uint8_t *track_data,
-    size_t track_len,
-    uft_sector_info_t *sectors,
-    size_t max_sectors
-);
 
 /* ============================================================================
  * Protection Scheme Detection
@@ -260,49 +205,8 @@ size_t uft_analyze_track_sectors(
 
 
 
-/**
- * @brief Add a hit to the report
- * 
- * @param report    Report to modify
- * @param hit       Hit to add
- * @return true on success
- */
-bool uft_protection_report_add(uft_protection_report_t *report,
-                                const uft_protection_hit_t *hit);
 
-/**
- * @brief Analyze a track for copy protection
- * 
- * @param track_data    Raw track data
- * @param track_len     Length of track data
- * @param track         Track number
- * @param head          Head/side number
- * @param report        Report to add hits to
- * @return Number of hits found on this track
- */
-size_t uft_analyze_track_protection(
-    const uint8_t *track_data,
-    size_t track_len,
-    uint8_t track,
-    uint8_t head,
-    uft_protection_report_t *report
-);
 
-/**
- * @brief Detect specific protection scheme signatures
- * 
- * Looks for signatures of known commercial protection schemes.
- * 
- * @param disk_data     Complete disk image data
- * @param disk_size     Size of disk image
- * @param report        Report to add results to
- * @return Primary protection scheme detected
- */
-uft_protection_type_t uft_detect_protection_scheme(
-    const uint8_t *disk_data,
-    size_t disk_size,
-    uft_protection_report_t *report
-);
 
 /* ============================================================================
  * Protection Scheme Signatures
@@ -333,32 +237,7 @@ extern const size_t uft_protection_signature_count;
  * ============================================================================ */
 
 
-/**
- * @brief Check if track length is unusual
- * 
- * @param track_len     Measured track length
- * @param expected_len  Expected track length
- * @param tolerance     Tolerance percentage (0-100)
- * @return true if track length is unusual
- */
-bool uft_is_unusual_track_length(size_t track_len, size_t expected_len,
-                                  uint8_t tolerance);
 
-/**
- * @brief Generate forensic report
- * 
- * Creates a detailed text report of all protection features found.
- * 
- * @param report        Protection report
- * @param output        Output buffer
- * @param output_len    Output buffer size
- * @return Bytes written, or required size if output_len is 0
- */
-size_t uft_generate_protection_report(
-    const uft_protection_report_t *report,
-    char *output,
-    size_t output_len
-);
 
 #ifdef __cplusplus
 }

@@ -256,19 +256,7 @@ const uft_image_entry_t* uft_image_db_find_by_crc(uint32_t crc32);
 
 
 
-/**
- * @brief Find image by name (partial match)
- */
-int uft_image_db_find_by_name(const char *name, 
-                              const uft_image_entry_t **results,
-                              int max_results);
 
-/**
- * @brief Find images by platform
- */
-int uft_image_db_find_by_platform(uft_image_platform_t platform,
-                                   const uft_image_entry_t **results,
-                                   int max_results);
 
 /*===========================================================================
  * IDENTIFICATION
@@ -286,11 +274,6 @@ int uft_image_db_identify(const uint8_t *data, size_t size,
                           uft_match_result_t *result);
 
 
-/**
- * @brief Get multiple possible matches
- */
-int uft_image_db_identify_multi(const uint8_t *data, size_t size,
-                                uft_match_result_t *results, int max_results);
 
 /*===========================================================================
  * BOOT SECTOR ANALYSIS
@@ -320,12 +303,6 @@ int uft_image_db_add(const uft_image_entry_t *entry);
 
 
 
-/**
- * @brief Create entry from image data
- */
-int uft_image_db_create_entry(const uint8_t *data, size_t size,
-                               const char *name,
-                               uft_image_entry_t *entry);
 
 /*===========================================================================
  * UTILITIES

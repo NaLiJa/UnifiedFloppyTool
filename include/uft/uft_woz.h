@@ -729,44 +729,9 @@ typedef struct {
     int version;              /**< 1 or 2 */
 } uft_woz_file_t;
 
-/**
- * @brief Read WOZ file from buffer
- * @param data File data
- * @param size Data size
- * @param woz Output WOZ structure
- * @return 0 on success, negative on error
- */
-int uft_woz_read(const uint8_t *data, size_t size, uft_woz_file_t *woz);
 
-/**
- * @brief Write WOZ2 file to buffer
- * @param woz WOZ structure
- * @param output Output buffer (pre-allocated)
- * @param max_size Maximum output size
- * @return Bytes written, or negative on error
- */
-int uft_woz_write(const uft_woz_file_t *woz, uint8_t *output, size_t max_size);
 
-/**
- * @brief Convert DSK/PO to WOZ2
- * @param dsk DSK image data (143360 bytes)
- * @param format Sector format (DOS33 or ProDOS)
- * @param output Output buffer
- * @param max_size Maximum output size
- * @return Bytes written, or negative on error
- */
-int uft_dsk_to_woz2(const uint8_t *dsk, uft_sector_format_t format,
-                    uint8_t *output, size_t max_size);
 
-/**
- * @brief Convert WOZ to DSK
- * @param woz WOZ file
- * @param format Target sector format
- * @param output Output buffer (143360 bytes)
- * @return 0 on success, negative on error
- */
-int uft_woz_to_dsk(const uft_woz_file_t *woz, uft_sector_format_t format,
-                   uint8_t *output);
 
 
 #ifdef __cplusplus

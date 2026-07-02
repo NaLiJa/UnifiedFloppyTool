@@ -276,55 +276,15 @@ struct uft_io_sink {
 // Layer Conversion
 // ============================================================================
 
-/**
- * @brief Convert track to different layer
- * 
- * Downward (decode): FLUX → BITSTREAM → SECTOR
- * Upward (synthesize): SECTOR → BITSTREAM → FLUX (lossy!)
- */
-uft_error_t uft_track_convert_layer(uft_track_t* track,
-                                     uft_data_layer_t target_layer,
-                                     const void* options);
 
-/**
- * @brief Check if conversion is possible
- */
-bool uft_track_can_convert(const uft_track_t* track,
-                            uft_data_layer_t target_layer,
-                            const char** warning);
 
 // ============================================================================
 // Source/Sink Factories
 // ============================================================================
 
-/**
- * @brief Open file as I/O source (auto-detect format)
- */
-uft_error_t uft_io_open_source(const char* path,
-                                uft_io_source_t** source);
 
-/**
- * @brief Open specific format as source
- */
-uft_error_t uft_io_open_source_format(const char* path,
-                                       uft_format_t format,
-                                       uft_io_source_t** source);
 
-/**
- * @brief Create output sink
- */
-uft_error_t uft_io_create_sink(const char* path,
-                                uft_format_t format,
-                                int cylinders, int heads,
-                                uft_io_sink_t** sink);
 
-/**
- * @brief Copy with automatic layer conversion
- */
-uft_error_t uft_io_copy(uft_io_source_t* source,
-                         uft_io_sink_t* sink,
-                         void (*progress)(int percent, void* user),
-                         void* user);
 
 // ============================================================================
 // Memory Management

@@ -299,29 +299,8 @@ const uft_crc_config_t *uft_crc_get_config(uft_crc_type_t type);
  */
 const uft_crc_config_t *uft_crc_get_config_by_name(const char *name);
 
-/**
- * @brief Calculate CRC using configuration
- * @param config CRC configuration
- * @param data Input data
- * @param length Data length
- * @return CRC value (cast to appropriate width)
- */
-uint64_t uft_crc_calc(const uft_crc_config_t *config, 
-                      const uint8_t *data, size_t length);
 
-/**
- * @brief Calculate CRC with initial value
- */
-uint64_t uft_crc_calc_init(const uft_crc_config_t *config,
-                           const uint8_t *data, size_t length,
-                           uint64_t init);
 
-/**
- * @brief Continue CRC calculation
- */
-uint64_t uft_crc_update(const uft_crc_config_t *config,
-                        uint64_t crc,
-                        const uint8_t *data, size_t length);
 
 
 /* ═══════════════════════════════════════════════════════════════════════════════
@@ -370,27 +349,7 @@ const void *uft_crc_get_table(uft_crc_type_t type);
  * Verification
  * ═══════════════════════════════════════════════════════════════════════════════ */
 
-/**
- * @brief Verify data against expected CRC
- * @param config CRC configuration
- * @param data Input data (including CRC at end)
- * @param length Data length including CRC
- * @return true if CRC matches
- * @note Named uft_crc_verify_config to avoid conflict with uft_crc.h
- */
-bool uft_crc_verify_config(const uft_crc_config_t *config,
-                    const uint8_t *data, size_t length);
 
-/**
- * @brief Find CRC type that matches given data
- * @param data Input data
- * @param length Data length
- * @param expected Expected CRC value
- * @param width CRC width (8, 16, 32, or 64)
- * @return Matching CRC type or -1 if not found
- */
-int uft_crc_identify(const uint8_t *data, size_t length,
-                     uint64_t expected, int width);
 
 /* ═══════════════════════════════════════════════════════════════════════════════
  * Reverse Engineering
@@ -410,10 +369,6 @@ typedef struct {
     uint64_t crc;
 } uft_crc_sample_t;
 
-int uft_crc_reverse_polynomial(const uft_crc_sample_t *samples,
-                               int sample_count,
-                               int width,
-                               uint64_t *polynomial);
 
 #ifdef __cplusplus
 }

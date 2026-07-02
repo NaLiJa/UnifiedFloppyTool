@@ -177,35 +177,7 @@ int uft_sos_detect_track(const uint8_t *mfm_data, size_t mfm_size);
  * TRACK DECODING
  *===========================================================================*/
 
-/**
- * @brief Decode SOS track from MFM data
- * 
- * @param sos Context
- * @param mfm_data MFM encoded data
- * @param mfm_size Data size
- * @param track_num Expected track number
- * @param track Output: decoded track
- * @return 0 on success, -1 on error
- */
-int uft_sos_decode_track(uft_sos_t *sos,
-                          const uint8_t *mfm_data, size_t mfm_size,
-                          int track_num,
-                          uft_sos_track_t *track);
 
-/**
- * @brief Decode SOS track from flux transitions
- * 
- * @param sos Context
- * @param flux Flux transitions
- * @param flux_count Number of transitions
- * @param track_num Expected track number
- * @param track Output: decoded track
- * @return 0 on success
- */
-int uft_sos_decode_flux(uft_sos_t *sos,
-                         const uint32_t *flux, size_t flux_count,
-                         int track_num,
-                         uft_sos_track_t *track);
 
 /**
  * @brief Free track data
@@ -226,18 +198,8 @@ void uft_sos_track_free(uft_sos_track_t *track);
  *===========================================================================*/
 
 
-/**
- * @brief Read specific track
- */
-int uft_sos_read_track(uft_sos_t *sos, int track, int head,
-                        uint8_t *data, size_t max_size);
 
 
-/**
- * @brief Extract single file by name
- */
-int uft_sos_extract_file(uft_sos_t *sos, const char *name,
-                          uint8_t *data, size_t max_size);
 
 
 /*===========================================================================
@@ -252,13 +214,6 @@ int uft_sos_extract_file(uft_sos_t *sos, const char *name,
  *===========================================================================*/
 
 
-/**
- * @brief Decode SOS MFM data
- * 
- * SOS uses odd/even interleaved encoding like Amiga.
- */
-int uft_sos_decode_mfm(const uint8_t *mfm, size_t mfm_size,
-                        uint8_t *data, size_t data_size);
 
 /**
  * @brief Calculate SOS checksum

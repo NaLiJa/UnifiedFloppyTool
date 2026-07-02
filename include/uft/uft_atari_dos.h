@@ -408,32 +408,12 @@ int uft_atari_dir_find(const uft_atari_disk_t *disk, const char *name);
  * API Functions - File Operations
  * ═══════════════════════════════════════════════════════════════════════════════ */
 
-/**
- * @brief Open file for reading
- */
-int uft_atari_file_open(uft_atari_disk_t *disk, const char *name,
-                        uft_atari_file_t *file);
-
-/**
- * @brief Create new file for writing
- */
-int uft_atari_file_create(uft_atari_disk_t *disk, const char *name,
-                          uft_atari_file_t *file);
 
 
 
 
-/**
- * @brief Extract file to host filesystem
- */
-int uft_atari_file_extract(uft_atari_disk_t *disk, const char *name,
-                           const char *dest_path);
 
-/**
- * @brief Add file from host filesystem
- */
-int uft_atari_file_add(uft_atari_disk_t *disk, const char *src_path,
-                       const char *name);
+
 
 /* ═══════════════════════════════════════════════════════════════════════════════
  * API Functions - Utilities
