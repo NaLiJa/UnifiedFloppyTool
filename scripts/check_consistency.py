@@ -423,13 +423,105 @@ def check_version_ssot(repo: Path) -> list[str]:
     return errors
 
 
+_VENDORED_PREFIXES = (
+    "src/switch/", "src/mbedtls/", "src/samdisk/", "src/formats/uff/",
+)
+
+
+def check_lazy_stubs(repo: Path) -> list[str]:
+    """
+    STUB_ELIMINATION_PLAN Phase-2/6 lock-in: block NEW lazy stubs.
+
+    Pattern 1 — a uft_* function whose entire body is `(void)`-casts plus
+    `return UFT_OK;`. Claiming success while doing nothing is a forensic
+    lie (DESIGN_PRINCIPLE 4/7). Honest stubs return
+    UFT_ERR_NOT_IMPLEMENTED and are NOT flagged. A deliberate no-op is
+    allowed only with an `INTENTIONAL-NOOP` marker in the comment block
+    directly above the definition (see uft_register_builtin_format_plugins
+    for the reference use).
+
+    Pattern 2 — a TODO/FIXME/XXX comment containing the word `implement`
+    with no tracking token on the same line (KNOWN_ISSUES / MASTER_PLAN /
+    STUB_ELIMINATION_PLAN / XCOPY / A8RAWCONV / MF-n / UFT-n / § / issue
+    number). "TODO ohne Plan = Bug" per .claude/CLAUDE.md Anti-Goals.
+
+    Calibrated 2026-07-02: tree is at 0/0 after MF-292 cleanup — every
+    new finding is a regression, not baseline noise.
+    """
+    errors: list[str] = []
+
+    def _strip(t: str) -> str:
+        t = re.sub(r"/\*.*?\*/", "", t, flags=re.DOTALL)
+        return re.sub(r"//[^\n]*", "", t)
+
+    body_re = re.compile(r"\b(uft_\w+)\s*\([^;{]*\)\s*\{([^{}]*)\}", re.DOTALL)
+    for c in (repo / "src").rglob("*.c"):
+        rel = c.relative_to(repo).as_posix()
+        if any(rel.startswith(v) for v in _VENDORED_PREFIXES):
+            continue
+        try:
+            raw = c.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        stripped = _strip(raw)
+        for m in body_re.finditer(stripped):
+            body = m.group(2).strip()
+            norm = re.sub(r"\(void\)\s*\w+\s*;", "", body).strip()
+            if norm != "return UFT_OK;":
+                continue
+            # INTENTIONAL-NOOP carve-out: marker within 600 raw chars
+            # before the definition (covers the doc-comment block).
+            fn = m.group(1)
+            pos = raw.find(fn + "(")
+            if pos < 0:
+                pos = raw.find(fn)
+            window = raw[max(0, pos - 600):pos]
+            if "INTENTIONAL-NOOP" in window:
+                continue
+            errors.append(
+                f"{rel}: {fn}() body is only 'return UFT_OK;' — lazy stub. "
+                "Implement it, return UFT_ERR_NOT_IMPLEMENTED, or mark "
+                "INTENTIONAL-NOOP with justification."
+            )
+
+    tracked_re = re.compile(
+        r"KNOWN_ISSUES|MASTER_PLAN|REFACTOR_TASKS|STUB_ELIMINATION"
+        r"|XCOPY_INTEGRATION|A8RAWCONV|MF-\d|UFT-\d|§|issue\s*#?\d", re.I)
+    todo_re = re.compile(r"\b(TODO|FIXME|XXX)\b", re.I)
+    for base in ("src", "include"):
+        for c in list((repo / base).rglob("*.c")) + list((repo / base).rglob("*.h")):
+            rel = c.relative_to(repo).as_posix()
+            if any(rel.startswith(v) for v in _VENDORED_PREFIXES):
+                continue
+            try:
+                lines = c.read_text(encoding="utf-8", errors="replace").splitlines()
+            except OSError:
+                continue
+            for ln_no, line in enumerate(lines, 1):
+                if not todo_re.search(line):
+                    continue
+                if "implement" not in line.lower():
+                    continue
+                if tracked_re.search(line):
+                    continue
+                errors.append(
+                    f"{rel}:{ln_no}: untracked 'TODO implement' — link it "
+                    "(KNOWN_ISSUES / STUB_ELIMINATION_PLAN / MF-n) or "
+                    "implement it. TODO ohne Plan = Bug."
+                )
+
+    return errors
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--root", type=Path,
                     default=Path(__file__).resolve().parent.parent)
     ap.add_argument("--warn-only", action="store_true",
                     help="Print findings but exit 0 (non-blocking mode)")
-    ap.add_argument("--check", choices=["includes", "sources", "libs", "version", "all"],
+    ap.add_argument("--check",
+                    choices=["includes", "sources", "libs", "version",
+                             "stubs", "all"],
                     default="all")
     args = ap.parse_args()
 
@@ -448,6 +540,9 @@ def main() -> int:
     if args.check in ("version", "all"):
         e = check_version_ssot(repo)
         all_errors.append(("version SSOT drift", e))
+    if args.check in ("stubs", "all"):
+        e = check_lazy_stubs(repo)
+        all_errors.append(("lazy-stub patterns", e))
 
     total = sum(len(e) for _, e in all_errors)
     print(f"Consistency check ({len(all_errors)} categories, root={repo}):")

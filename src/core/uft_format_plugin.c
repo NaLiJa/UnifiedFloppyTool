@@ -372,12 +372,15 @@ void uft_sector_cleanup(uft_sector_t* sector) {
 // Built-in Plugin Registration
 // ============================================================================
 
-// NOTE: Built-in plugins are now handled via uft_format_registry.c
-// This function is a stub for API compatibility
-
+/* INTENTIONAL-NOOP: built-in plugins are registered via the format
+ * handler system in src/formats/uft_format_registry.c since the
+ * registry consolidation. This function stays as an API-compat shim
+ * for older callers — returning UFT_OK is CORRECT here because the
+ * promised work (register built-ins) has already happened elsewhere
+ * by the time any caller runs. Detector: the INTENTIONAL-NOOP marker
+ * exempts this body from the lazy-stub pattern check in
+ * scripts/check_consistency.py. */
 uft_error_t uft_register_builtin_format_plugins(void) {
-    // Plugins are now registered via the format handler system
-    // See: src/formats/uft_format_registry.c
     return UFT_OK;
 }
 

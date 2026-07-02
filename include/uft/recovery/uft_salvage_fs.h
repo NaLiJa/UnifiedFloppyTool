@@ -77,11 +77,11 @@ typedef struct {
  *         UFT_ERR_IO on write errors.
  *
  * Note: file-by-file extraction (populating files_extracted > 0) is
- * currently a documented TODO in the implementation — it requires a
- * complete AmigaDOS header-block walker that has not yet been ported
- * from DiskSalv. The scaffolding (candidate count, chain validation)
- * is wired so a follow-up commit can add extraction without touching
- * the API surface.
+ * an open work item tracked in docs/XCOPY_INTEGRATION_TODO.md (T7) —
+ * it requires a complete AmigaDOS header-block walker that has not yet
+ * been ported from DiskSalv. The scaffolding (candidate count, chain
+ * validation) is wired so a follow-up commit can add extraction
+ * without touching the API surface.
  */
 uft_error_t uft_salvage_run(const uint8_t *image,
                              size_t image_size,

@@ -88,15 +88,17 @@ kein blinder Sweep).
 IMPLEMENTs landen. Keine Architektur-Entscheidungen, kein Format-Wissen
 nötig.
 
-| Aufgabe | Erwartete Wirkung | Aktion |
+| Aufgabe | Erwartete Wirkung | Status |
 |---|---|---|
-| Header-Decls ohne Caller → DELETE | C3 schrumpft drastisch (geschätzt 30-60 % von 1473) | `quick-fix` agent löscht pro Header die unrebenutzten Decls |
-| `uft_core_stubs.c` Residuals à la A07 | C5 → 0; Datei shrumpft oder verschwindet | `provider-migrator`-Pattern an Klasse anpassen |
-| Plugin `is_stub=true` Sweep | C1 wird audit-transparent | `populate_is_stub.py` + CI-Audit reflektiert echte Lücke |
-| Lazy-Stub Detector im pre-commit | künftige lazy-stubs strukturell verhindert | Erweiterung von `scripts/check_consistency.py` um Pattern-Klasse („return UFT_OK; in function body" + „// TODO: implement") |
+| **Lazy-Stub Detector im pre-commit** | künftige lazy-stubs strukturell verhindert | **✓ DONE (MF-292)** — `check_consistency.py` Kategorie 5 `lazy-stub patterns`: (a) `return UFT_OK;`-only Bodies (mit `(void)`-Cast-Normalisierung, `INTENTIONAL-NOOP`-Marker-Carve-out), (b) untracked `TODO implement` ohne Tracking-Token. Baum kalibriert auf 0/0 (5 Alt-Treffer bereinigt), Negativ-Test beide Patterns verifiziert. Läuft automatisch im Pre-Commit-Hook. |
+| Header-Decls ohne Caller → DELETE | 2897 Decls / 170 ganze Header laut `stub_inventory.yaml` | offen — wellenweise, jeder Batch mit grünem Build |
+| `uft_core_stubs.c` Residuals | 5 caller-lose DELETE-Kandidaten laut Inventory | offen |
+| 7 DELETE-ready v3-Parser | C1 → 4 | offen |
+| Plugin `is_stub`-Triage (manuell, siehe Phase-1-Abweichung) | Audit-Transparenz | offen |
 
-**Gate für Phase 3:** `check_consistency.py` enthält neue Kategorie
-`lazy-stub patterns: 0`, KNOWN_ISSUES §7.3 von MITIGATED → CLOSED.
+**Gate für Phase 3:** `check_consistency.py` zeigt `lazy-stub patterns: 0`
+(✓ erreicht), DELETE-Wellen aus dem Inventory gelandet, KNOWN_ISSUES §7.3
+von MITIGATED → CLOSED.
 
 ### Phase 3 — HAL-Wiring (v4.2, ~2 Wochen pro Controller, parallelisierbar)
 

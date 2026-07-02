@@ -546,7 +546,8 @@ static const uft_format_adapter_t imd_adapter = {
     /* Reading */
     .open = imd_adapter_open,
     .read_track = imd_adapter_get_track,
-    .get_geometry = NULL,  /* TODO: implement */
+    .get_geometry = NULL,  /* capability absent — honest NULL; Phase-4
+                              candidate, see docs/STUB_ELIMINATION_PLAN.md */
     
     /* Writing */
     .write_track = NULL,

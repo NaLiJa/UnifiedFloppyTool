@@ -444,10 +444,13 @@ const uft_format_plugin_t uft_format_plugin_scp = {
     .probe = scp_probe,
     .open = scp_open,
     .close = scp_close,
-    .create = NULL,  // TODO: Implement
+    .create = NULL,  // capability absent — honest NULL; SCP-create is a
+                     // Phase-4 candidate (docs/STUB_ELIMINATION_PLAN.md)
     .flush = NULL,
     .read_track = scp_read_track,
-    .write_track = NULL,  // TODO: Implement
+    .write_track = NULL,  // capability absent — SCP write path is
+                          // deliberately gated (forensic write safety);
+                          // tracked via docs/STUB_ELIMINATION_PLAN.md
     .detect_geometry = NULL,
     .read_metadata = NULL,
     .write_metadata = NULL,
