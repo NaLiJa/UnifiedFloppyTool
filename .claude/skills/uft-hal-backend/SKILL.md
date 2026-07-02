@@ -193,6 +193,15 @@ in the provider.
 - `src/hal/uft_greaseweazle_full.c` — canonical reference
 - `src/hardware_providers/greaseweazlehardwareprovider.cpp` — Qt wrapper reference
 - `.claude/agents/forensic-integrity.md` — reviews honesty violations
+- `.claude/agents/hardware-emulation-author.md` — builds firmware-realistic
+  controller emulators (Tier-2.5 sim) under `tests/emulators/<controller>/`
+  plus synthetic-flux generators under `tests/flux_gen/<controller>/`.
+  Invoke **before** real-HW bench session to maximize what the sim
+  catches that the bench cannot. Output is an 8-state firmware state-
+  machine + 20–50 wire/sequencing tests + injectable defect classes.
+  Honest about divergences via `DIVERGENCES.md` + `coverage_matrix.md`.
+- `.claude/skills/uft-flux-fixtures/` — format-level fixtures (sibling
+  layer above HAL-replay-level flux from `hardware-emulation-author`)
 - `.claude/skills/uft-stm32-portability/` — if this backend is UFI/firmware-adjacent
 - `.claude/skills/uft-coding-standards-compliance/` — when fixing
   H-1 / H-2 / H-6 / H-9 / D-2 violations on existing backends

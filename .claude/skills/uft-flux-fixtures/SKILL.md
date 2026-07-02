@@ -182,6 +182,14 @@ mix the two directories.
 - `.claude/skills/uft-benchmark/` — benchmarks need deterministic input
 - `.claude/skills/uft-filesystem/` — filesystem tests combine these with
   FS generators
-- `tests/vectors/` — target directory
+- `.claude/agents/hardware-emulation-author.md` — for **controller-level**
+  flux generators with injectable defect classes (weak bits, CRC errors,
+  copy-protection signatures, half-tracks). Output lives under
+  `tests/flux_gen/<controller>/` and is paired with a firmware-realistic
+  emulator under `tests/emulators/<controller>/`. Use this skill for
+  format-level fixtures; use that agent for HAL-replay-level fixtures.
+- `tests/vectors/` — target directory (format-level fixtures)
+- `tests/flux_gen/<controller>/` — controller-level synthetic flux
+  (since v4.1.5, owned by `hardware-emulation-author`)
 - `docs/DESIGN_PRINCIPLES.md` Principle 1 (no silent data loss —
   fixtures must faithfully represent pathologies)

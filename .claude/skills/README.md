@@ -1,6 +1,6 @@
 # UFT Skills
 
-20 UFT-Skills + 1 HTB-Skill für die Arbeit an UFT mit Claude Code (oder
+22 UFT-Skills + 1 HTB-Skill für die Arbeit an UFT mit Claude Code (oder
 anderen LLMs, via `uft-llm-prompt-engineering`). Jeder Skill kapselt
 einen wiederkehrenden Workflow als Trigger + Templates + Verifikation.
 
@@ -18,7 +18,9 @@ Authoring-Konventionen: `docs/SKILL_AUTHORING_GUIDE.md`.
 | `uft-format-converter` | Format → Format Konvertierung |
 | `uft-deepread-module` | Neues DeepRead/OTDR-Pipeline-Modul |
 | `uft-filesystem` | Filesystem-Layer (FAT, ProDOS, AmigaDOS, …) |
-| `uft-protection-scheme` | Kopierschutz-Detektor / Klassifizierer |
+| `uft-protection-scheme` | Kopierschutz-Detektor (Algorithmus) |
+| `uft-protection-db` | Kopierschutz-Titel-DB (Daten-Kuration, c64/amiga/atari) |
+| `uft-audit-trail` | Audit-Trail-Events + forensische Reports (JSON/HTML/PDF/MD/XML/Text), Hash-Chain |
 | `uft-coding-standards-compliance` | Master-Coding-Standards-Lücken schließen (H-1/H-2/H-9, F-2/F-4, D-2, SPEC_STATUS, capability manifest) |
 
 ### Build / Test / Performance
@@ -66,6 +68,9 @@ Mehr als ein Skill kann zutreffen. Faustregel:
 - **Bytes erzeugen, die der User später vertraut** → `uft-recovery-integrity`
 - **Neue Datei lesen können** → `uft-format-plugin`
 - **Bestehende Datei woandershin schreiben** → `uft-format-converter`
+- **Forensische Evidenz exportieren (Hash-Chain, Report)** → `uft-audit-trail`
+- **Kopierschutz-Algorithmus implementieren** → `uft-protection-scheme`
+- **Kopierschutz-Titel-Daten kuratieren** → `uft-protection-db`
 - **Build kaputt auf irgendeiner Platform** → `uft-cross-platform-build`
 - **Etwas geht kaputt, das vorher ging** (Build OK) → `uft-debug-session`
 - **Etwas ist langsam** → `uft-benchmark` (nicht `uft-debug-session`)
@@ -99,7 +104,7 @@ cp -r skills/docs/* .claude/docs/   # falls noch nicht vorhanden
 
 ```bash
 # Skill-Anzahl
-ls .claude/skills/uft-*/SKILL.md | wc -l   # erwartet: 20
+ls .claude/skills/uft-*/SKILL.md | wc -l   # erwartet: 22
 
 # Keine TODO-Marker
 grep -l "TODO" .claude/skills/uft-*/SKILL.md   # erwartet: leer
