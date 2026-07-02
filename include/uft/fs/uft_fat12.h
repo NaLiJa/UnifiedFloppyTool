@@ -938,13 +938,6 @@ int uft_fat_set_time(uft_fat_ctx_t *ctx, const char *path, time_t mtime);
 
 
 
-/**
- * @brief Repair filesystem issues
- * @param ctx Context
- * @param val Validation result (from uft_fat_validate)
- * @return Number of issues fixed
- */
-int uft_fat_repair(uft_fat_ctx_t *ctx, const uft_fat_validation_t *val);
 
 
 

@@ -263,39 +263,15 @@ int uft_fat_get_stats(uft_fat_t *fat, uft_fat_stats_t *stats);
 
 
 
-/**
- * @brief Get volume label
- */
-const char* uft_fat_get_volume_label(uft_fat_t *fat);
 
 /*===========================================================================
  * CLUSTER OPERATIONS
  *===========================================================================*/
 
-/**
- * @brief Get cluster value from FAT
- */
-uint32_t uft_fat_get_cluster(uft_fat_t *fat, uint32_t cluster);
 
-/**
- * @brief Set cluster value in FAT
- */
-int uft_fat_set_cluster(uft_fat_t *fat, uint32_t cluster, uint32_t value);
 
-/**
- * @brief Get cluster status
- */
-uft_cluster_status_t uft_fat_get_cluster_status(uft_fat_t *fat, uint32_t cluster);
 
-/**
- * @brief Mark cluster as bad
- */
-int uft_fat_mark_bad(uft_fat_t *fat, uint32_t cluster);
 
-/**
- * @brief Mark cluster as free
- */
-int uft_fat_mark_free(uft_fat_t *fat, uint32_t cluster);
 
 /**
  * @brief Get cluster chain for file
@@ -324,11 +300,6 @@ int uft_fat_write_cluster(uft_fat_t *fat, uint32_t cluster,
  * DIRECTORY OPERATIONS
  *===========================================================================*/
 
-/**
- * @brief Read root directory
- */
-int uft_fat_read_root(uft_fat_t *fat, uft_fat_file_info_t *entries,
-                       int max_entries);
 
 /**
  * @brief Read directory at cluster
@@ -351,15 +322,7 @@ int uft_fat_read_dir(uft_fat_t *fat, uint32_t cluster,
  * BOOT SECTOR EDITING
  *===========================================================================*/
 
-/**
- * @brief Set OEM name
- */
-int uft_fat_set_oem_name(uft_fat_t *fat, const char *oem_name);
 
-/**
- * @brief Set volume label
- */
-int uft_fat_set_volume_label(uft_fat_t *fat, const char *label);
 
 
 
@@ -367,19 +330,9 @@ int uft_fat_set_volume_label(uft_fat_t *fat, const char *label);
  * REPAIR/ANALYSIS
  *===========================================================================*/
 
-/**
- * @brief Find lost clusters (orphans)
- */
-int uft_fat_find_lost_clusters(uft_fat_t *fat, 
-                                uint32_t *clusters, int max_clusters);
 
 
 
-/**
- * @brief Repair FAT issues
- */
-int uft_fat_repair(uft_fat_t *fat, bool fix_cross_links, 
-                    bool recover_lost);
 
 
 

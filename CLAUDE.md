@@ -89,7 +89,7 @@ Erkennt und dokumentiert historische Kopierschutz-Verfahren:
 ┌─────────────────────────────────────────────────────────┐
 │                    Qt6 GUI (C++)                         │
 │  UftMainWindow, UftOtdrPanel (DeepRead), Sector Editor  │
-│  FAT Editor, ADF Browser, Hex Panel, Heatmap, Histogram │
+│  ADF Browser, Hex Panel, Heatmap, Histogram             │
 ├─────────────────────────────────────────────────────────┤
 │               Hardware Abstraction Layer (C)             │
 │  Greaseweazle │ SCP │ KryoFlux │ FC5025 │ XUM1541 │ AS  │

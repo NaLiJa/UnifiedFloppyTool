@@ -63,14 +63,6 @@ typedef struct {
  * Unified API (Auto-detect format)
  * ============================================================================ */
 
-/**
- * @brief List files in disk image
- * 
- * @param path      Path to disk image
- * @param dir       Output: directory listing
- * @return          0 on success, -1 on error
- */
-int uft_list_files(const char *path, uft_directory_t *dir);
 
 
 /**

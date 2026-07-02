@@ -620,15 +620,6 @@ int uft_amiga_set_comment(uft_amiga_ctx_t *ctx, const char *path,
  * Formatting Functions
  *===========================================================================*/
 
-/**
- * @brief Format new ADF image
- * @param ctx Context (must have data buffer)
- * @param fs_type Filesystem type
- * @param volume_name Volume name
- * @return 0 on success
- */
-int uft_amiga_format(uft_amiga_ctx_t *ctx, uft_amiga_fs_type_t fs_type,
-                     const char *volume_name);
 
 
 /*===========================================================================
