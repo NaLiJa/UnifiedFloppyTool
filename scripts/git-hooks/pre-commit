@@ -46,27 +46,32 @@ echo "  ok"
 case "$CURRENT_BRANCH" in
     refactor/*|main)
         if [ -f tests/test_hal_foundation.cpp ]; then
-            echo "[pre-commit] test_hal_foundation compile + run..."
-            CC="${CC:-gcc}"
             CXX="${CXX:-g++}"
-            INC="-I include"
-            tmpbin="$(mktemp -t uft_h9_XXXXXX).exe"
-            if ! "$CXX" -std=c++20 -Wall -Wextra $INC \
-                    tests/test_hal_foundation.cpp -o "$tmpbin" \
-                    > /tmp/uft-foundation.log 2>&1; then
-                echo "  FAIL — see /tmp/uft-foundation.log"
-                cat /tmp/uft-foundation.log
+            if ! command -v "$CXX" >/dev/null 2>&1; then
+                echo "[pre-commit] test_hal_foundation: skip (no $CXX in PATH)"
+                echo "  CI catches the same thing; this gate is a developer convenience."
+            else
+                echo "[pre-commit] test_hal_foundation compile + run..."
+                CC="${CC:-gcc}"
+                INC="-I include"
+                tmpbin="$(mktemp -t uft_h9_XXXXXX).exe"
+                if ! "$CXX" -std=c++20 -Wall -Wextra $INC \
+                        tests/test_hal_foundation.cpp -o "$tmpbin" \
+                        > /tmp/uft-foundation.log 2>&1; then
+                    echo "  FAIL — see /tmp/uft-foundation.log"
+                    cat /tmp/uft-foundation.log
+                    rm -f "$tmpbin"
+                    exit 1
+                fi
+                if ! "$tmpbin" > /tmp/uft-foundation-run.log 2>&1; then
+                    echo "  FAIL (runtime) — see /tmp/uft-foundation-run.log"
+                    cat /tmp/uft-foundation-run.log
+                    rm -f "$tmpbin"
+                    exit 1
+                fi
                 rm -f "$tmpbin"
-                exit 1
+                echo "  ok"
             fi
-            if ! "$tmpbin" > /tmp/uft-foundation-run.log 2>&1; then
-                echo "  FAIL (runtime) — see /tmp/uft-foundation-run.log"
-                cat /tmp/uft-foundation-run.log
-                rm -f "$tmpbin"
-                exit 1
-            fi
-            rm -f "$tmpbin"
-            echo "  ok"
         fi
         ;;
 esac
