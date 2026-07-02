@@ -11,6 +11,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>   /* uft_pll_is_locked() return type */
 
 #ifdef __cplusplus
 extern "C" {
@@ -56,10 +57,15 @@ size_t uft_flux_to_bits_pll(
  *
  * Two PLL systems coexist in UFT:
  *   System A (C++): src/flux/fdc_bitstream/vfo_*.cpp (mfm_codec, VFO_TYPE_PID3)
- *   System B (C):   src/core/uft_pll_unified.c (preset-based, this API)
+ *   System B (C):   declared here, implementation pending — preset-based.
  *
- * The uft_pll_cfg_t / uft_flux_to_bits_pll above is a standalone helper.
- * The opaque context API below is for preset-based PLL processing.
+ * The uft_pll_cfg_t / uft_flux_to_bits_pll above is a standalone helper
+ * implemented in src/core/uft_pll.c. The opaque context API below
+ * (uft_pll_create / _destroy / _process_flux / ...) is currently
+ * DECLARATIONS ONLY — no implementation exists. Callers must use
+ * System A (C++) or the standalone helper above. Adding a System B
+ * implementation is a separate task (see docs/KNOWN_ISSUES.md if
+ * tracked there).
  * ============================================================================ */
 
 typedef enum {
@@ -84,7 +90,8 @@ typedef enum {
     UFT_PLL_ALGO_COUNT
 } uft_pll_algo_t;
 
-/** Opaque PLL context — implementation in uft_pll_unified.c */
+/** Opaque PLL context — declarations only; no implementation in tree (UFT-A07).
+ *  Use System A (C++) or the standalone helper above. */
 typedef struct uft_pll_context uft_pll_ctx_t;
 
 uft_pll_ctx_t* uft_pll_create(uft_pll_preset_t preset);

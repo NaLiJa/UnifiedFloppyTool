@@ -1211,7 +1211,8 @@ SOURCES += \
     src/analysis/events/otdr_event_core_v2.c \
     src/analysis/denoise/uft_denoise_bridge.c \
     src/analysis/denoise/phi_otdr_denoise_1d.c \
-    src/core/uft_core_stubs.c
+    src/core/uft_core_stubs.c \
+    src/core/uft_pll.c
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Phase 2: Additional Disk Image Formats
