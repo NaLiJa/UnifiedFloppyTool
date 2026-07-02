@@ -445,14 +445,23 @@ static void g71_plugin_close(uft_disk_t *disk) {
 static uft_error_t g71_plugin_read_track(uft_disk_t *disk, int cyl, int head,
                                           uft_track_t *track) {
     (void)head;
+    (void)cyl;
+    (void)track;
     if (!disk->plugin_data) return UFT_ERR_INVALID_STATE;
-    uft_track_init(track, cyl, 0);
-    /* Raw GCR data — sector decode not yet implemented */
-    return UFT_OK;
+    /* WHAT: per-track G71 read not implemented (1571 GCR sector decode
+     *       missing at plugin level).
+     * WHY:  the prior body returned UFT_OK with an EMPTY track — a
+     *       fabricated success (DESIGN_PRINCIPLE 4 violation, found by
+     *       the MF-300 plugin is_stub triage). File-level loading via
+     *       uft_g71_read() is real; only this per-track path is not.
+     * FIX:  use file-level open, or wait for the plugin-level GCR
+     *       sector extractor (STUB_ELIMINATION_PLAN Phase 4). */
+    return UFT_ERR_NOT_IMPLEMENTED;
 }
 
 static const uft_plugin_feature_t uft_format_plugin_g71_features[] = {
-    { "Read", UFT_FEATURE_SUPPORTED, NULL },
+    { "Read", UFT_FEATURE_PARTIAL,
+      "File-level load real; per-track GCR sector decode pending" },
     { "Write", UFT_FEATURE_UNSUPPORTED, NULL },
     { "Create", UFT_FEATURE_UNSUPPORTED, NULL },
     { "Flux", UFT_FEATURE_SUPPORTED, NULL },

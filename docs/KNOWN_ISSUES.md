@@ -223,21 +223,25 @@ Note (z.B. „Audit 2026-09-XX").
   als SUPPORTED/UNSUPPORTED (z.B. WOZ-V1 schreibt nicht alle Tracks
   korrekt = PARTIAL mit note). Erfolgt in v4.1.6 als Hygiene.
 
-### 7.3 287 Stub-Parser sind als "registriert" sichtbar
-- **Status:** MITIGATED (Marker da, Populierung 0/287)
-- **Demo-Impact:** Workaround — Demo zeigt nur die ~12 verifizierten Formate
-  (D64/G64/ADF/IMG/IMA/DMK/WOZ v1/v2/2.1/SCP/HFE/KryoFlux RAW). Stubs werden
-  nicht aufgelistet (`uft formats --real-only` für CLI).
-- **Beschreibung:** Feld `is_stub` ist in `uft_format_plugin_t` implementiert.
-  Default `false` — das heisst: ein Stub MUSS aktiv `is_stub = true` setzen
-  um ehrlich zu sein. CLI-Filter `uft formats --real-only` nutzt diesen Flag.
-  Die eigentliche Populierung der 287 Stub-Plugins ist noch ausstehend.
-- **Workaround:** Bis jeder Stub das Feld setzt, zählt ein Plugin ohne echten
-  Parser als Prinzip-Verstoß unter CI-Audit (siehe §M.1).
-- **Plan:** Siehe `docs/STUB_ELIMINATION_PLAN.md` — Phase 2 löst diesen
-  §7.3 mechanisch (Sweep auf `is_stub=true`), Phase 4 ersetzt Tier 1/2/3
-  Stubs durch echte Parser. Jedes Plugin bekommt am Ende entweder echte
-  Implementierung ODER `is_stub = true` (stub-eliminator-Agent).
+### 7.3 „287 Stub-Parser sind als registriert sichtbar"
+- **Status:** ✓ CLOSED (MF-300, Plugin-is_stub-Triage 2026-07-02)
+- **Auflösung:** Die These war doppelt überholt. (1) Die „287 Stubs"
+  waren der Zensus von VOR dem MF-011-Cleanup — die Pattern-A-Dateien
+  wurden gelöscht bzw. migriert (Rest: 4 REVIEW-Dateien, nicht
+  registriert). (2) Die Triage aller **84 registrierten Plugins**
+  (read_track-Body-Analyse + Test-Existenz, Script-gestützt) ergab:
+  **83/84 haben echte Read-Implementierungen.** Der einzige Treffer —
+  `g71_plugin_read_track` gab UFT_OK mit LEEREM Track zurück
+  (fabrizierter Erfolg, A02-Muster) — wurde in MF-300 auf ehrliches
+  `UFT_ERR_NOT_IMPLEMENTED` + Feature-Matrix `Read: PARTIAL` mit Note
+  umgestellt.
+- **Konsequenz:** Kein `is_stub=true`-Sweep nötig — es gibt keine
+  registrierten Stub-Plugins. Das Feld bleibt für künftige Plugins als
+  Ehrlichkeits-Mechanismus bestehen (`uft formats --real-only` nutzt es).
+- **Erkannter Detector-Gap (dokumentiert, nicht kritisch):** semantisch
+  faule Bodies (trivial-init + return UFT_OK) entgehen dem
+  Pattern-1-Check des Lazy-Stub-Detectors; die Triage-Methodik dieses
+  Eintrags (Body-LOC + Fehler-Return-Analyse) ist das Werkzeug dafür.
 
 ### 7.4 ADF Write-Side honest-stubs (`add_file`, `delete`)
 - **Status:** OPEN (honest-stub, return -1)
