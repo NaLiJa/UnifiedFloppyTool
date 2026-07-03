@@ -8,6 +8,16 @@ Dieser Plan ist der Master-Fahrplan für M3. Konkrete Implementations-
 Tickets werden in den bestehenden TODO-Dokumenten weitergepflegt
 (`docs/A8RAWCONV_INTEGRATION_TODO.md`, `docs/XCOPY_INTEGRATION_TODO.md`).
 
+> **Hardware-Grenze (2026-07-03):** Alle Abschluss-Kriterien unten die
+> „via echter Hardware lesen/schreiben" verlangen, sind **nicht in-house
+> erfüllbar** — dem Projekt steht kein physischer Controller zur
+> Verfügung. Der zugehörige Software-Wiring-Code kann code-complete
+> werden (und wird via 9 firmware-realistische Emulatoren in
+> `tests/emulators/` verifiziert), aber die HW-Abschluss-Kriterien sind
+> an die Community delegiert: ein Fremd-Tester *mit* dem Gerät fährt das
+> HIL-Protokoll (`tests/HARDWARE_TRUTH_TESTS.md`) und meldet zurück.
+> SSOT dieser Regel: M3-Banner in `docs/MASTER_PLAN.md`.
+
 ---
 
 ## Startzustand (Ende M2)

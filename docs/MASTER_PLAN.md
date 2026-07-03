@@ -218,11 +218,28 @@ sind auf Production-Niveau.
 
 Detail-Fahrplan: `docs/M3_HAL_PLAN.md` (M3.1 bis M3.7).
 
+> **Hardware-Verfügbarkeit (2026-07-03, verbindlich):** Dem Projekt steht
+> **kein physischer Floppy-Controller** zur Verfügung (kein Greaseweazle-
+> Zweitgerät zum Gegentest, kein SCP/XUM1541/Applesauce/KryoFlux/FC5025/
+> ADFCopy/UFI). Alle Tier-3-Bench-Verifikationen sind daher **nicht
+> in-house durchführbar** und an die Community delegiert (jemand *mit*
+> dem jeweiligen Gerät fährt das HIL-Protokoll und meldet Ergebnisse
+> zurück). Das ist keine Terminfrage („next session"), sondern eine
+> harte Ressourcengrenze. Der Wiring-Code bleibt bis zu einer solchen
+> Fremd-Bench im Status **written-but-unbenched** — forensisch ehrlich,
+> nie als „getestet" behauptet. Die 9 firmware-realistischen Emulatoren
+> (`tests/emulators/`) maximieren, was ohne Gerät verifizierbar ist; sie
+> ersetzen die Bench nicht, sie verkleinern ihren Suchraum. Bench-
+> Protokoll für Fremd-Tester: `tests/HARDWARE_TRUTH_TESTS.md` +
+> `tests/hil/run_hil.py`.
+
 Muss:
 - [x] M3.1 SCP-Direct HAL: Scaffold (Commit b52c491, 25-ns-Unit-Fix,
       10 Tests grün) + **libusb-Wiring LANDED (MF-254)**. Verbleibend:
-      Tier-3 HW-Bench am realen Gerät (UFT-008) — bis dahin gilt der
-      Pfad als wired-but-unbenched.
+      Tier-3 HW-Bench am realen Gerät (UFT-008) — **kein projekt-eigenes
+      SCP-Gerät, Bench an Community delegiert**. Bis eine Fremd-Bench
+      grün meldet gilt der Pfad als written-but-unbenched (nicht als
+      offene In-house-Aufgabe geführt).
 - [~] M3.2 XUM1541 HAL real statt stubbed — Commit 10f170f scaffold:
       `src/hal/uft_xum1541.c` (+359 LOC) mit 13/26 echten Funktionen
       (drive_name, tracks_for_drive, sectors_for_track 4-zone für 1541
@@ -474,7 +491,7 @@ Findings für die folgenden Sessions / Tag-Gates:
 | UFT-004 | ✓ CLOSED MF-260 | `uft_format_plugin_t` bekam `api_version`-Field + `UFT_PLUGIN_API_VERSION` Macro + Runtime-Gate (`uft_register_format_plugin` lehnt `api_version > host` ab, warnt bei `== 0` als Legacy). Static_assert pinnt jetzt `sizeof == 216` (MinGW-w64 x86_64). Test `tests/test_plugin_abi.c` mit 8 Assertions: api_version-Macro, struct-size-floor, field-offset-bound, registrar-reject-null/unnamed/future, accept-current/legacy. | — | include/uft/uft_format_plugin.h:516-580, src/core/uft_format_plugin.c:30-65, tests/test_plugin_abi.c |
 | UFT-005 | ✓ CLOSED MF-260 | `test_transitions_ns_contract` extended via `transitions_ns_kryoflux_contract_probe()` + `transitions_ns_fluxengine_contract_probe()` in FFI. Beide injizieren einen "binary not found" Runner und assertieren dass beide Provider mit honest non-Captured outcome antworten (kein fabriziertes FluxCaptured mit Container-Bytes). ARCH-2-Regression-Shield aktiv. | — | tests/unit/transitions_ns_ffi.cpp, tests/unit/test_transitions_ns_contract.c |
 | UFT-007 | ✓ CLOSED MF-212 | ARCH-7 sub-B Status verifiziert: VID/PID jetzt SSOT in `uft_scp_direct.h:40-41` (`0x16D0:0x0F8C`), `hardwaretab.cpp:548` liest exakt das Macro. Orchestrator-Finding war stale. | — | include/uft/hal/uft_scp_direct.h:40-41 |
-| UFT-008 | P1 | HIL Hardware-Tier 14/15 NOT_RUN. Pro Controller eine Bench-Session nötig. Blockiert durch UFT-001. | S pro Controller (1-2h Bench-Time) | tests/hil/run_hil.py, audit/rc1_field_notes.md |
+| UFT-008 | P1 · **COMMUNITY-DELEGATED** | HIL Hardware-Tier 14/15 NOT_RUN. Pro Controller eine Bench-Session nötig — **kein projekt-eigenes Gerät, nicht in-house durchführbar** (siehe M3-Banner). Bench an Fremd-Tester mit Hardware delegiert; Protokoll steht bereit. Nicht als offene In-house-Aufgabe geführt. | S pro Controller (1-2h Bench-Time, extern) | tests/hil/run_hil.py, tests/HARDWARE_TRUTH_TESTS.md, audit/rc1_field_notes.md |
 | UFT-T04 | ✓ REDUCED MF-260 | Bulk-Triage Schritt 1: 4 stale Exclusions re-enabled (test_scp_direct_hal nach MF-254 libusb-Wiring, test_applesauce_hal Pure-Utility, test_fnmatch_shim, test_whdload_resload) + new test_plugin_abi. 146 → 151 tests passing. **Verbleibende 38 Exclusions** sind echte MF-011-Phantome (impl gelöscht) und dokumentiert per-Eintrag in `tests/CMakeLists.txt`. Vollständige Restoration ist Multi-Session-Arbeit (out-of-scope für v4.1.5-tag). | M (38 verbleibend, restoration multi-session) | tests/CMakeLists.txt:53-110 |
 | UFT-T05 | ✓ CLOSED v4.1.5 pre-tag | Datei `src/analysis/events/CMakeLists.txt:13` nutzt bereits `CMAKE_CURRENT_SOURCE_DIR` für Include-Pfad — `add_subdirectory()`-sicher. Subdir noch nicht ins Root-CMake verkabelt (separate Entscheidung, Out-of-Scope für T05). | — | src/analysis/events/CMakeLists.txt:13 |
 
@@ -516,19 +533,28 @@ Drei Test-Tiers für jeden Controller:
 - **Tier 3** (Bench-Session): physische Hardware
 
 Aktuell: Tier 1 grün für alle. Tier 2 dokumentiert (Applesauce
-Simulator als Vorlage). Tier 3 = next session pro Controller mit
-echter Hardware.
+Simulator als Vorlage) und seit 2026-07 auf 9/9 firmware-realistische
+Emulatoren ausgebaut (`tests/emulators/`, 439 Assertions). Tier 3 =
+**community-delegiert** — kein projekt-eigenes Gerät, kann in-house
+nicht gefahren werden (siehe M3-Banner). Ein Fremd-Tester mit dem
+jeweiligen Controller führt Tier 3 gegen das HIL-Protokoll aus und
+meldet zurück; erst dann yellow „Beta" → green „Production" pro
+Controller.
 
 ### Recommended Sequence
 
-1. **Bench-Session (pro Controller):** Tier-3-Verifikation gegen
-   echtes Gerät. Sobald grün → yellow "Beta" → green "Production"
-   per Controller. Stark abhängig davon welche Hardware verfügbar ist.
+1. **Bench-Session (pro Controller) — COMMUNITY-DELEGATED:** Tier-3-
+   Verifikation gegen echtes Gerät. **Kein projekt-eigenes Gerät → nicht
+   in-house durchführbar**; delegiert an Fremd-Tester mit Hardware.
+   Sobald ein Fremd-Bench grün meldet → yellow "Beta" → green
+   "Production" per Controller. Bis dahin bleibt der Wiring-Code
+   written-but-unbenched (ehrlich, nicht als Bug/offene Aufgabe geführt).
 2. **Vor v4.1.5-Tag:** UFT-T04 Bulk-Triage entscheiden (löschen vs. rekonstruieren der ~140k-LOC-Tests)
 3. **Vor v4.1.5-Tag:** UFT-T05 events-CMakeLists Pfad-Fix
 4. **Bei v4.1.5-Tag:** UFT-001 Ehrlichkeits-Statement im README + RELEASE_NOTES — entweder "Greaseweazle-only" oder Tag verschieben
 5. **Multi-Session:** UFT-004, UFT-005, UFT-007 — pure Engineering-Arbeit
-6. **Bench-Session:** UFT-008 (sobald UFT-001 echte Hardware-Wiring liefert)
+6. **Bench-Session (community-delegiert):** UFT-008 — kein projekt-
+   eigenes Gerät, Tier-3 an Fremd-Tester mit Hardware ausgelagert
 
 ---
 
