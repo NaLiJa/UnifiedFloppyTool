@@ -1085,6 +1085,30 @@ set_target_properties(test_adfcopy_emulator PROPERTIES
 add_test(NAME test_adfcopy_emulator COMMAND test_adfcopy_emulator)
 message(STATUS "UFT Test ENABLED: test_adfcopy_emulator (firmware-realistic ADFCopy sim)")
 
+# UFI / USBFloppy firmware-realistic emulator (ninth invocation of the
+# hardware-emulation-author agent — the finale). UFI is the one
+# controller whose C HAL (src/hal/ufi.c) exposes an INJECTABLE backend
+# vtable (uft_ufi_ops_t). So the emulator installs a mock backend that
+# answers SCSI CDBs from a synthetic disk and drives the PRODUCTION HAL
+# functions (uft_ufi_inquiry / read_capacity / read_sectors /
+# request_sense) end-to-end — the strongest coupling to production code
+# of the nine. Links src/hal/ufi.c. No libm (MF-305).
+add_executable(test_ufi_emulator
+    ${CMAKE_SOURCE_DIR}/tests/emulators/ufi/test_ufi_emulator.c
+    ${CMAKE_SOURCE_DIR}/tests/emulators/ufi/firmware_state_machine.c
+    ${CMAKE_SOURCE_DIR}/tests/flux_gen/ufi/flux_gen.c
+    ${CMAKE_SOURCE_DIR}/src/hal/ufi.c)
+target_include_directories(test_ufi_emulator PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/include/uft
+    ${CMAKE_SOURCE_DIR}/tests/emulators/ufi
+    ${CMAKE_SOURCE_DIR}/tests/flux_gen/ufi)
+set_target_properties(test_ufi_emulator PROPERTIES
+    C_STANDARD 11
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
+add_test(NAME test_ufi_emulator COMMAND test_ufi_emulator)
+message(STATUS "UFT Test ENABLED: test_ufi_emulator (firmware-realistic UFI sim — 9/9 finale)")
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # Qt-based Tests (C++ / QtTest framework)
 # ═══════════════════════════════════════════════════════════════════════════════
