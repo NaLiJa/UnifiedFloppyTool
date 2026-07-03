@@ -18,6 +18,8 @@
 #ifndef UFT_FNMATCH_H
 #define UFT_FNMATCH_H
 
+#include <stddef.h>   /* NULL — used by the POSIX uft_fnmatch() null guard */
+
 #if defined(_WIN32) || defined(_WIN64)
 #  define UFT_FNMATCH_NEEDS_SHIM 1
 #else
