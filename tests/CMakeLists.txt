@@ -990,6 +990,35 @@ set_target_properties(test_applesauce_emulator PROPERTIES
 add_test(NAME test_applesauce_emulator COMMAND test_applesauce_emulator)
 message(STATUS "UFT Test ENABLED: test_applesauce_emulator (firmware-realistic Applesauce sim)")
 
+# KryoFlux firmware-realistic emulator (fifth invocation of the
+# hardware-emulation-author agent). KryoFlux has no wire protocol in UFT —
+# the HAL runs the DTC tool which writes a RAW stream file. So this
+# emulator models the DTC+device pair and its flux generator emits REAL
+# KryoFlux RAW streams that are decoded by the PRODUCTION parser
+# uft_kf_decode() (src/flux/uft_kryoflux_stream.c) — every container
+# defect class asserts the exact uft_kf_status_t the parser returns.
+# Links the DTC HAL for the SSOT sample-clock cross-check (24.027 MHz);
+# no subprocess is spawned at test runtime.
+add_executable(test_kryoflux_emulator
+    ${CMAKE_SOURCE_DIR}/tests/emulators/kryoflux/test_kryoflux_emulator.c
+    ${CMAKE_SOURCE_DIR}/tests/emulators/kryoflux/firmware_state_machine.c
+    ${CMAKE_SOURCE_DIR}/tests/flux_gen/kryoflux/flux_gen.c
+    ${CMAKE_SOURCE_DIR}/src/flux/uft_kryoflux_stream.c
+    ${CMAKE_SOURCE_DIR}/src/hal/uft_kryoflux_dtc.c)
+target_include_directories(test_kryoflux_emulator PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/include/uft
+    ${CMAKE_SOURCE_DIR}/tests/emulators/kryoflux
+    ${CMAKE_SOURCE_DIR}/tests/flux_gen/kryoflux)
+if(NOT MSVC)
+    target_link_libraries(test_kryoflux_emulator PRIVATE m)
+endif()
+set_target_properties(test_kryoflux_emulator PROPERTIES
+    C_STANDARD 11
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
+add_test(NAME test_kryoflux_emulator COMMAND test_kryoflux_emulator)
+message(STATUS "UFT Test ENABLED: test_kryoflux_emulator (firmware-realistic KryoFlux sim)")
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # Qt-based Tests (C++ / QtTest framework)
 # ═══════════════════════════════════════════════════════════════════════════════

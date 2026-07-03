@@ -117,6 +117,16 @@ Ende ein zusammenhängender Commit pro Controller.
 | M3.3 Applesauce serial wiring | ~1 Woche | dito. **Emulator ✓ (MF-302, 4/9):** 3-Schichten-Modell (ASCII-Serial-Protokoll + Apple-GCR-Flux-Gen), 111 Assertions grün, HAL-SSOT-Cross-Check (8 MHz). Zwei HIGH-Divergenzen offen (D-1 Command-Vokabular runner-vs-transport-doc, D-2 Binary-Framing) — Bench-Gate für „production". | UFT-009 (neu) |
 | M3.4 USBFloppy (UFI) | ~2 Wochen (komplexer SCSI-CDB-Layer) | dito | UFT-010 (neu) |
 
+**Emulator-Sequenz (`hardware-emulation-author`, 5/9 fertig):** SCP ✓,
+Greaseweazle ✓, XUM1541 ✓ (MF-290/301), Applesauce ✓ (MF-302),
+**KryoFlux ✓ (MF-303):** DTC-Subprocess-Modell + RAW-Stream-Generator,
+51 Assertions grün. Alleinstellung: die generierten Streams laufen durch
+den PRODUKTIVEN Parser `uft_kf_decode()` — Defekt-Klassen mappen auf die
+exakten `uft_kf_status_t`-Codes (MISSING_END/DEV_INDEX/DEV_BUFFER/
+MISSING_DATA). Zwei HIGH-Divergenzen (K-1 DTC-Exit-Code-Vokabular, K-2
+RAW-Byte-Capture) sind das Bench-Gate. Offen: FluxEngine (6/9), FC5025
+(7/9), ADFCopy (8/9), USBFloppy (9/9).
+
 **Gate für Phase 4:** Alle drei HAL-Tests grün auf dem Emulator + signed-off
 HW-Bench-Report pro Controller.
 
