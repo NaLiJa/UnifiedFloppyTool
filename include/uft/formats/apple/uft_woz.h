@@ -287,16 +287,30 @@ int woz_load(const char *filename, woz_image_t **image);
 int woz_load_from_memory(const uint8_t *data, size_t size, woz_image_t **image);
 
 /**
+ * @brief Serialize a WOZ image (INFO + TMAP + TRKS) to a newly-allocated buffer.
+ *
+ * Layout-exact for WOZ2 (BITS land on block 3); round-trips the flux-critical
+ * chunks byte-identically. META/WRIT/FLUX are not carried through (the reader
+ * does not retain them) — see KNOWN_ISSUES FMT-4.
+ *
+ * @param image     Source image (from woz_load / woz_load_from_memory)
+ * @param out_data  Receives malloc'd buffer (caller frees)
+ * @param out_size  Receives buffer size
+ * @return WOZ_OK on success, error code on failure
+ */
+int woz_save_to_memory(const woz_image_t *image, uint8_t **out_data, size_t *out_size);
+
+/**
  * @brief Free WOZ image resources
  * @param image Image to free
  */
 void woz_free(woz_image_t *image);
 
 /**
- * @brief Save WOZ image to file
+ * @brief Save WOZ image to file. See woz_save_to_memory().
  * @param image Image to save
  * @param filename Output filename
- * @return 0 on success, error code on failure
+ * @return WOZ_OK on success, error code on failure
  */
 int woz_save(const woz_image_t *image, const char *filename);
 

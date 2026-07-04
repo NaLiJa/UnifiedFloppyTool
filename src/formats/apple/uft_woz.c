@@ -476,6 +476,123 @@ int woz_load(const char *filename, woz_image_t **image)
     return result;
 }
 
+static void write_u16_le(uint8_t *p, uint16_t v)
+{
+    p[0] = (uint8_t)(v & 0xFF);
+    p[1] = (uint8_t)((v >> 8) & 0xFF);
+}
+
+static void write_u32_le(uint8_t *p, uint32_t v)
+{
+    p[0] = (uint8_t)(v & 0xFF);
+    p[1] = (uint8_t)((v >> 8) & 0xFF);
+    p[2] = (uint8_t)((v >> 16) & 0xFF);
+    p[3] = (uint8_t)((v >> 24) & 0xFF);
+}
+
+/**
+ * @brief Serialize a WOZ image (INFO + TMAP + TRKS) back to a WOZ1/WOZ2 buffer.
+ *
+ * The three flux-critical chunks are re-emitted in the canonical order at
+ * their standard offsets. That order is layout-exact for WOZ2: the header
+ * (12) + INFO (8+60) + TMAP (8+160) + TRKS header (8) place the TRK table at
+ * byte 256, and the 160×8 = 1280-byte table ends at byte 1536 = block 3 —
+ * exactly where the TRK entries' absolute `starting_block` references expect
+ * the BITS data. So the preserved `track_data` (which begins with that table)
+ * round-trips byte-identically without any block-offset fix-up.
+ *
+ * Honest limitation (documented, NOT silent corruption): META / WRIT / FLUX
+ * and any unknown chunks are not carried through — the reader does not retain
+ * them. The emitted file is a valid WOZ with the flux data intact; metadata
+ * passthrough requires the reader to preserve raw chunks first (KNOWN_ISSUES
+ * FMT-4). Callers needing bit-identical whole-file fidelity for META-bearing
+ * images must copy the source bytes instead.
+ */
+int woz_save_to_memory(const woz_image_t *image, uint8_t **out_data, size_t *out_size)
+{
+    if (!image || !out_data || !out_size) {
+        return WOZ_ERR_INVALID_HEADER;
+    }
+    if (!image->track_data || image->track_data_size == 0) {
+        return WOZ_ERR_MISSING_TRKS;
+    }
+
+    /* The reader splits the TRKS chunk differently per version:
+     *   v1: track_data holds the whole TRKS chunk (self-contained 6656-byte
+     *       tracks) — re-emit it verbatim.
+     *   v2: trks[] holds the 160×8 TRK table and track_data holds the BITS
+     *       data from block 3 onward — reconstruct the chunk as table + BITS.
+     * For v2 the 12+68+168+8+1280 layout places the BITS at byte 1536 =
+     * block 3, matching the entries' absolute starting_block, so no offset
+     * fix-up is needed. */
+    int is_v2 = (image->version != 1);
+    size_t trks_payload = is_v2 ? ((size_t)WOZ_MAX_TRACKS * 8u + image->track_data_size)
+                                : image->track_data_size;
+
+    size_t total = 12u + (8u + 60u) + (8u + (size_t)WOZ_TMAP_SIZE) + (8u + trks_payload);
+    uint8_t *buf = calloc(1, total);
+    if (!buf) {
+        return WOZ_ERR_OUT_OF_MEMORY;
+    }
+
+    /* File header: signature + FF 0A 0D 0A + CRC placeholder (filled last). */
+    write_u32_le(buf, (image->version == 1) ? WOZ_SIGNATURE_V1 : WOZ_SIGNATURE_V2);
+    buf[4] = 0xFF; buf[5] = 0x0A; buf[6] = 0x0D; buf[7] = 0x0A;
+
+    size_t p = 12;
+    /* INFO chunk (always 60 bytes). */
+    write_u32_le(buf + p, WOZ_CHUNK_INFO);   write_u32_le(buf + p + 4, 60);  p += 8;
+    memcpy(buf + p, &image->info, 60);                                        p += 60;
+    /* TMAP chunk (160 quarter-track slots). */
+    write_u32_le(buf + p, WOZ_CHUNK_TMAP);   write_u32_le(buf + p + 4, WOZ_TMAP_SIZE); p += 8;
+    memcpy(buf + p, image->tmap, WOZ_TMAP_SIZE);                              p += WOZ_TMAP_SIZE;
+    /* TRKS chunk. */
+    write_u32_le(buf + p, WOZ_CHUNK_TRKS);
+    write_u32_le(buf + p + 4, (uint32_t)trks_payload);                        p += 8;
+    if (is_v2) {
+        for (int i = 0; i < WOZ_MAX_TRACKS; i++) {
+            write_u16_le(buf + p,     image->trks[i].starting_block);
+            write_u16_le(buf + p + 2, image->trks[i].block_count);
+            write_u32_le(buf + p + 4, image->trks[i].bit_count);
+            p += 8;
+        }
+    }
+    memcpy(buf + p, image->track_data, image->track_data_size);              p += image->track_data_size;
+
+    /* CRC32 over everything after the 12-byte header, stored at offset 8. */
+    uint32_t crc = woz_crc32(0, buf + 12, total - 12);
+    write_u32_le(buf + 8, crc);
+
+    *out_data = buf;
+    *out_size = total;
+    return WOZ_OK;
+}
+
+/**
+ * @brief Serialize a WOZ image to a file. See woz_save_to_memory().
+ */
+int woz_save(const woz_image_t *image, const char *filename)
+{
+    if (!filename || !image) {
+        return WOZ_ERR_FILE_NOT_FOUND;
+    }
+    uint8_t *data = NULL;
+    size_t size = 0;
+    int rc = woz_save_to_memory(image, &data, &size);
+    if (rc != WOZ_OK) {
+        return rc;
+    }
+    FILE *f = fopen(filename, "wb");
+    if (!f) {
+        free(data);
+        return WOZ_ERR_FILE_NOT_FOUND;
+    }
+    size_t written = fwrite(data, 1, size, f);
+    fclose(f);
+    free(data);
+    return (written == size) ? WOZ_OK : WOZ_ERR_CORRUPT_DATA;
+}
+
 void woz_free(woz_image_t *image)
 {
     if (!image) return;

@@ -604,7 +604,7 @@ legitimately read-only.
 
 | Format | Read versions | Write | Should write? | Verdict |
 |---|---|---|---|---|
-| **WOZ** | v1, v2 (2.1 = v2 sig) | ✗ "write not implemented" | **yes** (Apple II preservation std; Applesauce writes it) | **GAP** |
+| **WOZ** | v1, v2 (2.1 = v2 sig) | **✓ module-level** (`woz_save` / `woz_save_to_memory`, MF-317, round-trip byte-identity tested) — plugin `.write` wiring + META/WRIT passthrough pending | **yes** (Apple II preservation std) | **partially closed** |
 | **SCP** | yes | ✗ (`write_track = NULL`) | **yes** (Greaseweazle/SuperCard Pro produce it) | **GAP** |
 | **MOOF** | info_version ≥ 1 | ✗ (no write path) | **yes** (Apple II flux) | **GAP** |
 | **HFE** | v1 + v3 (`HXCPICFE`/`HXCHFEV3`) | **v1 only** (writer emits `HXCPICFE`) | v3 (variable bitrate) nice-to-have | partial |
