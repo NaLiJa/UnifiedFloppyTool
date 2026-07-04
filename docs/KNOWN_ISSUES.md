@@ -607,16 +607,19 @@ legitimately read-only.
 | **WOZ** | v1, v2 (2.1 = v2 sig) | **✓ module-level** (`woz_save` / `woz_save_to_memory`, MF-317, round-trip byte-identity tested) — plugin `.write` wiring + META/WRIT passthrough pending | **yes** (Apple II preservation std) | **partially closed** |
 | **SCP** | yes | **✓ (writer existed, now FIXED + tested)** — `scp_writer_*` wrote "Track Length" in bytes not bitcell-count → every written SCP was unreadable (reader hit EOF); fixed MF-318, `test_scp_writer_roundtrip`. Plugin `.write_track` wiring still pending. | **yes** (Greaseweazle/SuperCard Pro) | **fixed at module level** |
 | **MOOF** | info_version ≥ 1 | **✓ `uft_moof_save` (MF-319, save→read round-trip tested)** — plugin wiring + META/FLUX passthrough pending | **yes** (Apple II flux) | **closed at module level** |
-| **HFE** | v1 + v3 (`HXCPICFE`/`HXCHFEV3`) | **v1 only** (writer emits `HXCPICFE`) | v3 (variable bitrate) nice-to-have | partial |
+| **HFE** | v1 + v3 signature (`HXCPICFE`/`HXCHFEV3`); **v3 opcodes NOT decoded** (reader only flags `is_v3`, reads track data v1-style) | **blank-formatter only** — the "writer" emits an empty HFE (zero track data) from a geometry; it does NOT serialize real MFM track data | data-preserving v1 write + v3 | **larger feature (blocked)** |
 | A2R | v2 (`A2R2`) + v3 (`A2R3`) | ✗ | no — raw capture format | OK |
 | IPF | partial (CAPS payload not decoded) | ✗ | no — proprietary CAPS/SPS, read-only | OK (read is partial) |
 | ADF | v2 + v3 parsers | ✓ | — | OK |
 | D88 | v1 + v2 | ✓ | — | OK |
 | IMD / DSK+EDSK / DC42 / 2MG / TD0 / DMK | container versions | ✓ | — | OK |
 
-**Real write gaps (flux formats, read-only in the live plugins):** WOZ,
-SCP, MOOF. Plus HFE writes only v1. Sector/container formats read+write
-fine.
+**Real write gaps (flux formats):** WOZ, SCP, MOOF — **all now closed at
+module level with round-trip tests** (MF-317/318/319; the SCP work also
+fixed a bug that made every written SCP unreadable). Remaining: HFE
+data-preserving write + v3 (a larger feature — the current HFE writer only
+formats a blank disk and the reader does not decode v3 opcodes). Sector/
+container formats read+write fine.
 
 **Deliberately NOT rushed:** a flux-format writer that emits subtly wrong
 timing/bit-cells silently corrupts a forensic image — worse than no writer
