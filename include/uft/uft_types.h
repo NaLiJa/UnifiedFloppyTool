@@ -363,6 +363,22 @@ typedef struct uft_sector {
     int              good_sectors;    ///< Track-level stat (compat, unused in sector)
     int              bad_sectors;     ///< Track-level stat (compat, unused in sector)
 } uft_sector_t;
+
+/**
+ * @brief Set a sector's CRC-OK state consistently across all three fields.
+ *
+ * uft_sector_t exposes the "CRC ok" status under crc_ok plus the legacy
+ * aliases crc_valid / data_crc_ok, and different consumers check different
+ * ones. Use this single-statement helper everywhere the state is set so a
+ * good sector is never mistaken for a CRC failure and vice-versa (FMT-5).
+ * Being one statement, it is also safe to drop into a brace-less `if`.
+ */
+static inline void uft_sector_set_crc(uft_sector_t *s, bool ok) {
+    if (!s) return;
+    s->crc_ok = ok;
+    s->crc_valid = ok;
+    s->data_crc_ok = ok;
+}
 #endif /* UFT_SECTOR_T_DEFINED */
 
 // ============================================================================

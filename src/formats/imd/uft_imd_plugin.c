@@ -177,7 +177,7 @@ static uft_error_t imd_plugin_read_track(uft_disk_t *disk, int cyl, int head,
             /* Propagate IMD sector status flags */
             if (is_target && track->sector_count > 0) {
                 if (is_crc_err)
-                    track->sectors[track->sector_count - 1].crc_ok = false;
+                    uft_sector_set_crc(&track->sectors[track->sector_count - 1], false);
                 if (is_deleted)
                     track->sectors[track->sector_count - 1].deleted = true;
             }

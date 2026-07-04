@@ -89,7 +89,7 @@ static uft_error_t d88_read_track(uft_disk_t* disk, int cyl, int head, uft_track
         if (track->sector_count > 0) {
             uint8_t st = sec_hdr[13];
             if (st == 0xA0 || st == 0xB0)
-                track->sectors[track->sector_count - 1].crc_ok = false;
+                uft_sector_set_crc(&track->sectors[track->sector_count - 1], false);
             if (st == 0x10)
                 track->sectors[track->sector_count - 1].deleted = true;
         }

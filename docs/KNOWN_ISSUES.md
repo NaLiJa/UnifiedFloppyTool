@@ -646,9 +646,19 @@ preserve or honestly drop META/WRIT — and be gated by a read→write→read
 **byte-identity** test (which correctly rejects the naïve approach). This
 is why it is a feature, not a one-function add.
 
-### FMT-5 — uft_sector_t CRC-status alias mismatch (found 2026-07-04, NOT yet fixed)
+### FMT-5 — uft_sector_t CRC-status alias mismatch → ✓ RESOLVED (2026-07-04, MF-322)
 
-**Severity: MEDIUM.** Same bug class as the data_len fix (FMT-4 / MF-321):
+> **✓ RESOLVED.** Added a single-statement helper `uft_sector_set_crc(
+> uft_sector_t*, bool)` in `uft_types.h` that sets all three fields
+> (crc_ok + crc_valid + data_crc_ok) at once. `uft_format_add_sector()` now
+> calls it with `true` (good sector); the ~9 reader error sites (d77, d88,
+> dsk_cpc, imd, jv3, nfd, nib, stx, td0) call it with `false`. Being one
+> statement, it is safe under the brace-less `if`s those sites use (which is
+> exactly what broke the first attempt). Proven by `test_imd_write_roundtrip`
+> asserting crc_ok/crc_valid/data_crc_ok on a good read sector; full suite
+> 170/170, no regression from the widely-included `uft_types.h` change.
+
+**Severity: MEDIUM (behoben).** Same bug class as the data_len fix (FMT-4 / MF-321):
 `uft_sector_t` exposes the "CRC ok" state under **three** names — `crc_ok`
 plus the legacy aliases `crc_valid` and `data_crc_ok`. `uft_format_add_sector()`
 (the shared helper every read_track uses) sets only `id.crc_ok` + `status`,

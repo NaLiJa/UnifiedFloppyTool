@@ -92,6 +92,12 @@ TEST(write_track_persists_to_read) {
     ASSERT(t.sector_count == 2);
     ASSERT(t.sectors[0].data != NULL);
     ASSERT(t.sectors[0].data[0] == 0x11);   /* original sector-1 first byte */
+    /* FMT-5: a good sector read via uft_format_add_sector must report CRC OK
+     * under all three fields, not just id.crc_ok — consumers that check
+     * crc_valid / data_crc_ok used to see good data as CRC-failed. */
+    ASSERT(t.sectors[0].crc_ok == true);
+    ASSERT(t.sectors[0].crc_valid == true);
+    ASSERT(t.sectors[0].data_crc_ok == true);
 
     /* change sector 1's first byte and write it back */
     t.sectors[0].data[0] = 0xAB;

@@ -203,7 +203,7 @@ static uft_error_t nfd_read_track(uft_disk_t *disk, int cyl, int head,
                  * ST2 bit 5 (0x20) = CRC error in data
                  * e_status nonzero typically means abnormal completion */
                 if ((e_st1 & 0x20) || (e_st2 & 0x20) || (e_status != 0))
-                    track->sectors[idx].crc_ok = false;
+                    uft_sector_set_crc(&track->sectors[idx], false);
             }
         }
         break; /* Found matching track entry */

@@ -125,7 +125,7 @@ static uft_error_t stx_read_track(uft_disk_t *disk, int cyl, int head,
 
         /* Mark CRC errors from FDC status */
         if ((fdcr & 0x08) && track->sector_count > 0)
-            track->sectors[track->sector_count - 1].crc_ok = false;
+            uft_sector_set_crc(&track->sectors[track->sector_count - 1], false);
     }
     return UFT_OK;
 }

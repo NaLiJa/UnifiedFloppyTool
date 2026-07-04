@@ -157,7 +157,7 @@ static uft_error_t td0_read_track(uft_disk_t *disk, int cyl, int head,
                                                  (uint8_t)cyl, (uint8_t)head);
                     if (track->sector_count > 0) {
                         if (sec_flags & 0x01)
-                            track->sectors[track->sector_count - 1].crc_ok = false;
+                            uft_sector_set_crc(&track->sectors[track->sector_count - 1], false);
                         if (sec_flags & 0x04)
                             track->sectors[track->sector_count - 1].deleted = true;
                     }
@@ -221,7 +221,7 @@ static uft_error_t td0_read_track(uft_disk_t *disk, int cyl, int head,
                     /* Propagate TD0 sector flags */
                     if (track->sector_count > 0) {
                         if (sec_flags & 0x01)
-                            track->sectors[track->sector_count - 1].crc_ok = false;
+                            uft_sector_set_crc(&track->sectors[track->sector_count - 1], false);
                         if (sec_flags & 0x04)
                             track->sectors[track->sector_count - 1].deleted = true;
                     }

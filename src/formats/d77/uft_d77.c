@@ -227,7 +227,7 @@ static uft_error_t d77_read_track(uft_disk_t *disk, int cyl, int head,
             if (sec_hdr[7] == 0x10)
                 track->sectors[track->sector_count - 1].deleted = true;
             if (sec_hdr[8] != 0x00)
-                track->sectors[track->sector_count - 1].crc_ok = false;
+                uft_sector_set_crc(&track->sectors[track->sector_count - 1], false);
         }
         free(buf);
     }
