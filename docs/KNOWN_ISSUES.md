@@ -504,6 +504,26 @@ nicht dauerhaft rot auf einem vorbestehenden Umgebungs-Defekt zu halten.
 (`add_test(... WORKING_DIRECTORY ...)` oder Temp-Pfad in den Tests),
 (3) danach `|| true` entfernen und pro Plattform grün verifizieren.
 
+### FMT-1 — D67 (CBM 2040) size gate rejects valid images (entdeckt 2026-07-04)
+
+**Severity: HIGH (Prinzip 1 — „kein Bit verloren").** `src/formats/
+commodore/d67.c` gate-t die Bildgröße auf `szl != 670*256` (171520 B) und
+gibt sonst `UFT_EINVAL`. Die eigene Per-Track-Sektor-Tabelle im selben
+File summiert aber zu **690** Sektoren (17×21 + 7×20 + 6×18 + 5×17 = 690).
+Ein reales, standardkonformes .D67 (CBM 2040 DOS 1.0 = **690 Blöcke =
+176640 B**) wird damit von `uft_cbm_d67_open()` **abgelehnt** — das Tool
+kann eine gültige Diskette nicht lesen. Umgekehrt würde ein akzeptiertes
+670-Block-File beim Lesen der hinteren Tracks `UFT_EBOUNDS` liefern
+(Datei kleiner als die spt-Tabelle impliziert).
+
+Entdeckt beim Schreiben der Plugin-Tests (Package #2). Kein Test gebaut,
+weil ein Test das kaputte Gate nur zementieren würde. **Fix-Kandidat:**
+`670` → `690` (`sum(spt)`), plus ein test_d67_plugin analog zu
+test_d80/test_d82. Vor dem Fix bestätigen, dass kein 670-Block-Variant
+im Umlauf ist, den das Gate absichtlich matcht (unwahrscheinlich — 690
+ist die dokumentierte Standardgröße). Nicht unilateral geändert:
+forensische Correctness-Entscheidung, siehe DESIGN_PRINCIPLES Prinzip 1.
+
 ---
 
 ## Wie beitragen
