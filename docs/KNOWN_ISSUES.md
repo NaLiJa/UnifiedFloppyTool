@@ -612,8 +612,7 @@ legitimately read-only.
 | IPF | partial (CAPS payload not decoded) | ✗ | no — proprietary CAPS/SPS, read-only | OK (read is partial) |
 | ADF | v2 + v3 parsers | ✓ | — | OK |
 | D88 | v1 + v2 | ✓ | — | OK |
-| **IMD** | container versions | **✓ — bug FIXED MF-320** | — | write was a silent no-op (guarded on unset `.data_len` instead of `.data_size`); fixed + `test_imd_write_roundtrip` |
-| DSK+EDSK / DC42 / 2MG / TD0 / DMK | container versions | ✓ (not yet round-trip-tested) | — | OK |
+| **Sector/container plugins** (IMD, ADF, D64-family, 86f, PRO, FDI, NFD, SAP, DMK, DC42, DSK, DMS, FDS, JVC, MSA, SCL, SSD, VDK, …) | container versions | **✓ — SYSTEMIC write no-op FIXED (MF-320/321)** | — | ~20 plugin `write_track` paths gate on `uft_sector_t.data_len`, but `uft_format_add_sector()` set only the legacy `.data_size` → every write silently did nothing for read-produced tracks. Root fix: `uft_format_add_sector` now sets `.data_len` too (`include/uft/uft_format_common.h`). Proven by `test_imd_write_roundtrip`. |
 
 **Real write gaps (flux formats):** WOZ, SCP, MOOF — **all now closed at
 module level with round-trip tests** (MF-317/318/319; the SCP work also

@@ -92,9 +92,14 @@ static inline uft_error_t uft_format_add_sector(
     if (!sector.data) return UFT_ERROR_NO_MEMORY;
     
     memcpy(sector.data, data, size);
+    /* Set BOTH length fields. uft_sector_t carries data_len (modern) and
+     * data_size (legacy); many plugin write_track paths gate their write on
+     * data_len, so leaving it 0 here made those writes silent no-ops for
+     * read-produced tracks (see MF-320 / IMD). Keep them in lock-step. */
+    sector.data_len = size;
     sector.data_size = size;
     sector.status = UFT_SECTOR_OK;
-    
+
     uft_error_t err = uft_track_add_sector(track, &sector);
     if (err != UFT_OK) {
         free(sector.data);
